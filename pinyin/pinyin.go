@@ -20,6 +20,8 @@ func Parse(format, filepath string) []Pinyin {
 		return ParseBaiduBdict(f)
 	case "sougou_scel":
 		return ParseSougouScel(f)
+	case "qq_qcel":
+		return ParseSougouScel(f)
 	case "ziguang_uwl":
 		return ParseZiguangUwl(f)
 	case "qq_qpyd":

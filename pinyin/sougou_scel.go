@@ -63,7 +63,12 @@ func ParseSougouScel(rd io.Reader) []Pinyin {
 		var code []string
 		for i := 0; 2*i < codeLen; i++ {
 			r.Read(tmp)
-			code = append(code, pyTable[bytesToInt(tmp)])
+			theIdx := bytesToInt(tmp)
+			if theIdx >= pyTableLen {
+				code = append(code, string(byte(theIdx-pyTableLen+97)))
+				continue
+			}
+			code = append(code, pyTable[theIdx])
 		}
 
 		// 读取一个或多个词

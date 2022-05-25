@@ -23,6 +23,10 @@ func Test(t *testing.T) {
 	data = Parse(format, "test/sougou.scel")
 	write(format, data)
 
+	format = "qq_qcel"
+	data = Parse(format, "test/含英文.qcel")
+	write("qcel含英文", data)
+
 	format = "ziguang_uwl"
 	data = Parse(format, "test/music.uwl")
 	write(format, data)
