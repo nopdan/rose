@@ -23,9 +23,14 @@ func Test(t *testing.T) {
 	data = Parse(format, "test/sougou.scel")
 	write(format, data)
 
+	// 网络流行新词【官方推荐】 https://pinyin.sogou.com/dict/detail/index/4
+	format = "sougou_scel"
+	data = Parse(format, "test/new.scel")
+	write("new_scel", data)
+
 	format = "qq_qcel"
 	data = Parse(format, "test/含英文.qcel")
-	write("qcel含英文", data)
+	write("qq_qcel含英文", data)
 
 	format = "ziguang_uwl"
 	data = Parse(format, "test/music.uwl")

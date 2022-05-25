@@ -16,11 +16,17 @@ func ParseSougouScel(rd io.Reader) []Pinyin {
 	// utf-16le 转换器
 	decoder := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
 
+	// 读词条数
+	tmp := make([]byte, 4)
+	r.Seek(0x124, 0)
+	r.Read(tmp)
+	dictLen := bytesToInt(tmp)
+
 	// 拼音表偏移量
 	r.Seek(0x1540, 0)
 
 	// 前两个字节是拼音表长度，413
-	tmp := make([]byte, 2)
+	tmp = make([]byte, 2)
 	r.Read(tmp)
 	pyTableLen := bytesToInt(tmp)
 	pyTable := make([]string, pyTableLen)
@@ -49,7 +55,7 @@ func ParseSougouScel(rd io.Reader) []Pinyin {
 	}
 
 	// 读码表
-	for r.Len() > 1 {
+	for count := 0; count < dictLen; {
 		// 重码数（同一串音对应多个词）
 		tmp := make([]byte, 2)
 		r.Read(tmp)
@@ -72,6 +78,7 @@ func ParseSougouScel(rd io.Reader) []Pinyin {
 		}
 
 		// 读取一个或多个词
+		count += repeat
 		for i := 1; i <= repeat; i++ {
 			// 词长
 			r.Read(tmp)
