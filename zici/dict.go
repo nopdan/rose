@@ -66,6 +66,7 @@ func ToCodeEntries(dict []ZcEntry) []CodeEntry {
 	for _, v := range dict {
 		if _, ok := codeMap[v.Code]; !ok {
 			codeMap[v.Code] = []string{v.Word}
+			continue
 		}
 		codeMap[v.Code] = append(codeMap[v.Code], v.Word)
 	}
