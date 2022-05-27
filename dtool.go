@@ -6,6 +6,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	. "github.com/cxcn/dtool/utils"
 )
 
 // 单字码表 char: []code

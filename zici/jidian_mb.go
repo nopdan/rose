@@ -5,17 +5,16 @@ import (
 	"io"
 	"io/ioutil"
 
-	"golang.org/x/text/encoding/unicode"
+	. "github.com/cxcn/dtool/utils"
 )
 
-func ParseJidianMb(rd io.Reader) Dict {
+func ParseJidianMb(rd io.Reader) []ZcEntry {
+	ret := make([]ZcEntry, 0, 1e5) // 初始化
+	data, _ := ioutil.ReadAll(rd)  // 全部读到内存
+	r := bytes.NewReader(data)
+	var tmp []byte
 
-	ret := make(Dict, 1e5)       // 初始化
-	tmp, _ := ioutil.ReadAll(rd) // 全部读到内存
-	r := bytes.NewReader(tmp)
 	r.Seek(0x1B620, 0) // 从 0x1B620 开始读
-	// utf-16le 转换
-	decoder := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
 	for r.Len() > 3 {
 		codeLen, _ := r.ReadByte()
 		if codeLen == 0xff {
@@ -23,15 +22,19 @@ func ParseJidianMb(rd io.Reader) Dict {
 			continue
 		}
 		wordLen, _ := r.ReadByte()
+		r.Seek(1, 1)
 
-		r.Seek(1, 1) // 丢掉一个字节
-		codeSli := make([]byte, codeLen)
-		r.Read(codeSli)
-		wordSli := make([]byte, wordLen)
-		r.Read(wordSli)
-		wordSli, _ = decoder.Bytes(wordSli)
-		ret.insert(string(codeSli), string(wordSli))
+		// 读编码
+		tmp = make([]byte, codeLen)
+		r.Read(tmp)
+		code := string(tmp)
+
+		// 读词
+		tmp = make([]byte, wordLen)
+		r.Read(tmp)
+		word := string(DecUtf16le(tmp))
+
+		ret = append(ret, ZcEntry{word, code})
 	}
-
 	return ret
 }

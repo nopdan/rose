@@ -9,6 +9,8 @@ import (
 	"os"
 	"sort"
 	"strings"
+
+	. "github.com/cxcn/dtool/utils"
 )
 
 // 词库 code: []word

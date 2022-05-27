@@ -7,26 +7,27 @@ import (
 	"strings"
 )
 
-func ParseJidian(rd io.Reader) Dict {
-	ret := make(Dict, 1e5)
+func ParseJidian(rd io.Reader) []ZcEntry {
+	ret := make([]ZcEntry, 0, 1e5)
 	scan := bufio.NewScanner(rd)
 	for scan.Scan() {
 		entry := strings.Split(scan.Text(), "\t")
 		if len(entry) < 2 {
 			continue
 		}
-		code, words := entry[0], strings.Split(entry[1], " ")
-		ret[code] = words
+		for i := 1; i < len(entry); i++ {
+			ret = append(ret, ZcEntry{entry[i], entry[0]})
+		}
 	}
 	return ret
 }
 
-func GenJidian(dl []codeAndWords) []byte {
+func GenJidian(dl []CodeEntry) []byte {
 	var buf bytes.Buffer
 	for _, v := range dl {
-		buf.WriteString(v.code)
+		buf.WriteString(v.Code)
 		buf.WriteByte('\t')
-		buf.WriteString(strings.Join(v.words, " "))
+		buf.WriteString(strings.Join(v.Words, " "))
 		buf.WriteByte('\r')
 		buf.WriteByte('\n')
 	}

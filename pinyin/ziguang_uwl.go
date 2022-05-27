@@ -5,7 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 
-	"golang.org/x/text/encoding/unicode"
+	. "github.com/cxcn/dtool/utils"
 )
 
 var uwlSm = []string{
@@ -20,13 +20,11 @@ var uwlYm = []string{
 	"ua", "uai", "uan", "uang", "ue", "ui", "un", "uo", "v",
 }
 
-func ParseZiguangUwl(rd io.Reader) []Pinyin {
-	ret := make([]Pinyin, 0, 1e5)
+func ParseZiguangUwl(rd io.Reader) []PyEntry {
+	ret := make([]PyEntry, 0, 1e5)
 	data, _ := ioutil.ReadAll(rd)
 	r := bytes.NewReader(data)
-
-	// utf-16le 转换器
-	decoder := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
+	var tmp []byte
 
 	r.Seek(0xC10, 0)
 	for r.Len() > 7 {
@@ -37,16 +35,16 @@ func ParseZiguangUwl(rd io.Reader) []Pinyin {
 		if space[0] == 0 && space[1] == 0 {
 			continue
 		}
-		if space[0]%2 == 0 || // 1字节是偶数
-			space[1]>>4%2 != 0 || // 2字节前4位是奇数
-			space[1]%0x10 == 0 { // 2字节后4位是0
-			r.Seek(14, 1)
-			continue
-		}
+		// if space[0]%2 == 0 || // 1字节是偶数
+		// 	space[1]>>4%2 != 0 || // 2字节前4位是奇数
+		// 	space[1]%0x10 == 0 { // 2字节后4位是0
+		// 	r.Seek(14, 1)
+		// 	continue
+		// }
 		r.Seek(-2, 1) // 回退2字节
 
 		// 读 16 字节
-		tmp := make([]byte, 16)
+		tmp = make([]byte, 16)
 		r.Read(tmp)
 		flag := true // 是否丢弃
 		for i := 0; i < 4; i++ {
@@ -66,16 +64,12 @@ func ParseZiguangUwl(rd io.Reader) []Pinyin {
 		head := make([]byte, 4)
 		r.Read(head)
 		// 词长 * 2
-		wordLen := head[0] - 1
+		wordLen := head[0]%0x80 - 1
 		// 拼音长
-		codeLen := head[1] % 0x10 * 2
-		if wordLen > 0x80 {
-			wordLen -= 0x80
-			codeLen++
-		}
+		codeLen := head[1]<<4>>4*2 + head[0]/0x80
 
 		// 频率
-		freq := bytesToInt(head[2:])
+		freq := BytesToInt(head[2:])
 		// fmt.Println(freqSli, freq)
 
 		// 拼音
@@ -94,13 +88,12 @@ func ParseZiguangUwl(rd io.Reader) []Pinyin {
 		}
 
 		// 词
-		wordSli := make([]byte, wordLen)
-		r.Read(wordSli)
-		word, _ := decoder.Bytes(wordSli)
+		tmp = make([]byte, wordLen)
+		r.Read(tmp)
+		word := string(DecUtf16le(tmp))
 		// fmt.Println(string(word))
 
-		ret = append(ret, Pinyin{string(word), code, freq})
-
+		ret = append(ret, PyEntry{word, code, freq})
 	}
 	return ret
 }

@@ -3,12 +3,13 @@ package zici
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"strings"
 )
 
-func ParseDuoduo(rd io.Reader) Dict {
-	ret := make(Dict, 1e5)
+func ParseDuoduo(rd io.Reader) []ZcEntry {
+	ret := make([]ZcEntry, 0, 1e5)
 	scan := bufio.NewScanner(rd)
 	for scan.Scan() {
 		entry := strings.Split(scan.Text(), "\t")
@@ -16,22 +17,22 @@ func ParseDuoduo(rd io.Reader) Dict {
 			continue
 		}
 		word, code := entry[0], entry[1]
-		if _, ok := ret[code]; !ok {
-			ret[code] = []string{word}
+		if strings.HasPrefix(word, "$ddcmd") {
+			fmt.Println(code)
 			continue
 		}
-		ret[code] = append(ret[code], word)
+		ret = append(ret, ZcEntry{word, code})
 	}
 	return ret
 }
 
-func GenDuoduo(dl []codeAndWords) []byte {
+func GenDuoduo(ce []CodeEntry) []byte {
 	var buf bytes.Buffer
-	for _, v := range dl {
-		for _, word := range v.words {
+	for _, v := range ce {
+		for _, word := range v.Words {
 			buf.WriteString(word)
 			buf.WriteByte('\t')
-			buf.WriteString(v.code)
+			buf.WriteString(v.Code)
 			buf.WriteByte('\r')
 			buf.WriteByte('\n')
 		}
