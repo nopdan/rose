@@ -26,16 +26,14 @@ func ParseDuoduo(rd io.Reader) []ZcEntry {
 	return ret
 }
 
-func GenDuoduo(ce []CodeEntry) []byte {
+func GenDuoduo(ce []ZcEntry) []byte {
 	var buf bytes.Buffer
 	for _, v := range ce {
-		for _, word := range v.Words {
-			buf.WriteString(word)
-			buf.WriteByte('\t')
-			buf.WriteString(v.Code)
-			buf.WriteByte('\r')
-			buf.WriteByte('\n')
-		}
+		buf.WriteString(v.Word)
+		buf.WriteByte('\t')
+		buf.WriteString(v.Code)
+		buf.WriteByte('\r')
+		buf.WriteByte('\n')
 	}
 	return buf.Bytes()
 }

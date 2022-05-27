@@ -8,7 +8,7 @@ type entry struct {
 }
 
 // 传入词条，回调函数，是否保留某个词条
-func Filter(d []entry, f func(entry) bool) []entry {
+func EntryFilter(d []entry, f func(entry) bool) []entry {
 	ret := make([]entry, 0, len(d))
 	for _, e := range d {
 		if f(e) {

@@ -21,16 +21,14 @@ func ParseBingling(rd io.Reader) []ZcEntry {
 	return ret
 }
 
-func GenBingling(ce []CodeEntry) []byte {
+func GenBingling(zc []ZcEntry) []byte {
 	var buf bytes.Buffer
-	for _, v := range ce {
-		for _, word := range v.Words {
-			buf.WriteString(v.Code)
-			buf.WriteByte('\t')
-			buf.WriteString(word)
-			buf.WriteByte('\r')
-			buf.WriteByte('\n')
-		}
+	for _, v := range zc {
+		buf.WriteString(v.Code)
+		buf.WriteByte('\t')
+		buf.WriteString(v.Word)
+		buf.WriteByte('\r')
+		buf.WriteByte('\n')
 	}
 	return buf.Bytes()
 }

@@ -14,7 +14,7 @@ type ZcEntry struct {
 }
 
 // 解析词库，指定码表格式
-func Parse(format, filepath string) []ZcEntry {
+func Parse(format, filepath string) interface{} {
 	f, err := os.Open(filepath)
 	if err != nil {
 		panic("文件读取失败：" + filepath)
@@ -34,24 +34,24 @@ func Parse(format, filepath string) []ZcEntry {
 	case "jidian_mb":
 		return ParseJidianMb(f)
 	}
-	return []ZcEntry{}
+	panic("解析失败：" + filepath + format)
 }
 
 // 生成指定格式词库
-func Gen(format string, d []CodeEntry) []byte {
+func Gen(format string, d interface{}) []byte {
 	switch format {
 	case "duoduo":
-		return GenDuoduo(d)
+		return GenDuoduo(ToZcEntries(d))
 	case "bingling":
-		return GenBingling(d)
+		return GenBingling(ToZcEntries(d))
 	case "jidian":
-		return GenJidian(d)
+		return GenJidian(ToCodeEntries(d))
 	case "baidu_def":
-		return GenBaiduDef(d)
+		return GenBaiduDef(ToCodeEntries(d))
 	case "jidian_mb":
 		fmt.Println("不支持该格式的生成")
 	}
-	return []byte{}
+	panic("生成失败：" + format)
 }
 
 // 一码多词
@@ -60,10 +60,40 @@ type CodeEntry struct {
 	Words []string
 }
 
-// 转为 极点形式的码表，一码多词
-func ToCodeEntries(dict []ZcEntry) []CodeEntry {
+// 转为 多多形式，一码一词
+func ToZcEntries(dict interface{}) []ZcEntry {
+	var ce []CodeEntry
+	switch dict.(type) {
+	case []ZcEntry:
+		return dict.([]ZcEntry)
+	case []CodeEntry:
+		ce = dict.([]CodeEntry)
+	default:
+		return []ZcEntry{}
+	}
+	ret := make([]ZcEntry, len(ce)*3/2)
+	for _, v := range ce {
+		for _, word := range v.Words {
+			ret = append(ret, ZcEntry{word, v.Code})
+		}
+	}
+	return ret
+}
+
+// 转为 极点形式，一码多词
+func ToCodeEntries(dict interface{}) []CodeEntry {
+	var zc []ZcEntry
+	switch dict.(type) {
+	case []CodeEntry:
+		return dict.([]CodeEntry)
+	case []ZcEntry:
+		zc = dict.([]ZcEntry)
+	default:
+		return []CodeEntry{}
+	}
+
 	codeMap := make(map[string][]string)
-	for _, v := range dict {
+	for _, v := range zc {
 		if _, ok := codeMap[v.Code]; !ok {
 			codeMap[v.Code] = []string{v.Word}
 			continue
