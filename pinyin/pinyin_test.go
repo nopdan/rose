@@ -74,12 +74,12 @@ func TestUDL(t *testing.T) {
 func TestGenernal(t *testing.T) {
 	fp := "own/sys.uwl.txt"
 	f, _ := os.Open(fp)
-	data := ParseGeneral(f, NewGenRule('\t', '\'', 0b1101))
+	data := ParseGeneral(f, GenRule{'\t', '\'', "wcf"})
 	write(fp, data)
 }
 
 func write(filename string, data []PyEntry) {
-	rl := NewGenRule('\t', '\'', 0b1101)
+	rl := GenRule{'\t', '\'', "wcf"}
 	err := ioutil.WriteFile(fmt.Sprintf("%s.txt", filename), GenGenersal(data, rl), 0777)
 	if err != nil {
 		println(err)

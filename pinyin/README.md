@@ -13,12 +13,11 @@
 ```go
 // 通用规则
 type GenRule struct {
-    Sep       byte // 分隔符
-    PySep     byte // 拼音分隔符
-    WordFirst bool // 词在前
-    HasPy     bool // 有无拼音
-    PrePySep  bool // 拼音开头有无分隔符
-    HasFreq   bool // 有无词频
+    Sep   byte // 分隔符
+    PySep byte // 拼音分隔符
+
+    // w 词，c 无前缀拼音，p 有前缀拼音，f 词频
+    Rule string
 }
 ```
 
