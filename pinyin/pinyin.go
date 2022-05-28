@@ -28,6 +28,8 @@ func Parse(format, filepath string) []PyEntry {
 		return ParseZiguangUwl(f)
 	case "qq_qpyd":
 		return ParseQqQpyd(f)
+	case "mspy_dat":
+		return ParseMspyDat(f)
 	}
 	return []PyEntry{}
 }

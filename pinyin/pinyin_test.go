@@ -51,6 +51,11 @@ func TestOwn(t *testing.T) {
 	data = Parse(format, fp)
 	write(fp, data)
 
+	format = "mspy_dat"
+	fp = "own/SuperRime拓展词库 for Win10拼音版(600万词-含BetterRime)-v20.3.dat"
+	data = Parse(format, fp)
+	write(fp, data)
+
 }
 
 func write(filename string, data []PyEntry) {

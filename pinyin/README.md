@@ -18,3 +18,4 @@
 | qq_qpyd     | .qpyd        |      否      | qq6.0 以下词库               |
 | baidu_dict  | .bdict\|.bcd |      否      | 百度分类词库                 |
 | ziguang_uwl | .uwl         |      否      | 紫光                         |
+| mspy_dat    | .dat         |      否      | 微软拼音用户自定义短语       |
