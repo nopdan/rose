@@ -53,10 +53,15 @@ func TestOwn(t *testing.T) {
 	data = Parse(format, fp)
 	write(fp, data)
 
-	format = "mspy_dat"
-	fp = "own/SuperRime拓展词库 for Win10拼音版(600万词-含BetterRime)-v20.3.dat"
+	format = "sogou_scel"
+	fp = "own/成语俗语大全.qcel"
 	data = Parse(format, fp)
 	write(fp, data)
+
+	// format = "mspy_dat"
+	// fp = "own/SuperRime拓展词库 for Win10拼音版(600万词-含BetterRime)-v20.3.dat"
+	// data = Parse(format, fp)
+	// write(fp, data)
 
 }
 
@@ -66,6 +71,17 @@ func TestUDL(t *testing.T) {
 	ioutil.WriteFile("own/ChsPinyinUDL.dat.txt", []byte(strings.Join(data, "\n")), 0777)
 }
 
+func TestGenernal(t *testing.T) {
+	fp := "own/sys.uwl.txt"
+	f, _ := os.Open(fp)
+	data := ParseGeneral(f, NewGenRule('\t', '\'', 0b1101))
+	write(fp, data)
+}
+
 func write(filename string, data []PyEntry) {
-	ioutil.WriteFile(fmt.Sprintf("%s.txt", filename), GenGenersal(data), 0777)
+	rl := NewGenRule('\t', '\'', 0b1101)
+	err := ioutil.WriteFile(fmt.Sprintf("%s.txt", filename), GenGenersal(data, rl), 0777)
+	if err != nil {
+		println(err)
+	}
 }
