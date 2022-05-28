@@ -101,7 +101,7 @@ func rmDup(arr []string) []string {
 // 读取码表，flag: 字在后
 func (t Table) Read(s string, flag bool) {
 	f, err := os.Open(s)
-	rd, err := ReadFile(f)
+	rd, err := Decode(f)
 	if err != nil {
 		log.Fatal("读取码表失败")
 	}

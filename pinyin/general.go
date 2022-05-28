@@ -4,8 +4,11 @@ import (
 	"bufio"
 	"bytes"
 	"io"
+	"log"
 	"strconv"
 	"strings"
+
+	. "github.com/cxcn/dtool/utils"
 )
 
 // 通用规则
@@ -45,6 +48,10 @@ func GenGeneral(pe []PyEntry, rule GenRule) []byte {
 }
 
 func ParseGeneral(rd io.Reader, rule GenRule) []PyEntry {
+	rd, err := Decode(rd)
+	if err != nil {
+		log.Panic("编码格式未知")
+	}
 	ret := make([]PyEntry, 0, 0xff)
 	scan := bufio.NewScanner(rd)
 	for scan.Scan() {

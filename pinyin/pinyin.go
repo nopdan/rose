@@ -1,6 +1,7 @@
 package pinyin
 
 import (
+	"log"
 	"os"
 )
 
@@ -20,8 +21,9 @@ var (
 
 func Parse(format, filepath string) []PyEntry {
 	f, err := os.Open(filepath)
+	defer f.Close()
 	if err != nil {
-		panic(err)
+		log.Panic("文件读取错误：", err)
 	}
 	switch format {
 	case "baidu_bdict":
@@ -48,6 +50,8 @@ func Parse(format, filepath string) []PyEntry {
 		return ParseGeneral(f, google)
 	case "word_only":
 		return ParseGeneral(f, word_only)
+	default:
+		log.Panic("输入格式不支持：", format)
 	}
 	return []PyEntry{}
 }
@@ -64,6 +68,8 @@ func Gen(format string, pe []PyEntry) []byte {
 		return GenGeneral(pe, google)
 	case "word_only":
 		return GenGeneral(pe, word_only)
+	default:
+		log.Panic("输出格式不支持：", format)
 	}
 	return []byte{}
 }

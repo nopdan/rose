@@ -1,7 +1,7 @@
 package zici
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"sort"
 
@@ -16,25 +16,31 @@ type ZcEntry struct {
 // 解析词库，指定码表格式
 func Parse(format, filepath string) interface{} {
 	f, err := os.Open(filepath)
+	defer f.Close()
 	if err != nil {
-		panic("文件读取失败：" + filepath)
+		log.Panic("文件读取失败：" + filepath)
 	}
+
 	switch format {
 	case "duoduo":
-		rd, _ := ReadFile(f)
+		rd, _ := Decode(f)
 		return ParseDuoduo(rd)
 	case "bingling":
-		rd, _ := ReadFile(f)
+		rd, _ := Decode(f)
 		return ParseBingling(rd)
 	case "jidian":
-		rd, _ := ReadFile(f)
+		rd, _ := Decode(f)
 		return ParseJidian(rd)
 	case "baidu_def":
 		return ParseBaiduDef(f)
 	case "jidian_mb":
 		return ParseJidianMb(f)
+	case "fcitx4_mb":
+		return ParseFcitx4Mb(f)
+	default:
+		log.Panic("输入格式不支持：", format)
 	}
-	panic("解析失败：" + filepath + format)
+	return []ZcEntry{}
 }
 
 // 生成指定格式词库
@@ -48,10 +54,10 @@ func Gen(format string, d interface{}) []byte {
 		return GenJidian(ToCodeEntries(d))
 	case "baidu_def":
 		return GenBaiduDef(ToCodeEntries(d))
-	case "jidian_mb":
-		fmt.Println("不支持该格式的生成")
+	default:
+		log.Panic("输出格式不支持：", format)
 	}
-	panic("生成失败：" + format)
+	return []byte{}
 }
 
 // 一码多词
@@ -69,7 +75,7 @@ func ToZcEntries(dict interface{}) []ZcEntry {
 	case []CodeEntry:
 		ce = dict.([]CodeEntry)
 	default:
-		return []ZcEntry{}
+		log.Panic("内部码表格式错误：", dict)
 	}
 	ret := make([]ZcEntry, len(ce)*3/2)
 	for _, v := range ce {
@@ -89,7 +95,7 @@ func ToCodeEntries(dict interface{}) []CodeEntry {
 	case []ZcEntry:
 		zc = dict.([]ZcEntry)
 	default:
-		return []CodeEntry{}
+		log.Panic("内部码表格式错误：", dict)
 	}
 
 	codeMap := make(map[string][]string)

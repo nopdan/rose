@@ -11,7 +11,7 @@ import (
 )
 
 // 将 io流 转换为 utf-8
-func ReadFile(f io.Reader) (io.Reader, error) {
+func Decode(f io.Reader) (io.Reader, error) {
 
 	brd := bufio.NewReader(f)
 	buf, _ := brd.Peek(1024)

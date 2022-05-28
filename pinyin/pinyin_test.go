@@ -79,8 +79,7 @@ func TestGenernal(t *testing.T) {
 }
 
 func write(filename string, data []PyEntry) {
-	rl := GenRule{'\t', '\'', "wcf"}
-	err := ioutil.WriteFile(fmt.Sprintf("%s.txt", filename), GenGeneral(data, rl), 0777)
+	err := ioutil.WriteFile(fmt.Sprintf("%s.txt", filename), GenGeneral(data, baidu), 0777)
 	if err != nil {
 		println(err)
 	}

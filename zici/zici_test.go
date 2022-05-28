@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"os"
 	"testing"
 )
@@ -57,6 +58,6 @@ func TestTmpl(t *testing.T) {
 	tmpl, _ := template.New("gen").Parse("{{ range . }}{{ .Word }}\t{{ .Code }}\n{{ end }}")
 	err := tmpl.Execute(f, dict)
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 }
