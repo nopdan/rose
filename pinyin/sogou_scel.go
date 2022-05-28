@@ -96,6 +96,6 @@ func ParseSogouScel(rd io.Reader) []PyEntry {
 		black_list.WriteString(word)
 		black_list.WriteByte('\n')
 	}
-	ioutil.WriteFile("out/black_list.txt", black_list.Bytes(), 0777)
+	ioutil.WriteFile("black_list.txt", black_list.Bytes(), 0777)
 	return ret
 }

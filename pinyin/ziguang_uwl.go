@@ -24,53 +24,38 @@ func ParseZiguangUwl(rd io.Reader) []PyEntry {
 	ret := make([]PyEntry, 0, 1e5)
 	data, _ := ioutil.ReadAll(rd)
 	r := bytes.NewReader(data)
-	var tmp []byte
+	r.Seek(2, 0)
+	// 编码格式，08 为 GBK，09 为 UTF-16LE
+	encoding, _ := r.ReadByte()
 
-	r.Seek(0xC10, 0)
-	for r.Len() > 7 {
-		// 读2个字节
-		space := make([]byte, 2)
-		r.Read(space)
-		// 2字节都为空
-		if space[0] == 0 && space[1] == 0 {
-			continue
-		}
-		// if space[0]%2 == 0 || // 1字节是偶数
-		// 	space[1]>>4%2 != 0 || // 2字节前4位是奇数
-		// 	space[1]%0x10 == 0 { // 2字节后4位是0
-		// 	r.Seek(14, 1)
-		// 	continue
-		// }
-		r.Seek(-2, 1) // 回退2字节
+	// 分段
+	r.Seek(0x48, 0)
+	partLen := ReadInt(r, 4)
+	for i := 0; i < partLen; i++ {
+		r.Seek(0xC00+1024*int64(i), 0)
+		ret = parseZgUwlPart(r, ret, encoding)
+	}
 
-		// 读 16 字节
-		tmp = make([]byte, 16)
-		r.Read(tmp)
-		flag := true // 是否丢弃
-		for i := 0; i < 4; i++ {
-			// 后两个字节相差不超过1
-			if tmp[4*i+2]-tmp[4*i+3] < 2 {
-				continue
-			} else {
-				flag = false
-			}
-		}
-		if flag {
-			continue
-		}
-		r.Seek(-16, 1)
+	return ret
+}
 
-		// 正式读
+func parseZgUwlPart(r *bytes.Reader, ret []PyEntry, e byte) []PyEntry {
+	r.Seek(12, 1)
+	// 词条占用字节数
+	max := ReadInt(r, 4)
+	// 当前字节
+	curr := 0
+	for curr < max {
 		head := make([]byte, 4)
 		r.Read(head)
 		// 词长 * 2
 		wordLen := head[0]%0x80 - 1
 		// 拼音长
 		codeLen := head[1]<<4>>4*2 + head[0]/0x80
-
 		// 频率
 		freq := BytesToInt(head[2:])
 		// fmt.Println(freqSli, freq)
+		curr += int(4 + wordLen + codeLen*2)
 
 		// 拼音
 		code := make([]string, 0, codeLen)
@@ -88,11 +73,16 @@ func ParseZiguangUwl(rd io.Reader) []PyEntry {
 		}
 
 		// 词
-		tmp = make([]byte, wordLen)
+		tmp := make([]byte, wordLen)
 		r.Read(tmp)
-		word := string(DecUtf16le(tmp))
+		var word string
+		switch e {
+		case 0x08:
+			word = string(DecGBK(tmp))
+		case 0x09:
+			word = string(DecUtf16le(tmp))
+		}
 		// fmt.Println(string(word))
-
 		ret = append(ret, PyEntry{word, code, freq})
 	}
 	return ret

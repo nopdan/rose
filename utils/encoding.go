@@ -6,6 +6,7 @@ import (
 
 	"github.com/gogs/chardet"
 	"golang.org/x/net/html/charset"
+	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/encoding/unicode"
 )
 
@@ -37,5 +38,12 @@ func DecUtf16le(b []byte) []byte {
 func ToUtf16le(b []byte) []byte {
 	encoder := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder()
 	ret, _ := encoder.Bytes(b)
+	return ret
+}
+
+// GBK 转 utf-8
+func DecGBK(b []byte) []byte {
+	decoder := simplifiedchinese.GBK.NewDecoder()
+	ret, _ := decoder.Bytes(b)
 	return ret
 }
