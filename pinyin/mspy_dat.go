@@ -10,7 +10,7 @@ import (
 
 func ParseMspyDat(rd io.Reader) []PyEntry {
 
-	ret := make([]PyEntry, 0, 1e5)
+	ret := make([]PyEntry, 0, 0xff)
 	data, _ := ioutil.ReadAll(rd)
 	r := bytes.NewReader(data)
 	var tmp []byte

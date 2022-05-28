@@ -21,7 +21,7 @@ var uwlYm = []string{
 }
 
 func ParseZiguangUwl(rd io.Reader) []PyEntry {
-	ret := make([]PyEntry, 0, 1e5)
+	ret := make([]PyEntry, 0, 0xff)
 	data, _ := ioutil.ReadAll(rd)
 	r := bytes.NewReader(data)
 	r.Seek(2, 0)

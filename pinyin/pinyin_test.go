@@ -3,6 +3,8 @@ package pinyin
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
+	"strings"
 	"testing"
 )
 
@@ -56,6 +58,12 @@ func TestOwn(t *testing.T) {
 	data = Parse(format, fp)
 	write(fp, data)
 
+}
+
+func TestUDL(t *testing.T) {
+	f, _ := os.Open("own/ChsPinyinUDL.dat")
+	data := ParseMspyUDL(f)
+	ioutil.WriteFile("own/ChsPinyinUDL.dat.txt", []byte(strings.Join(data, "\n")), 0777)
 }
 
 func write(filename string, data []PyEntry) {

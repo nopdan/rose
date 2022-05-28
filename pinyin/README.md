@@ -19,3 +19,4 @@
 | baidu_dict  | .bdict\|.bcd |      否      | 百度分类词库                 |
 | ziguang_uwl | .uwl         |      否      | 紫光                         |
 | mspy_dat    | .dat         |      否      | 微软拼音用户自定义短语       |
+| mspy_udl    | .dat         |      否      | 微软拼音自学习词汇           |
