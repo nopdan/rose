@@ -17,7 +17,7 @@ type GenRule struct {
 	Rule string
 }
 
-func GenGenersal(pe []PyEntry, rule GenRule) []byte {
+func GenGeneral(pe []PyEntry, rule GenRule) []byte {
 	var buf bytes.Buffer
 
 	for _, v := range pe {

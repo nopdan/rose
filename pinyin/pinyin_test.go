@@ -80,8 +80,19 @@ func TestGenernal(t *testing.T) {
 
 func write(filename string, data []PyEntry) {
 	rl := GenRule{'\t', '\'', "wcf"}
-	err := ioutil.WriteFile(fmt.Sprintf("%s.txt", filename), GenGenersal(data, rl), 0777)
+	err := ioutil.WriteFile(fmt.Sprintf("%s.txt", filename), GenGeneral(data, rl), 0777)
 	if err != nil {
 		println(err)
 	}
+}
+
+func TestGen(t *testing.T) {
+	format := "ziguang_uwl"
+	fp := "own/sys.uwl"
+	data := Parse(format, fp)
+	ioutil.WriteFile("own/sys_sogou.txt", Gen("sogou", data), 0777)
+	ioutil.WriteFile("own/sys_baidu.txt", Gen("baidu", data), 0777)
+	ioutil.WriteFile("own/sys_google.txt", Gen("google", data), 0777)
+	ioutil.WriteFile("own/sys_qq.txt", Gen("qq", data), 0777)
+	ioutil.WriteFile("own/sys_word_only.txt", Gen("word_only", data), 0777)
 }
