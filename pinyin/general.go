@@ -42,7 +42,7 @@ func GenGeneral(pe []PyEntry, rule GenRule) []byte {
 				buf.WriteString(codes)
 			}
 		}
-		buf.WriteString("\r\n")
+		buf.WriteString(LineBreak)
 	}
 	return buf.Bytes()
 }
