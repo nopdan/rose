@@ -18,3 +18,5 @@
 */black_list.txt
 test.go
 test.txt
+
+.vscode*

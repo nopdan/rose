@@ -174,7 +174,7 @@ func decryptWordsEx(r *bytes.Reader, offset, p1, p2, p3 int) string {
 		if dch > 0x10000 {
 			print(dch)
 		}
-		decWords = append(decWords, byte(dch%0x100), byte(dch/0x100))
+		decWords = append(decWords, byte(dch%0x100), byte(dch>>8))
 	}
 	ret := string(DecUtf16le(decWords))
 	return ret

@@ -75,7 +75,7 @@ func ParseBaiduBdict(rd io.Reader) []PyEntry {
 			codes = append(codes, bdictSm[smIdx]+bdictYm[ymIdx])
 		}
 		// 读词
-		tmp = make([]byte, 2*codeLen)
+		tmp = make([]byte, codeLen*2)
 		r.Read(tmp)
 		word := string(DecUtf16le(tmp))
 		ret = append(ret, PyEntry{word, codes, freq})

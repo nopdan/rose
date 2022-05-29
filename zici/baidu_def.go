@@ -2,6 +2,7 @@ package zici
 
 import (
 	"bytes"
+	"encoding/binary"
 	"io"
 	"io/ioutil"
 	"strconv"
@@ -90,8 +91,8 @@ func GenBaiduDef(ce []CodeEntry) []byte {
 	for i := 0; i <= 26; i++ {
 		currNum += lengthMap[byte(i+0x60)]
 		// 不知道怎么来的，反正就这样算
-		currBytes := []byte{byte(currNum % 0x100), byte((currNum / 0x100) % 0x100),
-			byte((currNum / 0x10000) % 0x100), byte((currNum / 0x1000000) % 0x100)}
+		currBytes := make([]byte, 4)
+		binary.LittleEndian.PutUint32(currBytes, uint32(currNum))
 		byteList = append(byteList, currBytes...)
 	}
 	// 替换文件头

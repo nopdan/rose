@@ -32,7 +32,7 @@ func ParseZiguangUwl(rd io.Reader) []PyEntry {
 	r.Seek(0x48, 0)
 	partLen := ReadInt(r, 4)
 	for i := 0; i < partLen; i++ {
-		r.Seek(0xC00+1024*int64(i), 0)
+		r.Seek(0xC00+int64(i)<<10, 0)
 		ret = parseZgUwlPart(r, ret, encoding)
 	}
 

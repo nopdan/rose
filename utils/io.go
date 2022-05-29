@@ -7,10 +7,8 @@ import (
 // 字节（小端）转为整数
 func BytesToInt(b []byte) int {
 	var ret int
-	pow := 1
-	for _, v := range b {
-		ret += int(v) * pow
-		pow *= 0x100
+	for i, v := range b {
+		ret |= int(v) << (i << 3)
 	}
 	return ret
 }

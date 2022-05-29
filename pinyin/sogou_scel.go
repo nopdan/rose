@@ -53,7 +53,7 @@ func ParseSogouScel(rd io.Reader) []PyEntry {
 
 		// 读取编码
 		var code []string
-		for i := 0; 2*i < codeLen; i++ {
+		for i := 0; i < codeLen/2; i++ {
 			theIdx := ReadInt(r, 2)
 			if theIdx >= pyTableLen {
 				code = append(code, string(byte(theIdx-pyTableLen+97)))
