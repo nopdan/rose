@@ -3,8 +3,6 @@ package pinyin
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
-	"strings"
 	"testing"
 )
 
@@ -47,40 +45,48 @@ func Test(t *testing.T) {
 
 }
 
-func TestOwn(t *testing.T) {
+// 拼音加加测试
+func TestPyjj(t *testing.T) {
+	format := "pyjj"
+	fp := "own/拼音加加-305万大词库.txt"
+	data := Parse(format, fp)
+	write(fp, data)
+}
 
+func TestZgUwl(t *testing.T) {
 	format := "ziguang_uwl"
 	fp := "own/sys.uwl"
 	data := Parse(format, fp)
-	write("own/"+"sys.uwl", data)
+	write(fp, data)
 
-	format = "ziguang_uwl"
 	fp = "own/大词库第六版.uwl"
 	data = Parse(format, fp)
 	write(fp, data)
+}
 
-	format = "sogou_scel"
-	fp = "own/成语俗语大全.qcel"
-	data = Parse(format, fp)
+func TestSgScel(t *testing.T) {
+	format := "sogou_scel"
+	fp := "own/成语俗语大全.qcel"
+	data := Parse(format, fp)
+	write(fp, data)
+}
+
+func TestSogouBin(t *testing.T) {
+	format := "sogou_bin"
+	fp := "own/搜狗词库备份_2021_05_10.bin"
+	data := Parse(format, fp)
+	b := GenGeneral(data, GenRule{'\t', ' ', "wf"})
+	ioutil.WriteFile("own/搜狗词库备份_2021_05_10.bin.txt", b, 0777)
+}
+
+func TestMsUDL(t *testing.T) {
+	format := "mspy_dat"
+	fp := "own/ChsPinyinUDL.dat"
+	data := Parse(format, fp)
 	write(fp, data)
 
-	// format = "mspy_dat"
-	// fp = "own/SuperRime拓展词库 for Win10拼音版(600万词-含BetterRime)-v20.3.dat"
-	// data = Parse(format, fp)
-	// write(fp, data)
-
-}
-
-func TestUDL(t *testing.T) {
-	f, _ := os.Open("own/ChsPinyinUDL.dat")
-	data := ParseMspyUDL(f)
-	ioutil.WriteFile("own/ChsPinyinUDL.dat.txt", []byte(strings.Join(data, "\n")), 0777)
-}
-
-func TestGenernal(t *testing.T) {
-	fp := "own/sys.uwl.txt"
-	f, _ := os.Open(fp)
-	data := ParseGeneral(f, GenRule{'\t', '\'', "wcf"})
+	fp = "own/SuperRime拓展词库 for Win10拼音版(600万词-含BetterRime)-v20.3.dat"
+	data = Parse(format, fp)
 	write(fp, data)
 }
 
@@ -95,17 +101,10 @@ func TestGen(t *testing.T) {
 	format := "ziguang_uwl"
 	fp := "own/sys.uwl"
 	data := Parse(format, fp)
+	ioutil.WriteFile("own/sys_pyjj.txt", GenPyJiaJia(data), 0777)
 	ioutil.WriteFile("own/sys_sogou.txt", Gen("sogou", data), 0777)
 	ioutil.WriteFile("own/sys_baidu.txt", Gen("baidu", data), 0777)
 	ioutil.WriteFile("own/sys_google.txt", Gen("google", data), 0777)
 	ioutil.WriteFile("own/sys_qq.txt", Gen("qq", data), 0777)
 	ioutil.WriteFile("own/sys_word_only.txt", Gen("word_only", data), 0777)
-}
-
-func TestSogouBin(t *testing.T) {
-	fp := "own/搜狗词库备份_2021_05_10.bin"
-	f, _ := os.Open(fp)
-	data := ParseSogouBin(f)
-	b := GenGeneral(data, GenRule{'\t', ' ', "wf"})
-	ioutil.WriteFile("own/搜狗词库备份_2021_05_10.bin.txt", b, 0777)
 }

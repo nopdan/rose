@@ -3,6 +3,8 @@ package pinyin
 import (
 	"log"
 	"os"
+
+	. "github.com/cxcn/dtool/utils"
 )
 
 type PyEntry struct {
@@ -42,6 +44,9 @@ func Parse(format, filepath string) []PyEntry {
 		return ParseMspyDat(f)
 	case "sogou_bin":
 		return ParseSogouBin(f)
+	case "pyjj":
+		rd, _ := DecodeIO(f)
+		return ParsePyJiaJia(rd)
 	case "sogou":
 		return ParseGeneral(f, sogou)
 	case "qq":
@@ -60,6 +65,8 @@ func Parse(format, filepath string) []PyEntry {
 
 func Gen(format string, pe []PyEntry) []byte {
 	switch format {
+	case "pyjj":
+		return GenPyJiaJia(pe)
 	case "sogou":
 		return GenGeneral(pe, sogou)
 	case "qq":
