@@ -40,6 +40,8 @@ func Parse(format, filepath string) []PyEntry {
 		return ParseQqQpyd(f)
 	case "mspy_dat":
 		return ParseMspyDat(f)
+	case "sogou_bin":
+		return ParseSogouBin(f)
 	case "sogou":
 		return ParseGeneral(f, sogou)
 	case "qq":

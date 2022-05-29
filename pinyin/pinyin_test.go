@@ -39,6 +39,12 @@ func Test(t *testing.T) {
 	format = "qq_qpyd"
 	data = Parse(format, "test/qq.qpyd")
 	write("out/"+format, data)
+
+	// 搜狗词库备份_2021_05_10.bin
+	format = "sogou_bin"
+	data = Parse(format, "test/sogou_bak.bin")
+	write("out/"+format, data)
+
 }
 
 func TestOwn(t *testing.T) {
@@ -94,4 +100,12 @@ func TestGen(t *testing.T) {
 	ioutil.WriteFile("own/sys_google.txt", Gen("google", data), 0777)
 	ioutil.WriteFile("own/sys_qq.txt", Gen("qq", data), 0777)
 	ioutil.WriteFile("own/sys_word_only.txt", Gen("word_only", data), 0777)
+}
+
+func TestSogouBin(t *testing.T) {
+	fp := "own/搜狗词库备份_2021_05_10.bin"
+	f, _ := os.Open(fp)
+	data := ParseSogouBin(f)
+	b := GenGeneral(data, GenRule{'\t', ' ', "wf"})
+	ioutil.WriteFile("own/搜狗词库备份_2021_05_10.bin.txt", b, 0777)
 }

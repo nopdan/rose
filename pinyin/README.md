@@ -30,6 +30,7 @@ type GenRule struct {
 | 代号        | 格式             | 是否支持输出 | 描述                         |
 | :---------- | :--------------- | :----------: | :--------------------------- |
 | sogou_scel  | `.scel`\|`.qcel` |      否      | 搜狗细胞词库、qq6.0 以上词库 |
+| sogou_bin   | `.bin`           |      否      | 搜狗拼音备份词库             |
 | qq_qpyd     | `.qpyd`          |      否      | qq6.0 以下词库               |
 | baidu_bdict | `.bdict`\|`.bcd` |      否      | 百度分类词库                 |
 | ziguang_uwl | `.uwl`           |      否      | 紫光                         |
