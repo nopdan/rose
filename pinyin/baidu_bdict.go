@@ -28,9 +28,9 @@ func ParseBaiduBdict(rd io.Reader) []PyEntry {
 	r.Seek(0x350, 0)
 	for r.Len() > 4 {
 		// 拼音长
-		codeLen := ReadInt(r, 2)
+		codeLen := ReadUint16(r)
 		// 词频
-		freq := ReadInt(r, 2)
+		freq := ReadUint16(r)
 
 		// 判断下两个字节
 		tmp = make([]byte, 2)
@@ -38,15 +38,15 @@ func ParseBaiduBdict(rd io.Reader) []PyEntry {
 
 		// 编码和词不等长，全按 utf-16le
 		if tmp[0] == 0 && tmp[1] == 0 {
-			wordLen := ReadInt(r, 2)
+			wordLen := ReadUint16(r)
 			// 读编码
 			tmp = make([]byte, codeLen*2)
 			r.Read(tmp)
-			code := string(DecUtf16le(tmp))
+			code, _ := Decode(tmp, "utf16")
 			// 读词
 			tmp = make([]byte, wordLen*2)
 			r.Read(tmp)
-			word := string(DecUtf16le(tmp))
+			word, _ := Decode(tmp, "utf16")
 
 			ret = append(ret, PyEntry{word, []string{code}, freq})
 			continue
@@ -77,7 +77,7 @@ func ParseBaiduBdict(rd io.Reader) []PyEntry {
 		// 读词
 		tmp = make([]byte, codeLen*2)
 		r.Read(tmp)
-		word := string(DecUtf16le(tmp))
+		word, _ := Decode(tmp, "utf16")
 		ret = append(ret, PyEntry{word, codes, freq})
 	}
 	return ret

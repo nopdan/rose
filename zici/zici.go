@@ -23,13 +23,13 @@ func Parse(format, filepath string) interface{} {
 
 	switch format {
 	case "duoduo":
-		rd, _ := Decode(f)
+		rd, _ := DecodeIO(f)
 		return ParseDuoduo(rd)
 	case "bingling":
-		rd, _ := Decode(f)
+		rd, _ := DecodeIO(f)
 		return ParseBingling(rd)
 	case "jidian":
-		rd, _ := Decode(f)
+		rd, _ := DecodeIO(f)
 		return ParseJidian(rd)
 	case "baidu_def":
 		return ParseBaiduDef(f)

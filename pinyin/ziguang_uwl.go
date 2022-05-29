@@ -30,7 +30,7 @@ func ParseZiguangUwl(rd io.Reader) []PyEntry {
 
 	// 分段
 	r.Seek(0x48, 0)
-	partLen := ReadInt(r, 4)
+	partLen := ReadUint32(r)
 	for i := 0; i < partLen; i++ {
 		r.Seek(0xC00+int64(i)<<10, 0)
 		ret = parseZgUwlPart(r, ret, encoding)
@@ -42,7 +42,7 @@ func ParseZiguangUwl(rd io.Reader) []PyEntry {
 func parseZgUwlPart(r *bytes.Reader, ret []PyEntry, e byte) []PyEntry {
 	r.Seek(12, 1)
 	// 词条占用字节数
-	max := ReadInt(r, 4)
+	max := ReadUint32(r)
 	// 当前字节
 	curr := 0
 	for curr < max {
@@ -78,9 +78,9 @@ func parseZgUwlPart(r *bytes.Reader, ret []PyEntry, e byte) []PyEntry {
 		var word string
 		switch e {
 		case 0x08:
-			word = string(DecGBK(tmp))
+			word, _ = Decode(tmp, "gbk")
 		case 0x09:
-			word = string(DecUtf16le(tmp))
+			word, _ = Decode(tmp, "utf16")
 		}
 		// fmt.Println(string(word))
 		ret = append(ret, PyEntry{word, code, freq})

@@ -34,9 +34,9 @@ type header struct {
 }
 
 func (h *header) parse(r *bytes.Reader) {
-	h.offset = ReadInt(r, 4)
-	h.dataSize = ReadInt(r, 4)
-	h.usedDataSize = ReadInt(r, 4)
+	h.offset = ReadUint32(r)
+	h.dataSize = ReadUint32(r)
+	h.usedDataSize = ReadUint32(r)
 }
 
 func ParseSogouBin(rd io.Reader) []PyEntry {
@@ -45,29 +45,29 @@ func ParseSogouBin(rd io.Reader) []PyEntry {
 	r := bytes.NewReader(data)
 	// var tmp []byte
 
-	// fileChksum := ReadInt(r, 4)
-	// size1 := ReadInt(r, 4)
+	// fileChksum := ReadUint32(r)
+	// size1 := ReadUint32(r)
 	r.Seek(8, 1)
-	keyLen := ReadInt(r, 4)
-	attrLen := ReadInt(r, 4)
-	aintLen := ReadInt(r, 4)
+	keyLen := ReadUint32(r)
+	attrLen := ReadUint32(r)
+	aintLen := ReadUint32(r)
 	// fmt.Println(fileChksum, size1, keyLen, attrLen, aintLen)
 
 	keys := make([]key, 0, 1)
 	for i := 0; i < keyLen; i++ {
 		var k key
-		k.dictType = ReadInt(r, 2)
-		k.dataTypeLen = ReadInt(r, 2)
+		k.dictType = ReadUint16(r)
+		k.dataTypeLen = ReadUint16(r)
 		k.dataType = make([]int, 0, 1)
 		for j := 0; j < k.dataTypeLen; j++ {
-			dataType := ReadInt(r, 2)
+			dataType := ReadUint16(r)
 			k.dataType = append(k.dataType, dataType)
 		}
 
-		k.attrIdx = ReadInt(r, 4)
-		k.keyDataIdx = ReadInt(r, 4)
-		k.dataIdx = ReadInt(r, 4)
-		k.v6 = ReadInt(r, 4)
+		k.attrIdx = ReadUint32(r)
+		k.keyDataIdx = ReadUint32(r)
+		k.dataIdx = ReadUint32(r)
+		k.v6 = ReadUint32(r)
 
 		keys = append(keys, k)
 	}
@@ -75,16 +75,16 @@ func ParseSogouBin(rd io.Reader) []PyEntry {
 	attrs := make([]attr, 0, 1)
 	for i := 0; i < attrLen; i++ {
 		var a attr
-		a.count = ReadInt(r, 4)
-		a.a2 = ReadInt(r, 4)
-		a.dataId = ReadInt(r, 4)
-		a.b2 = ReadInt(r, 4)
+		a.count = ReadUint32(r)
+		a.a2 = ReadUint32(r)
+		a.dataId = ReadUint32(r)
+		a.b2 = ReadUint32(r)
 		attrs = append(attrs, a)
 	}
 
 	aints := make([]int, 0, 1)
 	for i := 0; i < aintLen; i++ {
-		aint := ReadInt(r, 4)
+		aint := ReadUint32(r)
 		aints = append(aints, aint)
 	}
 
@@ -97,15 +97,15 @@ func ParseSogouBin(rd io.Reader) []PyEntry {
 	ud.attrs = attrs
 	ud.aints = aints
 
-	// b2Ver := ReadInt(r, 4)
-	// b2Format := ReadInt(r, 4)
-	// size2 := ReadInt(r, 4)
+	// b2Ver := ReadUint32(r)
+	// b2Format := ReadUint32(r)
+	// size2 := ReadUint32(r)
 	r.Seek(12, 1)
 	// fmt.Println(b2Ver, b2Format, size2)
 
-	hiLen := ReadInt(r, 4)
-	haLen := ReadInt(r, 4)
-	hsLen := ReadInt(r, 4)
+	hiLen := ReadUint32(r)
+	haLen := ReadUint32(r)
+	hsLen := ReadUint32(r)
 	// fmt.Println(hiLen, haLen, hsLen)
 
 	for i := 0; i < hiLen; i++ {
@@ -164,11 +164,11 @@ func decryptWordsEx(r *bytes.Reader, offset, p1, p2, p3 int) string {
 	k2 := (p1 + p3) << 2
 	xk := (k1 + k2) & 0xFFFF
 	r.Seek(int64(offset), 0)
-	n := ReadInt(r, 2) / 2
+	n := ReadUint16(r) / 2
 	decWords := make([]byte, 0, 1)
 	for i := 0; i < n; i++ {
 		shift := p2 % 8
-		ch := ReadInt(r, 2)
+		ch := ReadUint16(r)
 		dch := (ch<<(16-(shift%8)) | (ch >> shift)) & 0xFFFF
 		dch ^= xk
 		if dch > 0x10000 {
@@ -176,7 +176,7 @@ func decryptWordsEx(r *bytes.Reader, offset, p1, p2, p3 int) string {
 		}
 		decWords = append(decWords, byte(dch%0x100), byte(dch>>8))
 	}
-	ret := string(DecUtf16le(decWords))
+	ret, _ := Decode(decWords, "utf16")
 	return ret
 }
 
@@ -190,13 +190,13 @@ type attrWordData struct {
 }
 
 func (a *attrWordData) parse(r *bytes.Reader) {
-	a.offset = ReadInt(r, 4)
-	a.freq = ReadInt(r, 2)
-	a.aflag = ReadInt(r, 2)
-	a.i8 = ReadInt(r, 4)
-	a.p1 = ReadInt(r, 2)
-	a.iE = ReadInt(r, 4) // always zero
-	_ = ReadInt(r, 4)    // next offset
+	a.offset = ReadUint32(r)
+	a.freq = ReadUint16(r)
+	a.aflag = ReadUint16(r)
+	a.i8 = ReadUint32(r)
+	a.p1 = ReadUint16(r)
+	a.iE = ReadUint32(r) // always zero
+	_ = ReadUint32(r)    // next offset
 }
 
 type usrDict struct {
@@ -296,8 +296,8 @@ func (ud *usrDict) getData(r *bytes.Reader) []int {
 	preOffset := r.Size() - int64(r.Len())
 	for i := 0; i < hashStoreCount; i++ {
 		r.Seek(preOffset+int64(8*i), 0)
-		hashStoreOffset := ReadInt(r, 4)
-		hashStoreCount := ReadInt(r, 4)
+		hashStoreOffset := ReadUint32(r)
+		hashStoreCount := ReadUint32(r)
 
 		// fmt.Printf("hashstore [ offset: {%v}, count: {%v} ]\n", hashStoreOffset, hashStoreCount)
 		for j := 0; j < hashStoreCount; j++ {
@@ -305,7 +305,7 @@ func (ud *usrDict) getData(r *bytes.Reader) []int {
 			attrOffset := int(preOffset) + ud.headerIdxs[keyId].offset + hashStoreOffset + ud.dataTypeSize[keyId]*j
 			offset := attrOffset + ud.dataTypeSize[keyId] - 4
 			r.Seek(int64(offset), 0)
-			offset = ReadInt(r, 4)
+			offset = ReadUint32(r)
 			// fmt.Printf("\tattrOffset, %d %d\n", attrOffset, offset)
 			for k := 0; k < attrCount; k++ {
 
@@ -314,7 +314,7 @@ func (ud *usrDict) getData(r *bytes.Reader) []int {
 
 				offset = attr2Offset + ud.attrSize[theKey.attrIdx] - 4
 				r.Seek(int64(offset), 0)
-				offset = ReadInt(r, 4)
+				offset = ReadUint32(r)
 				// fmt.Printf("\tattr2Offset, %d ,newOffset, %d \n", attr2Offset, offset)
 				if offset == 0xFFFFFFFF {
 					break

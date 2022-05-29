@@ -43,7 +43,7 @@ func ParseBaiduDef(rd io.Reader) []ZcEntry {
 		// 读词
 		tmp = make([]byte, int(wordLen)-2) // -2 后就是字节长度，没有考虑4字节的情况
 		r.Read(tmp)
-		word := string(DecUtf16le(tmp))
+		word, _ := Decode(tmp, "utf16")
 		// def = append(def, defEntry{word, code, order})
 		ret = append(ret, ZcEntry{word, code})
 
@@ -71,7 +71,7 @@ func GenBaiduDef(ce []CodeEntry) []byte {
 			if i != 0 { // 不在首选的写入位置信息，好像没什么用？
 				code = v.Code + "=" + strconv.Itoa(i+1)
 			}
-			sliWord := ToUtf16le([]byte(word))    // 转为utf-16le
+			sliWord, _ := Encode(word, "utf16")   // 转为utf-16le
 			buf.WriteByte(byte(len(code)))        // 写编码长度
 			buf.WriteByte(byte(len(sliWord) + 2)) // 写词字节长+2
 			buf.WriteString(code)                 // 写编码

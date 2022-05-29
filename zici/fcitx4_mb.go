@@ -16,14 +16,14 @@ func ParseFcitx4Mb(rd io.Reader) []ZcEntry {
 
 	r.Seek(0x55, 0)
 	// 词条数
-	dictLen := ReadInt(r, 4)
+	dictLen := ReadUint32(r)
 
 	for i := 0; i < dictLen; i++ {
 		tmp = make([]byte, 5)
 		r.Read(tmp)
 		code := TrimSufZero(tmp)
 
-		wordLen := ReadInt(r, 4)
+		wordLen := ReadUint32(r)
 		tmp = make([]byte, wordLen-1)
 		r.Read(tmp)
 		word := string(tmp)

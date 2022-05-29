@@ -6,7 +6,6 @@ import (
 	"log"
 	"strings"
 
-	"fmt"
 	"io"
 	"io/ioutil"
 
@@ -21,15 +20,16 @@ func ParseQqQpyd(rd io.Reader) []PyEntry {
 
 	// 0x38 后跟的是压缩数据开始的偏移量
 	r.Seek(0x38, 0)
-	startZip := ReadInt(r, 4)
+	startZip := ReadUint32(r)
 	// 0x44 后4字节是词条数
 	r.Seek(0x44, 0)
-	dictLen := ReadInt(r, 4)
+	dictLen := ReadUint32(r)
 	// 0x60 到zip数据前的一段是一些描述信息
 	r.Seek(0x60, 0)
 	head := make([]byte, startZip-0x60)
 	r.Read(head)
-	fmt.Println(string(DecUtf16le(head))) // 打印描述信息
+	// headStr, _ := Decode(head, "utf16")
+	// fmt.Println(headStr) // 打印描述信息
 
 	// 解压数据
 	zrd, err := zlib.NewReader(r)
@@ -62,7 +62,7 @@ func ParseQqQpyd(rd io.Reader) []PyEntry {
 		// 读词
 		tmp = make([]byte, addr[1])
 		r.Read(tmp)
-		word := string(DecUtf16le(tmp))
+		word, _ := Decode(tmp, "utf16")
 
 		ret = append(ret, PyEntry{word, strings.Split(code, "'"), 1})
 	}

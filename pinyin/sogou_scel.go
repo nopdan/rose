@@ -16,13 +16,13 @@ func ParseSogouScel(rd io.Reader) []PyEntry {
 
 	// 不展开的词条数
 	r.Seek(0x120, 0)
-	dictLen := ReadInt(r, 4)
+	dictLen := ReadUint32(r)
 
 	// 拼音表偏移量
 	r.Seek(0x1540, 0)
 
 	// 前两个字节是拼音表长度，413
-	pyTableLen := ReadInt(r, 2)
+	pyTableLen := ReadUint16(r)
 	pyTable := make([]string, pyTableLen)
 	// fmt.Println("拼音表长度", pyTableLen)
 
@@ -32,13 +32,13 @@ func ParseSogouScel(rd io.Reader) []PyEntry {
 	// 读拼音表
 	for i := 0; i < pyTableLen; i++ {
 		// 索引，2字节
-		idx := ReadInt(r, 2)
+		idx := ReadUint16(r)
 		// 拼音长度，2字节
-		pyLen := ReadInt(r, 2)
+		pyLen := ReadUint16(r)
 		// 拼音 utf-16le
 		tmp = make([]byte, pyLen)
 		r.Read(tmp)
-		py := DecUtf16le(tmp)
+		py, _ := Decode(tmp, "utf16")
 		//
 		pyTable[idx] = string(py)
 	}
@@ -46,15 +46,15 @@ func ParseSogouScel(rd io.Reader) []PyEntry {
 	// 读码表
 	for j := 0; j < dictLen; j++ {
 		// 重码数（同一串音对应多个词）
-		repeat := ReadInt(r, 2)
+		repeat := ReadUint16(r)
 
 		// 索引数组长
-		codeLen := ReadInt(r, 2)
+		codeLen := ReadUint16(r)
 
 		// 读取编码
 		var code []string
 		for i := 0; i < codeLen/2; i++ {
-			theIdx := ReadInt(r, 2)
+			theIdx := ReadUint16(r)
 			if theIdx >= pyTableLen {
 				code = append(code, string(byte(theIdx-pyTableLen+97)))
 				continue
@@ -65,15 +65,15 @@ func ParseSogouScel(rd io.Reader) []PyEntry {
 		// 读取一个或多个词
 		for i := 1; i <= repeat; i++ {
 			// 词长
-			wordLen := ReadInt(r, 2)
+			wordLen := ReadUint16(r)
 
 			// 读取词
 			tmp = make([]byte, wordLen)
 			r.Read(tmp)
-			word := string(DecUtf16le(tmp))
+			word, _ := Decode(tmp, "utf16")
 
 			// 末尾的补充信息，作用未知
-			extLen := ReadInt(r, 2)
+			extLen := ReadUint16(r)
 			ext := make([]byte, extLen)
 			r.Read(ext)
 
@@ -86,13 +86,13 @@ func ParseSogouScel(rd io.Reader) []PyEntry {
 
 	// 黑名单
 	r.Seek(12, 1)
-	blackLen := ReadInt(r, 2)
+	blackLen := ReadUint16(r)
 	var black_list bytes.Buffer
 	for i := 0; i < blackLen; i++ {
-		wordLen := ReadInt(r, 2)
+		wordLen := ReadUint16(r)
 		tmp = make([]byte, wordLen*2)
 		r.Read(tmp)
-		word := string(DecUtf16le(tmp))
+		word, _ := Decode(tmp, "utf16")
 		black_list.WriteString(word)
 		black_list.WriteByte('\n')
 	}

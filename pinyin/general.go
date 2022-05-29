@@ -48,7 +48,7 @@ func GenGeneral(pe []PyEntry, rule GenRule) []byte {
 }
 
 func ParseGeneral(rd io.Reader, rule GenRule) []PyEntry {
-	rd, err := Decode(rd)
+	rd, err := DecodeIO(rd)
 	if err != nil {
 		log.Panic("编码格式未知")
 	}

@@ -32,7 +32,7 @@ func ParseJidianMb(rd io.Reader) []ZcEntry {
 		// 读词
 		tmp = make([]byte, wordLen)
 		r.Read(tmp)
-		word := string(DecUtf16le(tmp))
+		word, _ := Decode(tmp, "utf16")
 
 		ret = append(ret, ZcEntry{word, code})
 	}

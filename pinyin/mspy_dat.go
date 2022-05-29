@@ -17,12 +17,12 @@ func ParseMspyDat(rd io.Reader) []PyEntry {
 
 	// 词库偏移量
 	r.Seek(0x14, 0)
-	phrase_start := ReadInt(r, 4)
+	phrase_start := ReadUint32(r)
 	// fmt.Printf("%x", phrase_start)
 	// phrase_end
-	ReadInt(r, 4)
+	ReadUint32(r)
 	// 词条数
-	phrase_count := ReadInt(r, 4)
+	phrase_count := ReadUint32(r)
 
 	r.Seek(int64(phrase_start), 0)
 	for i := 0; i < phrase_count; i++ {
@@ -39,6 +39,7 @@ func ParseMspyDat(rd io.Reader) []PyEntry {
 			}
 			codeSli = append(codeSli, tmp...)
 		}
+		code, _ := Decode(codeSli, "utf16")
 
 		wordSli := make([]byte, 0, 2)
 		for {
@@ -48,8 +49,9 @@ func ParseMspyDat(rd io.Reader) []PyEntry {
 			}
 			wordSli = append(wordSli, tmp...)
 		}
+		word, _ := Decode(wordSli, "utf16")
 
-		ret = append(ret, PyEntry{string(DecUtf16le(wordSli)), []string{string(DecUtf16le(codeSli))}, 1})
+		ret = append(ret, PyEntry{word, []string{code}, 1})
 	}
 	return ret
 }

@@ -13,7 +13,7 @@ func ParseMspyUDL(rd io.Reader) []string {
 	data, _ := ioutil.ReadAll(rd)
 	r := bytes.NewReader(data)
 	r.Seek(0xC, 0)
-	dictLen := ReadInt(r, 4)
+	dictLen := ReadUint32(r)
 
 	for i := 0; i < dictLen; i++ {
 		r.Seek(0x2400+60*int64(i), 0)
@@ -22,8 +22,8 @@ func ParseMspyUDL(rd io.Reader) []string {
 		r.ReadByte()
 		wordSli := make([]byte, wordLen*2)
 		r.Read(wordSli)
-		ret = append(ret, string(DecUtf16le(wordSli)))
+		word, _ := Decode(wordSli, "utf16")
+		ret = append(ret, word)
 	}
-
 	return ret
 }
