@@ -47,6 +47,8 @@ func Parse(format, filepath string) []PyEntry {
 	case "pyjj":
 		rd, _ := DecodeIO(f)
 		return ParsePyJiaJia(rd)
+	case "word_only":
+		return ParseWordOnly(f)
 	case "sogou":
 		return ParseGeneral(f, sogou)
 	case "qq":
@@ -55,8 +57,6 @@ func Parse(format, filepath string) []PyEntry {
 		return ParseGeneral(f, baidu)
 	case "google":
 		return ParseGeneral(f, google)
-	case "word_only":
-		return ParseGeneral(f, word_only)
 	default:
 		log.Panic("输入格式不支持：", format)
 	}
@@ -67,6 +67,8 @@ func Gen(format string, pe []PyEntry) []byte {
 	switch format {
 	case "pyjj":
 		return GenPyJiaJia(pe)
+	case "word_only":
+		return GenWordOnly(pe)
 	case "sogou":
 		return GenGeneral(pe, sogou)
 	case "qq":
@@ -75,8 +77,6 @@ func Gen(format string, pe []PyEntry) []byte {
 		return GenGeneral(pe, baidu)
 	case "google":
 		return GenGeneral(pe, google)
-	case "word_only":
-		return GenGeneral(pe, word_only)
 	default:
 		log.Panic("输出格式不支持：", format)
 	}

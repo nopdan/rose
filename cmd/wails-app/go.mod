@@ -3,7 +3,7 @@ module github.com/cxcn/dtool/cmd/wails-app
 go 1.18
 
 require (
-	github.com/cxcn/dtool v0.0.0-20220529193630-9687d822940b
+	github.com/cxcn/dtool v0.0.0
 	github.com/wailsapp/wails/v2 v2.0.0-beta.37
 )
 

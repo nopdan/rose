@@ -20,6 +20,10 @@ function saveFile() {
 let srcFormat = ref("");
 const srcOpts = ref([
   {
+    label: "纯汉字",
+    value: "word_only",
+  },
+  {
     label: "搜狗细胞词库.scel",
     value: "sogou_scel",
   },
@@ -90,6 +94,10 @@ const targetOpts = ref([
   {
     label: "拼音加加.txt",
     value: "pyjj",
+  },
+  {
+    label: "纯汉字",
+    value: "word_only",
   },
 ]);
 </script>

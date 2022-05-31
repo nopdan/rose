@@ -57,17 +57,3 @@ func ConvZcDict(input, iformat, oformat string) []byte {
 	data := zici.Gen(oformat, pes)
 	return data
 }
-
-// 弹窗
-func (a *App) Success(b bool) {
-	opts := runtime.MessageDialogOptions{
-		Type:    "Ok",
-		Title:   "DTool",
-		Message: "转换成功！",
-		Buttons: []string{"确认"},
-	}
-	if !b {
-		opts.Message = "转换失败！"
-	}
-	runtime.MessageDialog(a.ctx, opts)
-}
