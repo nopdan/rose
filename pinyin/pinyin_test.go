@@ -55,7 +55,7 @@ func TestPyjj(t *testing.T) {
 
 func TestZgUwl(t *testing.T) {
 	format := "ziguang_uwl"
-	fp := "own/sys.uwl"
+	fp := "own/sys7.uwl"
 	data := Parse(format, fp)
 	write(fp, data)
 
@@ -75,8 +75,7 @@ func TestSogouBin(t *testing.T) {
 	format := "sogou_bin"
 	fp := "own/搜狗词库备份_2021_05_10.bin"
 	data := Parse(format, fp)
-	b := GenGeneral(data, GenRule{'\t', ' ', "wf"})
-	ioutil.WriteFile("own/搜狗词库备份_2021_05_10.bin.txt", b, 0777)
+	write(fp, data)
 }
 
 func TestMsUDL(t *testing.T) {

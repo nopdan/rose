@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 
+	encoder "github.com/cxcn/dtool/encoders"
 	. "github.com/cxcn/dtool/utils"
 )
 
@@ -153,8 +154,9 @@ func ParseSogouBin(rd io.Reader) []PyEntry {
 		// fmt.Printf("offset: %v\n", offset)
 		// DecryptWordsEx
 		word := decryptWordsEx(r, offset, wordInfo.p1, p2, p3)
-		ret = append(ret, PyEntry{word, []string{}, wordInfo.freq})
-		// fmt.Printf("word: %v\tfreq: %v\n", word, wordInfo.freq)
+		codes := encoder.GetPinyin(word)
+		ret = append(ret, PyEntry{word, codes, wordInfo.freq})
+		// fmt.Printf("word: %v\tcode: %v\tfreq: %v\n", word, codes, wordInfo.freq)
 	}
 	return ret
 }
