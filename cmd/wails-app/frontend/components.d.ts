@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     NTabs: typeof import('naive-ui')['NTabs']
     NText: typeof import('naive-ui')['NText']
     Pinyin: typeof import('./src/components/Pinyin.vue')['default']
+    Shorten: typeof import('./src/components/Shorten.vue')['default']
     Tool: typeof import('./src/components/Tool.vue')['default']
     Zici: typeof import('./src/components/Zici.vue')['default']
   }

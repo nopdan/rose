@@ -7,6 +7,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
 	"github.com/cxcn/dtool"
+	encoder "github.com/cxcn/dtool/encoders"
 )
 
 // 选择文件
@@ -55,4 +56,28 @@ func ConvZcDict(input, iformat, oformat string) []byte {
 	pes := dtool.ZiciParse(iformat, input)
 	data := dtool.ZiciGen(oformat, pes)
 	return data
+}
+
+func (a *App) Shorten(input, rule string) {
+	// 选择保存位置
+	opts := runtime.SaveDialogOptions{
+		DefaultDirectory: filepath.Dir(input),
+	}
+	ret, _ := runtime.SaveFileDialog(a.ctx, opts)
+
+	mdo := runtime.MessageDialogOptions{
+		Type:    "Ok",
+		Title:   "DTool",
+		Message: "保存成功！",
+		Buttons: []string{"确认"},
+	}
+	// 没有选
+	if ret == "" {
+		return
+	}
+	wct := dtool.ZiciParse("duoduo", input)
+	encoder.Shorten(&wct, rule)
+	data := dtool.ZiciGen("duoduo", wct)
+	ioutil.WriteFile(ret, data, 0777)
+	runtime.MessageDialog(a.ctx, mdo)
 }

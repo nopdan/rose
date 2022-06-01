@@ -30,9 +30,10 @@ func Shorten(wct *WcTable, rule string) {
 // [0,3,2,1,1,1e5]
 func handleRule(rule string) []int {
 	ret := make([]int, 0)
+	rule = strings.ReplaceAll(rule, " ", "")
+	rule = strings.ReplaceAll(rule, "，", ",")
 	r := strings.Split(rule, ",")
 	for _, v := range r {
-		v = strings.TrimSpace(v)
 		tmp := strings.Split(v, ":")
 		if len(tmp) != 2 {
 			continue

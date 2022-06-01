@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import Pinyin from "./components/Pinyin.vue";
 import Zici from "./components/Zici.vue";
+import Shorten from "./components/Shorten.vue";
 // import Tool from "./components/Tool.vue";
 </script>
 
@@ -21,9 +22,9 @@ import Zici from "./components/Zici.vue";
       <n-tab-pane name="zici" tab="字词码表转换"> 
         <Zici />
       </n-tab-pane>
-      <!--<n-tab-pane name="tool" tab="工具">
-        <Tool />
-      </n-tab-pane>-->
+      <n-tab-pane name="tool" tab="全码转简码">
+        <Shorten />
+      </n-tab-pane>
     </n-tabs>
   </div>
 </template>
