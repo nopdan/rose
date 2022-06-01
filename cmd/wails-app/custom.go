@@ -6,8 +6,7 @@ import (
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
-	"github.com/cxcn/dtool/pinyin"
-	"github.com/cxcn/dtool/zici"
+	"github.com/cxcn/dtool"
 )
 
 // 选择文件
@@ -46,14 +45,14 @@ func (a *App) ConvDict(input, iformat, oformat string, isPy bool) {
 
 // 转换拼音词库
 func ConvPyDict(input, iformat, oformat string) []byte {
-	pes := pinyin.Parse(iformat, input)
-	data := pinyin.Gen(oformat, pes)
+	pes := dtool.PinyinParse(iformat, input)
+	data := dtool.PinyinGen(oformat, pes)
 	return data
 }
 
 // 转换字词码表
 func ConvZcDict(input, iformat, oformat string) []byte {
-	pes := zici.Parse(iformat, input)
-	data := zici.Gen(oformat, pes)
+	pes := dtool.ZiciParse(iformat, input)
+	data := dtool.ZiciGen(oformat, pes)
 	return data
 }

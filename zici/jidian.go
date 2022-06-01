@@ -3,26 +3,38 @@ package zici
 import (
 	"bufio"
 	"bytes"
-	"io"
+	"log"
+	"os"
 	"strings"
+
+	. "github.com/cxcn/dtool/utils"
 )
 
-func ParseJidian(rd io.Reader) []CodeEntry {
-	ret := make([]CodeEntry, 0, 1e5)
+func ParseJidian(filename string) WcTable {
+	f, _ := os.Open(filename)
+	defer f.Close()
+	rd, err := DecodeIO(f)
+	if err != nil {
+		log.Panic("编码格式未知")
+	}
+	ret := make(WcTable, 0, 0xff)
 	scan := bufio.NewScanner(rd)
 	for scan.Scan() {
 		entry := strings.Split(scan.Text(), " ")
 		if len(entry) < 2 {
 			continue
 		}
-		ret = append(ret, CodeEntry{entry[0], entry[1:]})
+		for i := 1; i < len(entry); i++ {
+			ret = append(ret, WordCode{entry[i], entry[0]})
+		}
 	}
 	return ret
 }
 
-func GenJidian(ce []CodeEntry) []byte {
+func GenJidian(wct WcTable) []byte {
+	cwt := ToCwsTable(wct)
 	var buf bytes.Buffer
-	for _, v := range ce {
+	for _, v := range cwt {
 		buf.WriteString(v.Code)
 		buf.WriteByte('\t')
 		buf.WriteString(strings.Join(v.Words, " "))

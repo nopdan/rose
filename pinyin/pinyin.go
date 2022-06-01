@@ -1,84 +1,90 @@
 package pinyin
 
 import (
+	"bufio"
+	"bytes"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 
 	. "github.com/cxcn/dtool/utils"
 )
 
-type PyEntry struct {
-	Word  string
-	Codes []string
-	Freq  int
+// 通用规则
+type PinyinRule struct {
+	Sep   byte // 分隔符
+	PySep byte // 拼音分隔符
+
+	// w 词，c 无前缀拼音，p 有前缀拼音，f 词频
+	Rule string
 }
 
 var (
-	sogou     = GenRule{' ', '\'', "pw"}
-	qq        = GenRule{' ', '\'', "cwf"}
-	baidu     = GenRule{'\t', '\'', "wcf"}
-	google    = GenRule{'\t', ' ', "wfc"}
-	word_only = GenRule{' ', ' ', "w"}
+	R_sogou     = PinyinRule{' ', '\'', "pw"}
+	R_qq        = PinyinRule{' ', '\'', "cwf"}
+	R_baidu     = PinyinRule{'\t', '\'', "wcf"}
+	R_google    = PinyinRule{'\t', ' ', "wfc"}
+	R_word_only = PinyinRule{' ', ' ', "w"}
 )
 
-func Parse(format, filepath string) []PyEntry {
-	f, err := os.Open(filepath)
+// 拼音通用格式解析
+func ParsePinyin(filename string, rule PinyinRule) WpfDict {
+	f, _ := os.Open(filename)
 	defer f.Close()
+	rd, err := DecodeIO(f)
 	if err != nil {
-		log.Panic("文件读取错误：", err)
+		log.Panic("编码格式未知")
 	}
-	switch format {
-	case "baidu_bdict":
-		return ParseBaiduBdict(f)
-	case "baidu_bcd":
-		return ParseBaiduBdict(f)
-	case "sogou_scel":
-		return ParseSogouScel(f)
-	case "qq_qcel":
-		return ParseSogouScel(f)
-	case "ziguang_uwl":
-		return ParseZiguangUwl(f)
-	case "qq_qpyd":
-		return ParseQqQpyd(f)
-	case "mspy_dat":
-		return ParseMspyDat(f)
-	case "sogou_bin":
-		return ParseSogouBin(f)
-	case "pyjj":
-		rd, _ := DecodeIO(f)
-		return ParsePyJiaJia(rd)
-	case "word_only":
-		return ParseWordOnly(f)
-	case "sogou":
-		return ParseGeneral(f, sogou)
-	case "qq":
-		return ParseGeneral(f, qq)
-	case "baidu":
-		return ParseGeneral(f, baidu)
-	case "google":
-		return ParseGeneral(f, google)
-	default:
-		log.Panic("输入格式不支持：", format)
+	ret := make(WpfDict, 0, 0xff)
+	scan := bufio.NewScanner(rd)
+	for scan.Scan() {
+		e := strings.Split(scan.Text(), string(rule.Sep))
+		// TODO: 纯词生成拼音
+		if len(e) < 2 {
+			continue
+		}
+		var word string
+		pinyin := make([]string, 0, 1)
+		freq := 1
+		for i := 0; i < len(rule.Rule); i++ {
+			switch rule.Rule[i] {
+			case 'w':
+				word = e[i]
+			case 'f':
+				freq, _ = strconv.Atoi(e[i])
+			case 'c', 'p':
+				tmp := strings.TrimLeft(e[i], string(rule.PySep))
+				pinyin = strings.Split(tmp, string(rule.PySep))
+			}
+		}
+		ret = append(ret, WordPyFreq{word, pinyin, freq})
 	}
-	return []PyEntry{}
+	return ret
 }
 
-func Gen(format string, pe []PyEntry) []byte {
-	switch format {
-	case "pyjj":
-		return GenPyJiaJia(pe)
-	case "word_only":
-		return GenWordOnly(pe)
-	case "sogou":
-		return GenGeneral(pe, sogou)
-	case "qq":
-		return GenGeneral(pe, qq)
-	case "baidu":
-		return GenGeneral(pe, baidu)
-	case "google":
-		return GenGeneral(pe, google)
-	default:
-		log.Panic("输出格式不支持：", format)
+// 拼音通用格式生成
+func GenPinyin(dict WpfDict, rule PinyinRule) []byte {
+	var buf bytes.Buffer
+	for _, v := range dict {
+		for i := 0; i < len(rule.Rule); i++ {
+			if i != 0 {
+				buf.WriteByte(rule.Sep)
+			}
+			switch rule.Rule[i] {
+			case 'w':
+				buf.WriteString(v.Word)
+			case 'f':
+				buf.WriteString(strconv.Itoa(v.Freq))
+			case 'c', 'p':
+				if rule.Rule[i] == 'p' {
+					buf.WriteByte(rule.PySep)
+				}
+				pinyin := strings.Join(v.Pinyin, string(rule.PySep))
+				buf.WriteString(pinyin)
+			}
+		}
+		buf.WriteString(LineBreak)
 	}
-	return []byte{}
+	return buf.Bytes()
 }

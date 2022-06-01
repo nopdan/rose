@@ -3,7 +3,6 @@ package zici
 import (
 	"bytes"
 	"encoding/binary"
-	"io"
 	"io/ioutil"
 	"strconv"
 	"strings"
@@ -11,22 +10,16 @@ import (
 	. "github.com/cxcn/dtool/utils"
 )
 
-func ParseBaiduDef(rd io.Reader) []ZcEntry {
-	// type defEntry struct {
-	// 	word  string
-	// 	code  string
-	// 	order int
-	// }
-	// def := make([]defEntry, 0, 1e5) // 初始化
-	ret := make([]ZcEntry, 0, 1e5) // 初始化
-	data, _ := ioutil.ReadAll(rd)  // 全部读到内存
+func ParseBaiduDef(filename string) WcTable {
+	data, _ := ioutil.ReadFile(filename)
 	r := bytes.NewReader(data)
+	ret := make(WcTable, 0, r.Len()>>8)
 	var tmp []byte
 
 	r.Seek(0x6D, 0) // 从 0x6D 开始读
 	for r.Len() > 4 {
-		codeLen, _ := r.ReadByte() // 编码长度
-		wordLen, _ := r.ReadByte() // 词长*2 + 2
+		codeLen, _ := r.ReadByte()  // 编码长度
+		wordSize, _ := r.ReadByte() // 词长*2 + 2
 
 		// 读编码
 		tmp = make([]byte, int(codeLen))
@@ -34,37 +27,27 @@ func ParseBaiduDef(rd io.Reader) []ZcEntry {
 		code := string(tmp)
 		spl := strings.Split(code, "=") // 直接删掉 = 号后的
 		code = spl[0]
-		// 位置
-		// order := 1
-		// if len(cao) > 1 {
-		// 	order, _ = strconv.Atoi(cao[1])
-		// }
 
 		// 读词
-		tmp = make([]byte, int(wordLen)-2) // -2 后就是字节长度，没有考虑4字节的情况
+		tmp = make([]byte, int(wordSize)-2) // -2 后就是字节长度，没有考虑4字节的情况
 		r.Read(tmp)
 		word, _ := Decode(tmp, "utf16")
 		// def = append(def, defEntry{word, code, order})
-		ret = append(ret, ZcEntry{word, code})
+		ret = append(ret, WordCode{Word: word, Code: code})
 
 		r.Seek(6, 1) // 6个00，1是相对当前位置
 	}
-	// sort.Slice(def, func(i, j int) bool {
-	// 	return def[i].order < def[j].order
-	// })
-	// for _, v := range def {
-	// 	ret = append(ret, ZcEntry{v.word, v.code})
-	// }
 	return ret
 }
 
-func GenBaiduDef(ce []CodeEntry) []byte {
+func GenBaiduDef(wct WcTable) []byte {
+	cwt := ToCwsTable(wct)
 	var buf bytes.Buffer
 	// 首字母词条字节数统计
 	lengthMap := make(map[byte]int)
 	buf.Write(make([]byte, 0x6D, 0x6D))
 
-	for _, v := range ce {
+	for _, v := range cwt {
 		code := v.Code
 
 		for i, word := range v.Words {

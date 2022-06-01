@@ -2,16 +2,15 @@ package pinyin
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
 
 	. "github.com/cxcn/dtool/utils"
 )
 
-func ParseSogouScel(rd io.Reader) []PyEntry {
-	ret := make([]PyEntry, 0, 0xff)
-	data, _ := ioutil.ReadAll(rd)
+func ParseSogouScel(filename string) WpfDict {
+	data, _ := ioutil.ReadFile(filename)
 	r := bytes.NewReader(data)
+	ret := make(WpfDict, 0, r.Len()>>8)
 	var tmp []byte
 
 	// 不展开的词条数
@@ -49,35 +48,35 @@ func ParseSogouScel(rd io.Reader) []PyEntry {
 		repeat := ReadUint16(r)
 
 		// 索引数组长
-		codeLen := ReadUint16(r)
+		pinyinSize := ReadUint16(r)
 
 		// 读取编码
-		var code []string
-		for i := 0; i < codeLen/2; i++ {
+		var pinyin []string
+		for i := 0; i < pinyinSize/2; i++ {
 			theIdx := ReadUint16(r)
 			if theIdx >= pyTableLen {
-				code = append(code, string(byte(theIdx-pyTableLen+97)))
+				pinyin = append(pinyin, string(byte(theIdx-pyTableLen+97)))
 				continue
 			}
-			code = append(code, pyTable[theIdx])
+			pinyin = append(pinyin, pyTable[theIdx])
 		}
 
 		// 读取一个或多个词
 		for i := 1; i <= repeat; i++ {
 			// 词长
-			wordLen := ReadUint16(r)
+			wordSize := ReadUint16(r)
 
 			// 读取词
-			tmp = make([]byte, wordLen)
+			tmp = make([]byte, wordSize)
 			r.Read(tmp)
 			word, _ := Decode(tmp, "utf16")
 
 			// 末尾的补充信息，作用未知
-			extLen := ReadUint16(r)
-			ext := make([]byte, extLen)
+			extSize := ReadUint16(r)
+			ext := make([]byte, extSize)
 			r.Read(ext)
 
-			ret = append(ret, PyEntry{word, code, 1})
+			ret = append(ret, WordPyFreq{word, pinyin, 1})
 		}
 	}
 	if r.Len() < 16 {

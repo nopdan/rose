@@ -10,9 +10,9 @@ import (
 //go:embed assets/word_pinyin.txt
 var word_pinyin []byte
 
-var WordPyMap = genWordPyMap(word_pinyin)
+var WordPinyinMap = genWordPinyinMap(word_pinyin)
 
-func genWordPyMap(data []byte) map[string][]string {
+func genWordPinyinMap(data []byte) map[string][]string {
 	ret := make(map[string][]string)
 	rd := bytes.NewReader(data)
 	scan := bufio.NewScanner(rd)

@@ -16,6 +16,7 @@
 */out/
 */own/
 */black_list.txt
+*_out.txt
 test.go
 test.txt
 

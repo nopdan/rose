@@ -3,23 +3,22 @@ package encoder
 import (
 	"strconv"
 	"strings"
+
+	. "github.com/cxcn/dtool/utils"
 )
 
-type Table []*struct {
-	Word string
-	Code string
-}
-
 // rule 1:0,2:3,3:2,6:n 默认1，n 无限
-func (t Table) Shorten(rule string) {
+func Shorten(wct *WcTable, rule string) {
 	rl := handleRule(rule)
 	countMap := make(map[string]int)
-	for _, v := range t {
-		for i := 1; i <= len(v.Code); i++ {
-			curr := string(v.Code[:i])
+	for i := 0; i < len(*wct); i++ {
+		wc := (*wct)[i]
+		for j := 1; j <= len(wc.Code); j++ {
+			curr := string(wc.Code[:j])
 			count := countMap[curr]
-			if count < rl[i] {
-				v.Code = curr
+			if count < rl[j] {
+				wc.Code = curr
+				(*wct)[i] = wc
 				countMap[curr]++
 				break
 			}

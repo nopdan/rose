@@ -9,7 +9,7 @@ func GetPinyin(word string) []string {
 		// 匹配到词
 		flag := false
 		for j := len(chars); i+1 < j; j-- {
-			if pys, ok := WordPyMap[string(chars[i:j])]; ok {
+			if pys, ok := WordPinyinMap[string(chars[i:j])]; ok {
 				ret = append(ret, pys...)
 				i = j
 				flag = true
@@ -18,7 +18,7 @@ func GetPinyin(word string) []string {
 		if flag {
 			continue
 		}
-		if py, ok := CharPyMap[chars[i]]; ok {
+		if py, ok := CharYinjieMap[chars[i]]; ok {
 			ret = append(ret, py[0])
 		} else {
 			ret = append(ret, "")
@@ -33,7 +33,7 @@ func GetPyByChar(word string) []string {
 	chars := []rune(word)
 	ret := make([]string, 0, len(chars))
 	for _, char := range chars {
-		if py, ok := CharPyMap[char]; ok {
+		if py, ok := CharYinjieMap[char]; ok {
 			ret = append(ret, py[0])
 		} else {
 			ret = append(ret, "")

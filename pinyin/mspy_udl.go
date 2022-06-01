@@ -2,16 +2,17 @@ package pinyin
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
 
+	encoder "github.com/cxcn/dtool/encoders"
 	. "github.com/cxcn/dtool/utils"
 )
 
-func ParseMspyUDL(rd io.Reader) []string {
-	ret := make([]string, 0, 0xff)
-	data, _ := ioutil.ReadAll(rd)
+// 自学习词库，纯汉字
+func ParseMspyUDL(filename string) WpfDict {
+	data, _ := ioutil.ReadFile(filename)
 	r := bytes.NewReader(data)
+	ret := make(WpfDict, 0, r.Len()>>8)
 	r.Seek(0xC, 0)
 	dictLen := ReadUint32(r)
 
@@ -23,7 +24,7 @@ func ParseMspyUDL(rd io.Reader) []string {
 		wordSli := make([]byte, wordLen*2)
 		r.Read(wordSli)
 		word, _ := Decode(wordSli, "utf16")
-		ret = append(ret, word)
+		ret = append(ret, WordPyFreq{word, encoder.GetPinyin(word), 1})
 	}
 	return ret
 }

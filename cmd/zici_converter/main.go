@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/cxcn/dtool/zici"
+	"github.com/cxcn/dtool"
 	"github.com/jessevdk/go-flags"
 )
 
@@ -40,7 +40,7 @@ func cli() {
 		opts.Output = opts.Input + opts.OFormat + ".txt"
 	}
 
-	dict := zici.Parse(opts.IFormat, opts.Input)
-	data := zici.Gen(opts.OFormat, dict)
+	dict := dtool.ZiciParse(opts.IFormat, opts.Input)
+	data := dtool.ZiciGen(opts.OFormat, dict)
 	ioutil.WriteFile(opts.Output, data, 0777)
 }

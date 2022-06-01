@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/cxcn/dtool/pinyin"
+	"github.com/cxcn/dtool"
 	"github.com/jessevdk/go-flags"
 )
 
@@ -40,7 +40,7 @@ func cli() {
 		opts.Output = opts.Input + opts.OFormat + ".txt"
 	}
 
-	pes := pinyin.Parse(opts.IFormat, opts.Input)
-	data := pinyin.Gen(opts.OFormat, pes)
+	pes := dtool.PinyinParse(opts.IFormat, opts.Input)
+	data := dtool.PinyinGen(opts.OFormat, pes)
 	ioutil.WriteFile(opts.Output, data, 0777)
 }

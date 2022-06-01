@@ -2,7 +2,6 @@ package pinyin
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
 
 	. "github.com/cxcn/dtool/utils"
@@ -20,10 +19,10 @@ var uwlYm = []string{
 	"ua", "uai", "uan", "uang", "ue", "ui", "un", "uo", "v",
 }
 
-func ParseZiguangUwl(rd io.Reader) []PyEntry {
-	ret := make([]PyEntry, 0, 0xff)
-	data, _ := ioutil.ReadAll(rd)
+func ParseZiguangUwl(filename string) WpfDict {
+	data, _ := ioutil.ReadFile(filename)
 	r := bytes.NewReader(data)
+	ret := make(WpfDict, 0, r.Len()>>8)
 	r.Seek(2, 0)
 	// 编码格式，08 为 GBK，09 为 UTF-16LE
 	encoding, _ := r.ReadByte()
@@ -39,7 +38,7 @@ func ParseZiguangUwl(rd io.Reader) []PyEntry {
 	return ret
 }
 
-func parseZgUwlPart(r *bytes.Reader, ret []PyEntry, e byte) []PyEntry {
+func parseZgUwlPart(r *bytes.Reader, ret WpfDict, e byte) WpfDict {
 	r.Seek(12, 1)
 	// 词条占用字节数
 	max := ReadUint32(r)
@@ -83,7 +82,7 @@ func parseZgUwlPart(r *bytes.Reader, ret []PyEntry, e byte) []PyEntry {
 			word, _ = Decode(tmp, "utf16")
 		}
 		// fmt.Println(string(word))
-		ret = append(ret, PyEntry{word, code, freq})
+		ret = append(ret, WordPyFreq{word, code, freq})
 	}
 	return ret
 }

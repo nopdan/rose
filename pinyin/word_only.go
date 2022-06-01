@@ -3,29 +3,31 @@ package pinyin
 import (
 	"bufio"
 	"bytes"
-	"io"
 	"log"
+	"os"
 
 	encoder "github.com/cxcn/dtool/encoders"
 	. "github.com/cxcn/dtool/utils"
 )
 
-func ParseWordOnly(rd io.Reader) []PyEntry {
-	rd, err := DecodeIO(rd)
+func ParseWordOnly(filename string) WpfDict {
+	f, _ := os.Open(filename)
+	defer f.Close()
+	rd, err := DecodeIO(f)
 	if err != nil {
 		log.Panic("编码格式未知")
 	}
-	ret := make([]PyEntry, 0, 0xff)
+	ret := make(WpfDict, 0, 0xff)
 	scan := bufio.NewScanner(rd)
 	for scan.Scan() {
-		ret = append(ret, PyEntry{scan.Text(), encoder.GetPinyin(scan.Text()), 1})
+		ret = append(ret, WordPyFreq{scan.Text(), encoder.GetPinyin(scan.Text()), 1})
 	}
 	return ret
 }
 
-func GenWordOnly(pe []PyEntry) []byte {
+func GenWordOnly(dict WpfDict) []byte {
 	var buf bytes.Buffer
-	for _, v := range pe {
+	for _, v := range dict {
 		buf.WriteString(v.Word)
 		buf.WriteString(LineBreak)
 	}

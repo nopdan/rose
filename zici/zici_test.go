@@ -2,62 +2,31 @@ package zici
 
 import (
 	"fmt"
-	"html/template"
 	"io/ioutil"
-	"log"
-	"os"
 	"testing"
+
+	. "github.com/cxcn/dtool/utils"
 )
 
 func Test(t *testing.T) {
-
 	// 哲哲豆词库 1w 多条
-	format := "duoduo"
-	dict := Parse(format, "test/duoduo.txt")
-	write("out/"+format, dict)
+	filename := "test/duoduo.txt"
+	wct := ParseDuoduo(filename)
+	write_out(filename, wct)
 
 	// 091 点儿词库
-	format = "jidian_mb"
-	dict = Parse(format, "test/jidian.mb")
-	write("out/"+format, dict)
-
+	filename = "test/jidian.mb"
+	wct = ParseJidianMb(filename)
+	write_out(filename, wct)
 }
 
-func TestOwn(t *testing.T) {
-
+func TestBaiduDef(t *testing.T) {
 	// 哲哲豆词库
-	format := "baidu_def"
-	fp := "own/baidu.def"
-	dict := Parse(format, fp)
-	write(fp, dict)
-
+	filename := "own/baidu.def"
+	wct := ParseBaiduDef(filename)
+	write_out(filename, wct)
 }
 
-func write(filename string, dict interface{}) {
-	ioutil.WriteFile(fmt.Sprintf("%s.txt", filename), GenDuoduo(ToZcEntries(dict)), 0777)
-}
-
-// 用函数生成
-func TestGen(t *testing.T) {
-	// 091 点儿词库
-	format := "jidian_mb"
-	dict := Parse(format, "test/jidian.mb")
-
-	ioutil.WriteFile("out/gen.txt", GenDuoduo(ToZcEntries(dict)), 0777)
-}
-
-// 用模版生成
-func TestTmpl(t *testing.T) {
-	// 091 点儿词库
-	format := "jidian_mb"
-	dict := Parse(format, "test/jidian.mb")
-
-	f, _ := os.OpenFile("out/tmpl.txt", os.O_TRUNC|os.O_CREATE, 0777)
-	defer f.Close()
-
-	tmpl, _ := template.New("gen").Parse("{{ range . }}{{ .Word }}\t{{ .Code }}\n{{ end }}")
-	err := tmpl.Execute(f, dict)
-	if err != nil {
-		log.Panic(err)
-	}
+func write_out(filename string, wct WcTable) {
+	ioutil.WriteFile(fmt.Sprintf("%s_out.txt", filename), GenDuoduo(wct), 0777)
 }

@@ -7,28 +7,30 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	. "github.com/cxcn/dtool/utils"
 )
 
 func TestShorten(t *testing.T) {
 	f, _ := os.Open("own/星辰星笔全码.txt")
 	defer f.Close()
 
-	table := make(Table, 0, 0xff)
+	wct := make(WcTable, 0, 0xff)
 	scan := bufio.NewScanner(f)
 	for scan.Scan() {
 		entry := strings.Split(scan.Text(), "\t")
 		if len(entry) < 2 {
 			continue
 		}
-		table = append(table, &struct {
-			Word string
-			Code string
-		}{entry[0], entry[1]})
+		wct = append(wct, WordCode{
+			Word: entry[0],
+			Code: entry[1],
+		})
 	}
-	table.Shorten("1:3,2:2,4:n")
+	Shorten(&wct, "1:3,2:2,4:n")
 
 	var buf bytes.Buffer
-	for _, v := range table {
+	for _, v := range wct {
 		buf.WriteString(v.Word)
 		buf.WriteByte('\t')
 		buf.WriteString(v.Code)

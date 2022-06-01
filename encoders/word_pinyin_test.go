@@ -14,7 +14,7 @@ import (
 // 深蓝 WordPinyin.txt
 // 去除标点
 // 从原始词库生成 word_pinyin.txt
-func TestWordPy(t *testing.T) {
+func TestWordPinyin(t *testing.T) {
 	f, _ := os.Open("own/src_word_pinyin.txt")
 	defer f.Close()
 	scan := bufio.NewScanner(f)

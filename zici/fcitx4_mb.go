@@ -2,16 +2,15 @@ package zici
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
 
 	. "github.com/cxcn/dtool/utils"
 )
 
-func ParseFcitx4Mb(rd io.Reader) []ZcEntry {
-	ret := make([]ZcEntry, 1e5)   // 初始化
-	data, _ := ioutil.ReadAll(rd) // 全部读到内存
+func ParseFcitx4Mb(filename string) WcTable {
+	data, _ := ioutil.ReadFile(filename)
 	r := bytes.NewReader(data)
+	ret := make(WcTable, 0, r.Len()>>8)
 	var tmp []byte
 
 	r.Seek(0x55, 0)
@@ -21,20 +20,20 @@ func ParseFcitx4Mb(rd io.Reader) []ZcEntry {
 	for i := 0; i < dictLen; i++ {
 		tmp = make([]byte, 5)
 		r.Read(tmp)
-		code := TrimSufZero(tmp)
+		code := trimSufZero(tmp)
 
 		wordLen := ReadUint32(r)
 		tmp = make([]byte, wordLen-1)
 		r.Read(tmp)
 		word := string(tmp)
 
-		ret = append(ret, ZcEntry{word, code})
+		ret = append(ret, WordCode{word, code})
 		r.Seek(10, 1)
 	}
 	return ret
 }
 
-func TrimSufZero(b []byte) string {
+func trimSufZero(b []byte) string {
 	for i := len(b); i > 0; i-- {
 		if b[i] != 0 {
 			return string(b[:i])

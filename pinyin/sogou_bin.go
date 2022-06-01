@@ -2,7 +2,6 @@ package pinyin
 
 import (
 	"bytes"
-	"io"
 	"io/ioutil"
 
 	encoder "github.com/cxcn/dtool/encoders"
@@ -40,10 +39,10 @@ func (h *header) parse(r *bytes.Reader) {
 	h.usedDataSize = ReadUint32(r)
 }
 
-func ParseSogouBin(rd io.Reader) []PyEntry {
-	ret := make([]PyEntry, 0, 0xff)
-	data, _ := ioutil.ReadAll(rd)
+func ParseSogouBin(filename string) WpfDict {
+	data, _ := ioutil.ReadFile(filename)
 	r := bytes.NewReader(data)
+	ret := make(WpfDict, 0, r.Len()>>8)
 	// var tmp []byte
 
 	// fileChksum := ReadUint32(r)
@@ -154,8 +153,8 @@ func ParseSogouBin(rd io.Reader) []PyEntry {
 		// fmt.Printf("offset: %v\n", offset)
 		// DecryptWordsEx
 		word := decryptWordsEx(r, offset, wordInfo.p1, p2, p3)
-		codes := encoder.GetPinyin(word)
-		ret = append(ret, PyEntry{word, codes, wordInfo.freq})
+		pinyin := encoder.GetPinyin(word)
+		ret = append(ret, WordPyFreq{word, pinyin, wordInfo.freq})
 		// fmt.Printf("word: %v\tcode: %v\tfreq: %v\n", word, codes, wordInfo.freq)
 	}
 	return ret

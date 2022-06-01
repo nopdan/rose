@@ -14,47 +14,46 @@ import (
 )
 
 // 处理原始单字拼音表
-func TestGenCharPyText(t *testing.T) {
-	f, err := os.Open("own/src_char_pinyin.txt")
+func TestGenCharYinjieMap(t *testing.T) {
+	f, err := os.Open("own/src_char_yinjie.txt")
 	if err != nil {
 		log.Panic(err)
 	}
 	rd, _ := DecodeIO(f)
 
-	type opys struct {
+	type orderCodes struct {
 		order int
 		codes []string
 	}
-	charMap := make(map[rune]*opys)
+	charMap := make(map[rune]*orderCodes)
 	var buf bytes.Buffer
 	scan := bufio.NewScanner(rd)
-	order := 0
-	for ; scan.Scan(); order++ {
+	for order := 0; scan.Scan(); order++ {
 		entry := strings.Split(scan.Text(), "\t")
 		if len(entry) < 2 {
 			continue
 		}
 		char := []rune(entry[0])[0]
 		if _, ok := charMap[char]; !ok {
-			charMap[char] = &opys{order, entry[1:]}
+			charMap[char] = &orderCodes{order, entry[1:]}
 			continue
 		}
 		charMap[char].codes = append(charMap[char].codes, entry[1:]...)
 	}
 
-	type owpys struct {
-		word  rune
+	type ocw struct {
 		order int
 		codes []string
+		word  rune
 	}
-	cmSli := make([]owpys, 0, len(charMap))
+	ocwSli := make([]ocw, 0, len(charMap))
 	for k, v := range charMap {
-		cmSli = append(cmSli, owpys{k, v.order, RmRepeat(v.codes)})
+		ocwSli = append(ocwSli, ocw{v.order, RmRepeat(v.codes), k})
 	}
-	sort.Slice(cmSli, func(i, j int) bool {
-		return cmSli[i].order < cmSli[j].order
+	sort.Slice(ocwSli, func(i, j int) bool {
+		return ocwSli[i].order < ocwSli[j].order
 	})
-	for _, v := range cmSli {
+	for _, v := range ocwSli {
 		buf.WriteRune(v.word)
 		for _, vv := range v.codes {
 			buf.WriteByte('\t')
@@ -63,6 +62,5 @@ func TestGenCharPyText(t *testing.T) {
 		}
 		buf.WriteString(LineBreak)
 	}
-
-	ioutil.WriteFile("assets/char_pinyin.txt", buf.Bytes(), 0777)
+	ioutil.WriteFile("assets/char_yinjie.txt", buf.Bytes(), 0777)
 }

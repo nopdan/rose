@@ -12,10 +12,10 @@ import (
 	. "github.com/cxcn/dtool/utils"
 )
 
-func ParseQqQpyd(rd io.Reader) []PyEntry {
-	ret := make([]PyEntry, 0, 0xff)
-	data, _ := ioutil.ReadAll(rd)
+func ParseQqQpyd(filename string) WpfDict {
+	data, _ := ioutil.ReadFile(filename)
 	r := bytes.NewReader(data)
+	ret := make(WpfDict, 0, r.Len()>>8)
 	var tmp []byte
 
 	// 0x38 后跟的是压缩数据开始的偏移量
@@ -64,7 +64,7 @@ func ParseQqQpyd(rd io.Reader) []PyEntry {
 		r.Read(tmp)
 		word, _ := Decode(tmp, "utf16")
 
-		ret = append(ret, PyEntry{word, strings.Split(code, "'"), 1})
+		ret = append(ret, WordPyFreq{word, strings.Split(code, "'"), 1})
 	}
 	return ret
 }
