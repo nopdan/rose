@@ -1,36 +1,30 @@
 package util
 
-type A [][]byte
-
 // 笛卡尔积
-func Product(a A) []string {
-	if len(a) <= 1 {
-		return []string{}
+// [[a,b],[c],[d,e]]->[[a,c,d],[a,c,e],[b,c,d],[b,c,e]]
+func Product[T any](sli [][]T) [][]T {
+	if len(sli) == 0 {
+		return sli
 	}
-	res := make(A, 0, len(a))
-	for _, v := range a[0] {
-		res = append(res, []byte{v})
+	ret := make([][]T, 0, len(sli[0]))
+	for i := 0; i < len(sli[0]); i++ {
+		ret = append(ret, []T{sli[0][i]})
 	}
-	for i := 1; i < len(a); i++ {
-		res = productOne(res, a[i])
-	}
-	ret := make([]string, 0, len(res))
-	for _, v := range res {
-		ret = append(ret, string(v))
+	for i := 1; i < len(sli); i++ {
+		ret = product(ret, sli[i])
 	}
 	return ret
 }
 
-func productOne(a A, b []byte) A {
-	ret := make([]string, 0, len(a)*len(b))
-	for i := 0; i < len(a); i++ {
-		for j := 0; j < len(b); j++ {
-			ret = append(ret, string(append(a[i], b[j])))
+// [[a],[b]],[c]->[[a,c],[b,c]]
+func product[T any](sli [][]T, curr []T) [][]T {
+	ret := make([][]T, 0, len(sli)*len(curr))
+	for i := 0; i < len(sli); i++ {
+		for j := 0; j < len(curr); j++ {
+			tmp := make([]T, len(sli[i]))
+			copy(tmp, sli[i])
+			ret = append(ret, append(tmp, curr[j]))
 		}
 	}
-	tmp := make(A, 0, len(a)*len(b))
-	for _, v := range ret {
-		tmp = append(tmp, []byte(v))
-	}
-	return tmp
+	return ret
 }
