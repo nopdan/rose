@@ -8,18 +8,18 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "lyla": "^0.4.7",
-    "vue": "^3.2.36"
+    "lyla": "^0.4.10",
+    "vue": "^3.2.37"
   },
   "devDependencies": {
-    "@types/node": "^16.11.38",
-    "@vitejs/plugin-vue": "^2.3.3",
+    "@types/node": "^16.11.56",
+    "@vitejs/plugin-vue": "^2.3.4",
     "@vue/tsconfig": "^0.1.3",
-    "naive-ui": "^2.29.0",
+    "naive-ui": "^2.32.2",
     "typescript": "~4.6.4",
-    "unplugin-vue-components": "^0.19.6",
+    "unplugin-vue-components": "^0.19.9",
     "vfonts": "^0.0.3",
-    "vite": "^2.9.9",
+    "vite": "^2.9.15",
     "vue-tsc": "^0.33.9"
   }
 }

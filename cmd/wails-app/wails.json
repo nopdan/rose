@@ -1,6 +1,6 @@
 {
-  "name": "单单的词库转换工具",
-  "frontend:build": "",
+  "name": "dtool",
+  "frontend:build": "pnpm build",
   "frontend:install": "",
   "frontend:dev": "",
   "frontend:dev:watcher": "",
@@ -8,20 +8,20 @@
   "version": "2",
   "Path": "",
   "BuildDir": "",
-  "outputfilename": "dict-converter.exe",
+  "outputfilename": "词库处理工具",
   "OutputType": "",
   "Platform": "",
   "runNonNativeBuildHooks": false,
   "postBuildHooks": null,
   "Author": {
-    "name": "",
-    "email": ""
+    "name": "单单",
+    "email": "cxprcn@gmail.com"
   },
   "Info": {
-    "companyName": "dict-converter",
-    "productName": "dict-converter",
+    "companyName": "",
+    "productName": "",
     "productVersion": "1.0.0",
-    "copyright": "Copyright.........",
+    "copyright": "Copyright©2022 by 单单 - 保留所有权利",
     "comments": "Built using Wails (https://wails.app)"
   },
   "debounceMS": 100,
