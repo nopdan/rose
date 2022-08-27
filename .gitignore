@@ -13,11 +13,10 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-*/out/
-*/own/
-*/black_list.txt
+pkg/*/out/
+pkg/*/own/
+pkg/*/black_list.txt
 *_out.txt
-test.go
-test.txt
 
+old/
 .vscode*

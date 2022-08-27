@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
-	"github.com/cxcn/dtool"
+	"github.com/cxcn/dtool/pkg/dtool"
 	"github.com/jessevdk/go-flags"
 )
 
@@ -42,5 +41,5 @@ func cli() {
 
 	dict := dtool.ZiciParse(opts.IFormat, opts.Input)
 	data := dtool.ZiciGen(opts.OFormat, dict)
-	ioutil.WriteFile(opts.Output, data, 0777)
+	os.WriteFile(opts.Output, data, 0777)
 }
