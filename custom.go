@@ -1,7 +1,7 @@
 package main
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -40,7 +40,7 @@ func (a *App) ConvDict(input, iformat, oformat string, isPy bool) {
 	} else {
 		data = ConvZcDict(input, iformat, oformat)
 	}
-	ioutil.WriteFile(ret, data, 0777)
+	os.WriteFile(ret, data, 0777)
 	runtime.MessageDialog(a.ctx, mdo)
 }
 
@@ -78,6 +78,6 @@ func (a *App) Shorten(input, rule string) {
 	wct := dtool.ZiciParse("duoduo", input)
 	encoder.Shorten(&wct, rule)
 	data := dtool.ZiciGen("duoduo", wct)
-	ioutil.WriteFile(ret, data, 0777)
+	os.WriteFile(ret, data, 0777)
 	runtime.MessageDialog(a.ctx, mdo)
 }

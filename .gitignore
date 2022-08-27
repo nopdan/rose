@@ -13,10 +13,12 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+.vscode*
+build/bin/
+old/
+
 pkg/*/out/
 pkg/*/own/
+
 pkg/*/black_list.txt
 *_out.txt
-
-old/
-.vscode*
