@@ -9,17 +9,17 @@
   },
   "dependencies": {
     "lyla": "^0.6.8",
-    "vue": "^3.2.37"
+    "vue": "^3.2.38"
   },
   "devDependencies": {
-    "@types/node": "^18.7.13",
+    "@types/node": "^18.7.14",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vue/tsconfig": "^0.1.3",
-    "naive-ui": "^2.32.2",
+    "naive-ui": "^2.33.2",
     "typescript": "~4.8.2",
     "unplugin-vue-components": "^0.22.4",
     "vfonts": "^0.0.3",
     "vite": "^3.0.9",
-    "vue-tsc": "^0.40.1"
+    "vue-tsc": "^0.40.5"
   }
 }

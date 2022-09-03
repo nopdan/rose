@@ -2,13 +2,13 @@ package pinyin
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 
 	. "github.com/cxcn/dtool/pkg/util"
 )
 
 func ParseSogouScel(filename string) WpfDict {
-	data, _ := ioutil.ReadFile(filename)
+	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
 	ret := make(WpfDict, 0, r.Len()>>8)
 	var tmp []byte
@@ -95,6 +95,6 @@ func ParseSogouScel(filename string) WpfDict {
 		black_list.WriteString(word)
 		black_list.WriteByte('\n')
 	}
-	ioutil.WriteFile("black_list.txt", black_list.Bytes(), 0777)
+	// os.WriteFile("black_list.txt", black_list.Bytes(), 0777)
 	return ret
 }
