@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"os"
 
-	"github.com/cxcn/dtool/pkg/encoder"
 	"github.com/cxcn/dtool/pkg/util"
 )
 
@@ -141,8 +140,11 @@ func (SogouBin) Parse(filename string) Dict {
 	for i := 0; i < len(d)/2; i++ {
 
 		a, b := d[2*i], d[2*i+1]
-		offset := ud.dataStore[ud.keys[0].keyDataIdx].offset + a
-		// fmt.Printf("a: %v, b: %v, offset: %v\t", a, b, offset)
+		r.Seek(int64(a), 0)
+		pos := ReadUint32(r)
+		offset := int(preOffset) + ud.dataStore[ud.keys[0].keyDataIdx].offset + pos
+		pys := decryptPinyin(r, offset)
+		// fmt.Printf("a: %v, b: %v, offset: %v, pos: %v, py: %v\n", a, b, offset, pos, pys)
 
 		var wordInfo attrWordData
 		r.Seek(int64(b), 0)
@@ -155,11 +157,21 @@ func (SogouBin) Parse(filename string) Dict {
 		// fmt.Printf("offset: %v\n", offset)
 		// DecryptWordsEx
 		word := decryptWordsEx(r, offset, wordInfo.p1, p2, p3)
-		pinyin := encoder.GetPinyin(word)
-		ret = append(ret, Entry{word, pinyin, wordInfo.freq})
+		ret = append(ret, Entry{word, pys, wordInfo.freq})
 		// fmt.Printf("word: %v\tcode: %v\tfreq: %v\n", word, codes, wordInfo.freq)
 	}
 	return ret
+}
+
+func decryptPinyin(r *bytes.Reader, offset int) []string {
+	r.Seek(int64(offset), 0)
+	n := ReadUint16(r) / 2
+	ps := make([]string, 0)
+	for i := 0; i < n; i++ {
+		p := ReadUint16(r)
+		ps = append(ps, sg_pinyin[p])
+	}
+	return ps
 }
 
 func decryptWordsEx(r *bytes.Reader, offset, p1, p2, p3 int) string {

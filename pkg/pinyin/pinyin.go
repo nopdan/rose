@@ -41,7 +41,7 @@ func Parse(format, filename string) Dict {
 	case "mspy_dat":
 		p = MspyDat{}
 	case "mspy_udl":
-		p = MspyUdl{}
+		p = MspyUDL{}
 	case "sogou_bin":
 		p = SogouBin{}
 	// 纯文本拼音

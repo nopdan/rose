@@ -8,10 +8,10 @@ import (
 	"github.com/cxcn/dtool/pkg/util"
 )
 
-type MspyUdl struct{}
+type MspyUDL struct{}
 
 // 自学习词库，纯汉字
-func (MspyUdl) Parse(filename string) Dict {
+func (MspyUDL) Parse(filename string) Dict {
 	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
 	ret := make(Dict, 0, r.Len()>>8)
