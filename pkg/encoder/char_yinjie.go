@@ -2,8 +2,6 @@ package encoder
 
 import (
 	_ "embed"
-
-	. "github.com/cxcn/dtool/pkg/util"
 )
 
 //go:embed assets/char_yinjie.txt

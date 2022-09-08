@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cxcn/dtool/pkg/dtool"
+	"github.com/cxcn/dtool/pkg/pinyin"
 	"github.com/jessevdk/go-flags"
 )
 
@@ -39,7 +39,7 @@ func cli() {
 		opts.Output = opts.Input + opts.OFormat + ".txt"
 	}
 
-	pes := dtool.PinyinParse(opts.IFormat, opts.Input)
-	data := dtool.PinyinGen(opts.OFormat, pes)
+	pes := pinyin.Parse(opts.IFormat, opts.Input)
+	data := pinyin.Generate(opts.OFormat, pes)
 	os.WriteFile(opts.Output, data, 0777)
 }

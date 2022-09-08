@@ -3,26 +3,25 @@ package encoder
 import (
 	"bufio"
 	"bytes"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
 
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/table"
 )
 
 func TestShorten(t *testing.T) {
 	f, _ := os.Open("own/星辰星笔全码.txt")
 	defer f.Close()
 
-	wct := make(WcTable, 0, 0xff)
+	wct := make(table.Table, 0, 0xff)
 	scan := bufio.NewScanner(f)
 	for scan.Scan() {
 		entry := strings.Split(scan.Text(), "\t")
 		if len(entry) < 2 {
 			continue
 		}
-		wct = append(wct, WordCode{
+		wct = append(wct, table.Entry{
 			Word: entry[0],
 			Code: entry[1],
 		})
@@ -36,5 +35,5 @@ func TestShorten(t *testing.T) {
 		buf.WriteString(v.Code)
 		buf.WriteByte('\n')
 	}
-	ioutil.WriteFile("own/星辰星笔全码_shorten.txt", buf.Bytes(), 0777)
+	os.WriteFile("own/星辰星笔全码_shorten.txt", buf.Bytes(), 0777)
 }

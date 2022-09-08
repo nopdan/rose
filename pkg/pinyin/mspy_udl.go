@@ -2,17 +2,19 @@ package pinyin
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 
 	"github.com/cxcn/dtool/pkg/encoder"
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
+type MspyUdl struct{}
+
 // 自学习词库，纯汉字
-func ParseMspyUDL(filename string) WpfDict {
-	data, _ := ioutil.ReadFile(filename)
+func (MspyUdl) Parse(filename string) Dict {
+	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(WpfDict, 0, r.Len()>>8)
+	ret := make(Dict, 0, r.Len()>>8)
 	r.Seek(0xC, 0)
 	dictLen := ReadUint32(r)
 
@@ -23,8 +25,8 @@ func ParseMspyUDL(filename string) WpfDict {
 		r.ReadByte()
 		wordSli := make([]byte, wordLen*2)
 		r.Read(wordSli)
-		word, _ := Decode(wordSli, "utf16")
-		ret = append(ret, WordPyFreq{word, encoder.GetPinyin(word), 1})
+		word, _ := util.Decode(wordSli, "utf16")
+		ret = append(ret, Entry{word, encoder.GetPinyin(word), 1})
 	}
 	return ret
 }

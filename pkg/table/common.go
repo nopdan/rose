@@ -1,38 +1,30 @@
-package zici
+package table
 
 import (
 	"bufio"
 	"bytes"
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
-func ParseDuoduo(filename string) WcTable {
-	return parseWcTable(filename, true)
-}
-func GenDuoduo(wct WcTable) []byte {
-	return genWcTable(wct, true)
+type Common struct {
+	WordFirst bool
 }
 
-func ParseBingling(filename string) WcTable {
-	return parseWcTable(filename, false)
-}
-func GenBingling(wct WcTable) []byte {
-	return genWcTable(wct, false)
-}
+var (
+	DuoDuo   = Common{true}
+	Bingling = Common{false}
+)
 
-func parseWcTable(filename string, word_first bool) WcTable {
-	f, _ := os.Open(filename)
-	defer f.Close()
-	rd, err := DecodeIO(f)
+func (c Common) Parse(filename string) Table {
+	rd, err := util.Read(filename)
 	if err != nil {
 		log.Panic("编码格式未知")
 	}
-	ret := make(WcTable, 0, 0xff)
+	ret := make(Table, 0, 0xff)
 	scan := bufio.NewScanner(rd)
 	for scan.Scan() {
 		entry := strings.Split(scan.Text(), "\t")
@@ -40,22 +32,22 @@ func parseWcTable(filename string, word_first bool) WcTable {
 			continue
 		}
 		word, code := entry[0], entry[1]
-		if !word_first {
+		if !c.WordFirst {
 			word, code = code, word
 		}
 		if strings.HasPrefix(word, "$ddcmd") {
 			fmt.Println("多多的命令" + word)
 			continue
 		}
-		ret = append(ret, WordCode{word, code})
+		ret = append(ret, Entry{word, code})
 	}
 	return ret
 }
 
-func genWcTable(wct WcTable, word_first bool) []byte {
+func (c Common) Gen(table Table) []byte {
 	var buf bytes.Buffer
-	for _, v := range wct {
-		if word_first {
+	for _, v := range table {
+		if c.WordFirst {
 			buf.WriteString(v.Word)
 			buf.WriteByte('\t')
 			buf.WriteString(v.Code)

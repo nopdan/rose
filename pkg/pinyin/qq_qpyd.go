@@ -3,19 +3,20 @@ package pinyin
 import (
 	"bytes"
 	"compress/zlib"
+	"io"
 	"log"
+	"os"
 	"strings"
 
-	"io"
-	"io/ioutil"
-
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
-func ParseQqQpyd(filename string) WpfDict {
-	data, _ := ioutil.ReadFile(filename)
+type QqQpyd struct{}
+
+func (QqQpyd) Parse(filename string) Dict {
+	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(WpfDict, 0, r.Len()>>8)
+	ret := make(Dict, 0, r.Len()>>8)
 	var tmp []byte
 
 	// 0x38 后跟的是压缩数据开始的偏移量
@@ -62,9 +63,9 @@ func ParseQqQpyd(filename string) WpfDict {
 		// 读词
 		tmp = make([]byte, addr[1])
 		r.Read(tmp)
-		word, _ := Decode(tmp, "utf16")
+		word, _ := util.Decode(tmp, "utf16")
 
-		ret = append(ret, WordPyFreq{word, strings.Split(code, "'"), 1})
+		ret = append(ret, Entry{word, strings.Split(code, "'"), 1})
 	}
 	return ret
 }

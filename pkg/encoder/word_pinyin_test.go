@@ -3,7 +3,6 @@ package encoder
 import (
 	"bufio"
 	"bytes"
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -33,5 +32,5 @@ func TestWordPinyin(t *testing.T) {
 			buf.WriteString("\r\n")
 		}
 	}
-	ioutil.WriteFile("assets/word_pinyin.txt", buf.Bytes(), 0777)
+	os.WriteFile("assets/word_pinyin.txt", buf.Bytes(), 0777)
 }

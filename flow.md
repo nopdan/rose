@@ -4,12 +4,12 @@
 
 1. 选择源码表
 2. 选择源码表格式
-3. 根据源码表格式读取为 WcTable, WpfDict。
+3. 根据源码表格式读取为 WcTable, Dict。
 4. 执行过滤器
 5. 选择是否转换目标方案（纯词、全拼、双拼、形码）
 6. 选择目标方案依赖项（双拼依赖一个映射表、形码依赖一个单字全码表）
-7. 转换方案，全拼 WpfDict，双拼 WcTable，形码 WcTable
-8. 目标格式，dict 反射为 WpfDict 和 WcTable
+7. 转换方案，全拼 Dict，双拼 WcTable，形码 WcTable
+8. 目标格式，dict 反射为 Dict 和 WcTable
 
 字词方案的工具：
 

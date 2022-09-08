@@ -3,23 +3,20 @@ package encoder
 import (
 	"bufio"
 	"bytes"
-	"io/ioutil"
-	"log"
 	"os"
 	"sort"
 	"strings"
 	"testing"
 
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
 // 处理原始单字拼音表
 func TestGenCharYinjieMap(t *testing.T) {
-	f, err := os.Open("own/src_char_yinjie.txt")
+	rd, err := util.Read("own/src_char_yinjie.txt")
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
-	rd, _ := DecodeIO(f)
 
 	type orderCodes struct {
 		order int
@@ -48,7 +45,7 @@ func TestGenCharYinjieMap(t *testing.T) {
 	}
 	ocwSli := make([]ocw, 0, len(charMap))
 	for k, v := range charMap {
-		ocwSli = append(ocwSli, ocw{v.order, RmRepeat(v.codes), k})
+		ocwSli = append(ocwSli, ocw{v.order, util.RmRepeat(v.codes), k})
 	}
 	sort.Slice(ocwSli, func(i, j int) bool {
 		return ocwSli[i].order < ocwSli[j].order
@@ -60,7 +57,7 @@ func TestGenCharYinjieMap(t *testing.T) {
 			// buf.WriteByte('\'')
 			buf.WriteString(vv)
 		}
-		buf.WriteString(LineBreak)
+		buf.WriteString(util.LineBreak)
 	}
-	ioutil.WriteFile("assets/char_yinjie.txt", buf.Bytes(), 0777)
+	os.WriteFile("assets/char_yinjie.txt", buf.Bytes(), 0777)
 }

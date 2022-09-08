@@ -4,13 +4,15 @@ import (
 	"bytes"
 	"os"
 
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
-func ParseSogouScel(filename string) WpfDict {
+type SogouScel struct{}
+
+func (SogouScel) Parse(filename string) Dict {
 	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(WpfDict, 0, r.Len()>>8)
+	ret := make(Dict, 0, r.Len()>>8)
 	var tmp []byte
 
 	// 不展开的词条数
@@ -37,7 +39,7 @@ func ParseSogouScel(filename string) WpfDict {
 		// 拼音 utf-16le
 		tmp = make([]byte, pyLen)
 		r.Read(tmp)
-		py, _ := Decode(tmp, "utf16")
+		py, _ := util.Decode(tmp, "utf16")
 		//
 		pyTable[idx] = string(py)
 	}
@@ -69,14 +71,14 @@ func ParseSogouScel(filename string) WpfDict {
 			// 读取词
 			tmp = make([]byte, wordSize)
 			r.Read(tmp)
-			word, _ := Decode(tmp, "utf16")
+			word, _ := util.Decode(tmp, "utf16")
 
 			// 末尾的补充信息，作用未知
 			extSize := ReadUint16(r)
 			ext := make([]byte, extSize)
 			r.Read(ext)
 
-			ret = append(ret, WordPyFreq{word, pinyin, 1})
+			ret = append(ret, Entry{word, pinyin, 1})
 		}
 	}
 	if r.Len() < 16 {
@@ -91,7 +93,7 @@ func ParseSogouScel(filename string) WpfDict {
 		wordLen := ReadUint16(r)
 		tmp = make([]byte, wordLen*2)
 		r.Read(tmp)
-		word, _ := Decode(tmp, "utf16")
+		word, _ := util.Decode(tmp, "utf16")
 		black_list.WriteString(word)
 		black_list.WriteByte('\n')
 	}

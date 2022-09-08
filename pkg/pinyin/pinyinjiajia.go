@@ -4,23 +4,22 @@ import (
 	"bufio"
 	"bytes"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/cxcn/dtool/pkg/encoder"
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
+
+type JiaJia struct{}
 
 // 模式一，只返回频率最高的拼音
 // TODO: 模式二，作笛卡尔积
-func ParseJiaJia(filename string) WpfDict {
-	f, _ := os.Open(filename)
-	defer f.Close()
-	rd, err := DecodeIO(f)
+func (JiaJia) Parse(filename string) Dict {
+	rd, err := util.Read(filename)
 	if err != nil {
 		log.Panic("编码格式未知")
 	}
-	ret := make(WpfDict, 0, 0xff)
+	ret := make(Dict, 0, 0xff)
 	scan := bufio.NewScanner(rd)
 	for scan.Scan() {
 		tmp := strings.TrimSpace(scan.Text())
@@ -52,12 +51,12 @@ func ParseJiaJia(filename string) WpfDict {
 			pinyin = append(pinyin, codes[0])
 			i++
 		}
-		ret = append(ret, WordPyFreq{string(word), pinyin, 1})
+		ret = append(ret, Entry{string(word), pinyin, 1})
 	}
 	return ret
 }
 
-func GenJiaJia(dict WpfDict) []byte {
+func (JiaJia) Gen(dict Dict) []byte {
 	var buf bytes.Buffer
 	for _, v := range dict {
 		words := []rune(v.Word)
@@ -68,7 +67,7 @@ func GenJiaJia(dict WpfDict) []byte {
 			buf.WriteString(string(words[i]))
 			buf.WriteString(v.Pinyin[i])
 		}
-		buf.WriteString(LineBreak)
+		buf.WriteString(util.LineBreak)
 	}
 	return buf.Bytes()
 }

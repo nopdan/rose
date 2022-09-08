@@ -3,11 +3,11 @@ package encoder
 import (
 	"bufio"
 	"bytes"
-	_ "embed"
 	"strings"
-
-	. "github.com/cxcn/dtool/pkg/util"
 )
+
+// 单字码表
+type CharCodes map[rune][]string
 
 // 读取单字码表
 func ReadCharCodes(data []byte) CharCodes {

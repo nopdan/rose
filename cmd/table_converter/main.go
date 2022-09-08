@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cxcn/dtool/pkg/dtool"
+	"github.com/cxcn/dtool/pkg/table"
 	"github.com/jessevdk/go-flags"
 )
 
@@ -39,7 +39,7 @@ func cli() {
 		opts.Output = opts.Input + opts.OFormat + ".txt"
 	}
 
-	dict := dtool.ZiciParse(opts.IFormat, opts.Input)
-	data := dtool.ZiciGen(opts.OFormat, dict)
+	dict := table.Parse(opts.IFormat, opts.Input)
+	data := table.Generate(opts.OFormat, dict)
 	os.WriteFile(opts.Output, data, 0777)
 }

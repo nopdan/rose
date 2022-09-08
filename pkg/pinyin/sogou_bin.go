@@ -2,10 +2,10 @@ package pinyin
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 
 	"github.com/cxcn/dtool/pkg/encoder"
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
 type key struct {
@@ -39,10 +39,12 @@ func (h *header) parse(r *bytes.Reader) {
 	h.usedDataSize = ReadUint32(r)
 }
 
-func ParseSogouBin(filename string) WpfDict {
-	data, _ := ioutil.ReadFile(filename)
+type SogouBin struct{}
+
+func (SogouBin) Parse(filename string) Dict {
+	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(WpfDict, 0, r.Len()>>8)
+	ret := make(Dict, 0, r.Len()>>8)
 	// var tmp []byte
 
 	// fileChksum := ReadUint32(r)
@@ -154,7 +156,7 @@ func ParseSogouBin(filename string) WpfDict {
 		// DecryptWordsEx
 		word := decryptWordsEx(r, offset, wordInfo.p1, p2, p3)
 		pinyin := encoder.GetPinyin(word)
-		ret = append(ret, WordPyFreq{word, pinyin, wordInfo.freq})
+		ret = append(ret, Entry{word, pinyin, wordInfo.freq})
 		// fmt.Printf("word: %v\tcode: %v\tfreq: %v\n", word, codes, wordInfo.freq)
 	}
 	return ret
@@ -177,7 +179,7 @@ func decryptWordsEx(r *bytes.Reader, offset, p1, p2, p3 int) string {
 		}
 		decWords = append(decWords, byte(dch%0x100), byte(dch>>8))
 	}
-	ret, _ := Decode(decWords, "utf16")
+	ret, _ := util.Decode(decWords, "utf16")
 	return ret
 }
 

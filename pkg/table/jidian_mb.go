@@ -1,16 +1,18 @@
-package zici
+package table
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
-func ParseJidianMb(filename string) WcTable {
-	data, _ := ioutil.ReadFile(filename)
+type JidianMb struct{}
+
+func (JidianMb) Parse(filename string) Table {
+	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(WcTable, 0, r.Len()>>8)
+	ret := make(Table, 0, r.Len()>>8)
 	var tmp []byte
 
 	r.Seek(0x1B620, 0) // 从 0x1B620 开始读
@@ -31,9 +33,9 @@ func ParseJidianMb(filename string) WcTable {
 		// 读词
 		tmp = make([]byte, wordLen)
 		r.Read(tmp)
-		word, _ := Decode(tmp, "utf16")
+		word, _ := util.Decode(tmp, "utf16")
 
-		ret = append(ret, WordCode{word, code})
+		ret = append(ret, Entry{word, code})
 	}
 	return ret
 }

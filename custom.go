@@ -6,8 +6,9 @@ import (
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
-	"github.com/cxcn/dtool/pkg/dtool"
 	"github.com/cxcn/dtool/pkg/encoder"
+	"github.com/cxcn/dtool/pkg/pinyin"
+	"github.com/cxcn/dtool/pkg/table"
 )
 
 // 选择文件
@@ -46,15 +47,15 @@ func (a *App) ConvDict(input, iformat, oformat string, isPy bool) {
 
 // 转换拼音词库
 func ConvPyDict(input, iformat, oformat string) []byte {
-	pes := dtool.PinyinParse(iformat, input)
-	data := dtool.PinyinGen(oformat, pes)
+	pes := pinyin.Parse(iformat, input)
+	data := pinyin.Generate(oformat, pes)
 	return data
 }
 
 // 转换字词码表
 func ConvZcDict(input, iformat, oformat string) []byte {
-	pes := dtool.ZiciParse(iformat, input)
-	data := dtool.ZiciGen(oformat, pes)
+	pes := table.Parse(iformat, input)
+	data := table.Generate(oformat, pes)
 	return data
 }
 
@@ -75,9 +76,9 @@ func (a *App) Shorten(input, rule string) {
 	if ret == "" {
 		return
 	}
-	wct := dtool.ZiciParse("duoduo", input)
+	wct := table.Parse("duoduo", input)
 	encoder.Shorten(&wct, rule)
-	data := dtool.ZiciGen("duoduo", wct)
+	data := table.Generate("duoduo", wct)
 	os.WriteFile(ret, data, 0777)
 	runtime.MessageDialog(a.ctx, mdo)
 }

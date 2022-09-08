@@ -4,21 +4,21 @@ import (
 	"strconv"
 	"strings"
 
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/table"
 )
 
 // rule 1:0,2:3,3:2,6:n 默认1，n 无限
-func Shorten(wct *WcTable, rule string) {
+func Shorten(table *table.Table, rule string) {
 	rl := handleRule(rule)
 	countMap := make(map[string]int)
-	for i := 0; i < len(*wct); i++ {
-		wc := (*wct)[i]
+	for i := 0; i < len(*table); i++ {
+		wc := (*table)[i]
 		for j := 1; j <= len(wc.Code); j++ {
 			curr := string(wc.Code[:j])
 			count := countMap[curr]
 			if count < rl[j] {
 				wc.Code = curr
-				(*wct)[i] = wc
+				(*table)[i] = wc
 				countMap[curr]++
 				break
 			}

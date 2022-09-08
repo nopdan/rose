@@ -2,9 +2,9 @@ package pinyin
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
 var bdictSm = []string{
@@ -18,10 +18,12 @@ var bdictYm = []string{
 	"ou", "ia", "ue", "ui", "un", "uo", "a", "e", "i", "o", "u", "v",
 }
 
-func ParseBaiduBdict(filename string) WpfDict {
-	data, _ := ioutil.ReadFile(filename)
+type BaiduBdict struct{}
+
+func (BaiduBdict) Parse(filename string) Dict {
+	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(WpfDict, 0, r.Len()>>8)
+	ret := make(Dict, 0, r.Len()>>8)
 	var tmp []byte
 
 	r.Seek(0x350, 0)
@@ -41,13 +43,13 @@ func ParseBaiduBdict(filename string) WpfDict {
 			// 读编码
 			tmp = make([]byte, pyLen*2)
 			r.Read(tmp)
-			code, _ := Decode(tmp, "utf16")
+			code, _ := util.Decode(tmp, "utf16")
 			// 读词
 			tmp = make([]byte, wordLen*2)
 			r.Read(tmp)
-			word, _ := Decode(tmp, "utf16")
+			word, _ := util.Decode(tmp, "utf16")
 
-			ret = append(ret, WordPyFreq{
+			ret = append(ret, Entry{
 				Word:   word,
 				Pinyin: []string{code},
 				Freq:   freq,
@@ -60,7 +62,7 @@ func ParseBaiduBdict(filename string) WpfDict {
 			r.Seek(-2, 1)
 			eng := make([]byte, pyLen)
 			r.Read(eng)
-			ret = append(ret, WordPyFreq{
+			ret = append(ret, Entry{
 				Word:   string(eng),
 				Pinyin: []string{string(eng)},
 				Freq:   freq,
@@ -84,8 +86,8 @@ func ParseBaiduBdict(filename string) WpfDict {
 		// 读词
 		tmp = make([]byte, pyLen*2)
 		r.Read(tmp)
-		word, _ := Decode(tmp, "utf16")
-		ret = append(ret, WordPyFreq{
+		word, _ := util.Decode(tmp, "utf16")
+		ret = append(ret, Entry{
 			Word:   word,
 			Pinyin: pinyin,
 			Freq:   freq,

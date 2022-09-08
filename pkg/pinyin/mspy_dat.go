@@ -2,15 +2,17 @@ package pinyin
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 
-	. "github.com/cxcn/dtool/pkg/util"
+	"github.com/cxcn/dtool/pkg/util"
 )
 
-func ParseMspyDat(filename string) WpfDict {
-	data, _ := ioutil.ReadFile(filename)
+type MspyDat struct{}
+
+func (MspyDat) Parse(filename string) Dict {
+	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(WpfDict, 0, r.Len()>>8)
+	ret := make(Dict, 0, r.Len()>>8)
 	var tmp []byte
 
 	// 词库偏移量
@@ -37,7 +39,7 @@ func ParseMspyDat(filename string) WpfDict {
 			}
 			codeSli = append(codeSli, tmp...)
 		}
-		code, _ := Decode(codeSli, "utf16")
+		code, _ := util.Decode(codeSli, "utf16")
 
 		wordSli := make([]byte, 0, 2)
 		for {
@@ -47,9 +49,9 @@ func ParseMspyDat(filename string) WpfDict {
 			}
 			wordSli = append(wordSli, tmp...)
 		}
-		word, _ := Decode(wordSli, "utf16")
+		word, _ := util.Decode(wordSli, "utf16")
 
-		ret = append(ret, WordPyFreq{word, []string{code}, 1})
+		ret = append(ret, Entry{word, []string{code}, 1})
 	}
 	return ret
 }
