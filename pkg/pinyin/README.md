@@ -18,7 +18,7 @@
 
 ```go
 // 通用规则
-type GenRule struct {
+type Common struct {
     Sep   byte // 分隔符
     PySep byte // 拼音分隔符
 
