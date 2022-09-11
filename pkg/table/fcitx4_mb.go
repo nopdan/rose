@@ -37,7 +37,7 @@ func (Fcitx4Mb) Parse(filename string) Table {
 
 func trimSufZero(b []byte) string {
 	for i := len(b); i > 0; i-- {
-		if b[i] != 0 {
+		if b[i-1] != 0 {
 			return string(b[:i])
 		}
 	}
