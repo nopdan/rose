@@ -32,5 +32,5 @@ func TestWordPinyin(t *testing.T) {
 			buf.WriteString("\r\n")
 		}
 	}
-	os.WriteFile("assets/word_pinyin.txt", buf.Bytes(), 0777)
+	os.WriteFile("assets/word_pinyin.txt", buf.Bytes(), 0666)
 }

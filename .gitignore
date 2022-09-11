@@ -21,4 +21,5 @@ pkg/*/out/
 pkg/*/own/
 
 pkg/*/black_list.txt
-*_out.txt
+out_*
+gen_*

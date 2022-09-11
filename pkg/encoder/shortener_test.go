@@ -35,5 +35,5 @@ func TestShorten(t *testing.T) {
 		buf.WriteString(v.Code)
 		buf.WriteByte('\n')
 	}
-	os.WriteFile("own/星辰星笔全码_shorten.txt", buf.Bytes(), 0777)
+	os.WriteFile("own/星辰星笔全码_shorten.txt", buf.Bytes(), 0666)
 }

@@ -59,5 +59,5 @@ func TestGenCharYinjieMap(t *testing.T) {
 		}
 		buf.WriteString(util.LineBreak)
 	}
-	os.WriteFile("assets/char_yinjie.txt", buf.Bytes(), 0777)
+	os.WriteFile("assets/char_yinjie.txt", buf.Bytes(), 0666)
 }
