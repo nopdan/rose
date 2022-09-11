@@ -3,7 +3,6 @@ package util
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"io"
 	"os"
 
@@ -51,30 +50,31 @@ func Read(path string) (io.Reader, error) {
 
 // []byte, encoding -> string
 func Decode(b []byte, e string) (string, error) {
-	decoder := new(encoding.Decoder)
-	switch e {
-	case "utf16":
-		decoder = unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder()
-	case "gbk":
-		decoder = simplifiedchinese.GBK.NewDecoder()
-	default:
-		return "", errors.New("error encoding format")
-	}
-	ret, err := decoder.Bytes(b)
-	return string(ret), err
+	enc := getEncoding(e)
+	b, err := enc.NewDecoder().Bytes(b)
+	return string(b), err
 }
 
 // string, encoding -> []byte
-func Encode(s string, e string) ([]byte, error) {
-	encoder := new(encoding.Encoder)
-	switch e {
-	case "utf16":
-		encoder = unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder()
-	case "gbk":
-		encoder = simplifiedchinese.GBK.NewEncoder()
+func Encode(b []byte, e string) ([]byte, error) {
+	enc := getEncoding(e)
+	return enc.NewEncoder().Bytes(b)
+}
+
+func getEncoding(enc string) encoding.Encoding {
+	var encoding encoding.Encoding
+	switch enc {
+	case "UTF-16LE":
+		encoding = unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM)
+	case "UTF-16BE":
+		encoding = unicode.UTF16(unicode.BigEndian, unicode.IgnoreBOM)
+	case "GBK":
+		encoding = simplifiedchinese.GBK
+	case "GB18030":
+		encoding = simplifiedchinese.GB18030
 	default:
-		return []byte{}, errors.New("error encoding format")
+		encoding = unicode.UTF8
 	}
-	ret, err := encoder.Bytes([]byte(s))
-	return ret, err
+	// fmt.Println(enc, encoding)
+	return encoding
 }

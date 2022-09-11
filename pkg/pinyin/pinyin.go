@@ -50,13 +50,13 @@ func Parse(format, filename string) Dict {
 	case "word_only":
 		p = WordOnly{}
 	case "sogou":
-		p = TxtSogou
+		p = Sogou
 	case "qq":
-		p = TxtQQ
+		p = QQ
 	case "baidu":
-		p = TxtBaidu
+		p = Baidu
 	case "google":
-		p = TxtGoogle
+		p = Google
 	default:
 		panic("输入格式不支持：" + format)
 	}
@@ -71,13 +71,13 @@ func Generate(format string, dict Dict) []byte {
 	case "word_only":
 		g = WordOnly{}
 	case "sogou":
-		g = TxtSogou
+		g = Sogou
 	case "qq":
-		g = TxtQQ
+		g = QQ
 	case "baidu":
-		g = TxtBaidu
+		g = Baidu
 	case "google":
-		g = TxtGoogle
+		g = Google
 	default:
 		panic("输出格式不支持：" + format)
 	}

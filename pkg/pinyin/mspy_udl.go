@@ -25,7 +25,7 @@ func (MspyUDL) Parse(filename string) Dict {
 		r.ReadByte()
 		wordSli := make([]byte, wordLen*2)
 		r.Read(wordSli)
-		word, _ := util.Decode(wordSli, "utf16")
+		word, _ := util.Decode(wordSli, "UTF-16LE")
 		ret = append(ret, Entry{word, encoder.GetPinyin(word), 1})
 	}
 	return ret

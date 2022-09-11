@@ -12,11 +12,12 @@ import (
 
 type Common struct {
 	WordFirst bool
+	Encoding  string
 }
 
 var (
-	DuoDuo   = Common{true}
-	Bingling = Common{false}
+	DuoDuo   = Common{true, "UTF-8"}
+	Bingling = Common{false, "UTF-16LE"}
 )
 
 func (c Common) Parse(filename string) Table {
@@ -59,5 +60,9 @@ func (c Common) Gen(table Table) []byte {
 		buf.WriteByte('\r')
 		buf.WriteByte('\n')
 	}
-	return buf.Bytes()
+	ret, _ := util.Encode(buf.Bytes(), c.Encoding)
+	if c.Encoding == "UTF-16LE" {
+		ret = append([]byte{0xff, 0xfe}, ret...)
+	}
+	return ret
 }

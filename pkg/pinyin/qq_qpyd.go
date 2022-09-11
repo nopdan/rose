@@ -29,7 +29,7 @@ func (QqQpyd) Parse(filename string) Dict {
 	r.Seek(0x60, 0)
 	head := make([]byte, startZip-0x60)
 	r.Read(head)
-	// headStr, _ := Decode(head, "utf16")
+	// headStr, _ := Decode(head, "UTF-16LE")
 	// fmt.Println(headStr) // 打印描述信息
 
 	// 解压数据
@@ -63,7 +63,7 @@ func (QqQpyd) Parse(filename string) Dict {
 		// 读词
 		tmp = make([]byte, addr[1])
 		r.Read(tmp)
-		word, _ := util.Decode(tmp, "utf16")
+		word, _ := util.Decode(tmp, "UTF-16LE")
 
 		ret = append(ret, Entry{word, strings.Split(code, "'"), 1})
 	}

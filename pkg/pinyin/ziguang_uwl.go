@@ -79,9 +79,9 @@ func parseZgUwlPart(r *bytes.Reader, ret Dict, e byte) Dict {
 		var word string
 		switch e {
 		case 0x08:
-			word, _ = util.Decode(tmp, "gbk")
+			word, _ = util.Decode(tmp, "GBK")
 		case 0x09:
-			word, _ = util.Decode(tmp, "utf16")
+			word, _ = util.Decode(tmp, "UTF-16LE")
 		}
 		// fmt.Println(string(word))
 		ret = append(ret, Entry{word, code, freq})

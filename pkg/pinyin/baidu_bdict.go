@@ -43,11 +43,11 @@ func (BaiduBdict) Parse(filename string) Dict {
 			// 读编码
 			tmp = make([]byte, pyLen*2)
 			r.Read(tmp)
-			code, _ := util.Decode(tmp, "utf16")
+			code, _ := util.Decode(tmp, "UTF-16LE")
 			// 读词
 			tmp = make([]byte, wordLen*2)
 			r.Read(tmp)
-			word, _ := util.Decode(tmp, "utf16")
+			word, _ := util.Decode(tmp, "UTF-16LE")
 
 			ret = append(ret, Entry{
 				Word:   word,
@@ -86,7 +86,7 @@ func (BaiduBdict) Parse(filename string) Dict {
 		// 读词
 		tmp = make([]byte, pyLen*2)
 		r.Read(tmp)
-		word, _ := util.Decode(tmp, "utf16")
+		word, _ := util.Decode(tmp, "UTF-16LE")
 		ret = append(ret, Entry{
 			Word:   word,
 			Pinyin: pinyin,

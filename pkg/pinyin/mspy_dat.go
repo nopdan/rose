@@ -39,7 +39,7 @@ func (MspyDat) Parse(filename string) Dict {
 			}
 			codeSli = append(codeSli, tmp...)
 		}
-		code, _ := util.Decode(codeSli, "utf16")
+		code, _ := util.Decode(codeSli, "UTF-16LE")
 
 		wordSli := make([]byte, 0, 2)
 		for {
@@ -49,7 +49,7 @@ func (MspyDat) Parse(filename string) Dict {
 			}
 			wordSli = append(wordSli, tmp...)
 		}
-		word, _ := util.Decode(wordSli, "utf16")
+		word, _ := util.Decode(wordSli, "UTF-16LE")
 
 		ret = append(ret, Entry{word, []string{code}, 1})
 	}

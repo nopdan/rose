@@ -33,7 +33,7 @@ func (JidianMb) Parse(filename string) Table {
 		// 读词
 		tmp = make([]byte, wordLen)
 		r.Read(tmp)
-		word, _ := util.Decode(tmp, "utf16")
+		word, _ := util.Decode(tmp, "UTF-16LE")
 
 		ret = append(ret, Entry{word, code})
 	}

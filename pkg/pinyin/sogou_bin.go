@@ -191,7 +191,7 @@ func decryptWordsEx(r *bytes.Reader, offset, p1, p2, p3 int) string {
 		}
 		decWords = append(decWords, byte(dch%0x100), byte(dch>>8))
 	}
-	ret, _ := util.Decode(decWords, "utf16")
+	ret, _ := util.Decode(decWords, "UTF-16LE")
 	return ret
 }
 

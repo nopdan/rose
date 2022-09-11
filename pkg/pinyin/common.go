@@ -20,11 +20,11 @@ type Common struct {
 }
 
 var (
-	TxtSogou    = Common{' ', '\'', "pw"}
-	TxtQQ       = Common{' ', '\'', "cwf"}
-	TxtBaidu    = Common{'\t', '\'', "wcf"}
-	TxtGoogle   = Common{'\t', ' ', "wfc"}
-	TxtWordOnly = Common{' ', ' ', "w"}
+	Sogou  = Common{' ', '\'', "pw"}
+	QQ     = Common{' ', '\'', "cwf"}
+	Baidu  = Common{'\t', '\'', "wcf"}
+	Google = Common{'\t', ' ', "wfc"}
+	// WordOnly = Common{' ', ' ', "w"}
 )
 
 // 拼音通用格式解析

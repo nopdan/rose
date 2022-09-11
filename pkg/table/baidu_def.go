@@ -33,7 +33,7 @@ func (BaiduDef) Parse(filename string) Table {
 		// 读词
 		tmp = make([]byte, int(wordSize)-2) // -2 后就是字节长度，没有考虑4字节的情况
 		r.Read(tmp)
-		word, _ := util.Decode(tmp, "utf16")
+		word, _ := util.Decode(tmp, "UTF-16LE")
 		// def = append(def, defEntry{word, code, order})
 		ret = append(ret, Entry{Word: word, Code: code})
 
@@ -56,12 +56,12 @@ func (BaiduDef) Gen(table Table) []byte {
 			if i != 0 { // 不在首选的写入位置信息，好像没什么用？
 				code = v.Code + "=" + strconv.Itoa(i+1)
 			}
-			sliWord, _ := util.Encode(word, "utf16") // 转为utf-16le
-			buf.WriteByte(byte(len(code)))           // 写编码长度
-			buf.WriteByte(byte(len(sliWord) + 2))    // 写词字节长+2
-			buf.WriteString(code)                    // 写编码
-			buf.Write(sliWord)                       // 写词
-			buf.Write([]byte{0, 0, 0, 0, 0, 0})      // 写6个0
+			sliWord, _ := util.Encode([]byte(word), "UTF-16LE") // 转为utf-16le
+			buf.WriteByte(byte(len(code)))                      // 写编码长度
+			buf.WriteByte(byte(len(sliWord) + 2))               // 写词字节长+2
+			buf.WriteString(code)                               // 写编码
+			buf.Write(sliWord)                                  // 写词
+			buf.Write([]byte{0, 0, 0, 0, 0, 0})                 // 写6个0
 
 			// 编码长度 + 词字节长 + 6，不包括长度本身占的2个字节
 			lengthMap[code[0]] += len(code) + len(sliWord) + 2 + 6

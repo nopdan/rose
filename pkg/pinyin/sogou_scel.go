@@ -39,7 +39,7 @@ func (SogouScel) Parse(filename string) Dict {
 		// 拼音 utf-16le
 		tmp = make([]byte, pyLen)
 		r.Read(tmp)
-		py, _ := util.Decode(tmp, "utf16")
+		py, _ := util.Decode(tmp, "UTF-16LE")
 		//
 		pyTable[idx] = string(py)
 	}
@@ -71,7 +71,7 @@ func (SogouScel) Parse(filename string) Dict {
 			// 读取词
 			tmp = make([]byte, wordSize)
 			r.Read(tmp)
-			word, _ := util.Decode(tmp, "utf16")
+			word, _ := util.Decode(tmp, "UTF-16LE")
 
 			// 末尾的补充信息，作用未知
 			extSize := ReadUint16(r)
@@ -93,10 +93,10 @@ func (SogouScel) Parse(filename string) Dict {
 		wordLen := ReadUint16(r)
 		tmp = make([]byte, wordLen*2)
 		r.Read(tmp)
-		word, _ := util.Decode(tmp, "utf16")
+		word, _ := util.Decode(tmp, "UTF-16LE")
 		black_list.WriteString(word)
 		black_list.WriteByte('\n')
 	}
-	// os.WriteFile("black_list.txt", black_list.Bytes(), 0777)
+	// os.WriteFile("black_list.txt", black_list.Bytes(), 0666)
 	return ret
 }
