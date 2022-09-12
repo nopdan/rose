@@ -7,23 +7,21 @@ import (
 	"github.com/cxcn/dtool/pkg/table"
 )
 
+func TestRule(t *testing.T) {
+	fmt.Println(newRule("2=AaAbBaBb,3=AaAbBaCa,0=AaBaCaZa"))
+	fmt.Println(newRule("2=AaAbBaBb,3=AaBaCaCb,0=AaBaCaZa"))
+	fmt.Println(newRule("2=AaAbBaBbAcBc,3=AaBaCaAcBcCc,0=AaBaCaZaAcBc"))
+	fmt.Println(newRule("2=AABB,3=ABCC,0=ABCZ"))
+	fmt.Println(newRule("ab..."))
+}
+
 func TestChecker(t *testing.T) {
-	// rule := "2=AaAbBaBb\r\n3=AaBaCaCb\r\n0=AaBaCaZa"
-	rule := "2=AaAbBaBb\r\n3=AaAbBaCa\r\n0=AaBaCaZa"
-	// rule := "2=AaAbBaBbAcBc\r\n3=AaBaCaAcBcCc\r\n0=AaBaCaZaAcBc"
+	rule := "2=AABB,3=AABC,0=ABCZ"
 	path := "./own/test.txt"
 	c := NewChecker(path, rule)
 	table := table.Parse("duoduo", path)
-	c.Check(table)
-	// for k, v := range c.Dict {
-	// 	fmt.Println(string(k), v)
-	// }
+	fmt.Println(string(c.Check(table)))
 
-	c.EncodeWord("你们")
-	c.EncodeWord("在意")
-	c.EncodeWord("参加")
-	c.EncodeWord("行人")
-	c.EncodeWord("adg")
 	tmp := c.Encode("温柔\n没有人\n好不容易\n对外贸易法")
 	for word, codes := range tmp {
 		fmt.Println(word, "\n", codes)

@@ -35,45 +35,67 @@ func (c *Checker) EncodeWord(s string) []string {
 		rule = c.Rule[0]
 	}
 
-	var sliCode [][]byte
-	for i := 0; i < len(rule)/2; i++ {
-		wi := rule[2*i]   // word index
-		ci := rule[2*i+1] // code index
-		// 每个字的所有编码
-		var char rune
-		if wi == 0 {
-			char = word[len(word)-1]
-		} else {
-			char = word[wi-1]
-		}
-		codes := c.Dict[char]
-		// fmt.Println("char", string(char), "codes", codes)
-		// 当前位置所有可能的字符
-		tmp := make(map[byte]struct{})
-		for _, code := range codes {
-			var c byte
-			if ci == 0 {
-				c = code[len(code)-1]
-			} else {
-				if len(code) <= ci-1 {
-					// log.Println("索引超出", s, code, ci-1)
-					break
+	tmp := make([][]byte, 0, 1)
+	if len(c.RuleZ) != 0 {
+		for _, s := range word {
+			codes := c.Dict[s]
+			for _, idx := range c.RuleZ {
+				ctmp := make([]byte, 0, 1)
+				for _, code := range codes {
+					var c byte
+					if int(idx) >= len(code) {
+						c = code[len(code)-1]
+					} else {
+						c = code[idx]
+					}
+					ctmp = append(ctmp, c)
 				}
-				c = code[ci-1]
+				ctmp = util.RmRepeat(ctmp)
+				tmp = append(tmp, ctmp)
 			}
-			tmp[c] = struct{}{}
 		}
-		sliTmp := make([]byte, 0, len(tmp))
-		for k := range tmp {
-			sliTmp = append(sliTmp, k)
-		}
-		sliCode = append(sliCode, sliTmp)
+	} else {
+		tmp = c.getCodes(rule, word)
 	}
-	tmp := util.Product(sliCode)
+
+	tmp = util.Product(tmp)
 	ret := make([]string, len(tmp))
 	for i := range tmp {
 		ret[i] = string(tmp[i])
 	}
 	// fmt.Println(sliCode, ret)
+	return ret
+}
+
+func (c *Checker) getCodes(rule []byte, word []rune) [][]byte {
+	ret := make([][]byte, 0, 1)
+	for i := 0; i < len(rule)/2; i++ {
+		wi := rule[2*i]   // word index
+		ci := rule[2*i+1] // code index
+
+		// 每个字的所有编码
+		var char rune
+		if int(wi) >= len(word) {
+			char = word[len(word)-1]
+		} else {
+			char = word[wi]
+		}
+		codes := c.Dict[char]
+		// fmt.Println("char", string(char), "codes", codes)
+
+		// 当前位置所有可能的字符
+		tmp := make([]byte, 0, 1)
+		for _, code := range codes {
+			var c byte
+			if int(ci) >= len(code) {
+				c = code[len(code)-1]
+			} else {
+				c = code[ci]
+			}
+			tmp = append(tmp, c)
+		}
+		tmp = util.RmRepeat(tmp)
+		ret = append(ret, tmp)
+	}
 	return ret
 }

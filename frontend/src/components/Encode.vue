@@ -53,7 +53,7 @@ import { SelectFile,Encode } from '../../wailsjs/go/main/App';
 
 const charPath = ref('');
 const dictPath = ref('');
-const encRule = ref('2=AaAbBaBb,3=AaAbBaCa,0=AaBaCaZa');
+const encRule = ref('2=AABB,3=ABCC,0=ABCZ');
 const disableBtn = computed(() => {
   return !(charPath.value && dictPath.value && encRule.value);
 });

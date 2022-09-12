@@ -79,7 +79,7 @@ func (a *App) Encode(charPath, dictPath, encRule string, isCheck bool) {
 	if isCheck {
 		tb := table.Parse("duoduo", dictPath)
 		data := ck.Check(tb)
-		os.WriteFile(savePath, []byte(data), 0666)
+		os.WriteFile(savePath, data, 0666)
 	} else {
 		rd, _ := util.Read(dictPath)
 		b, _ := io.ReadAll(rd)

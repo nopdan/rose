@@ -2,6 +2,7 @@ package checker
 
 import (
 	"bufio"
+	"bytes"
 	"log"
 	"strconv"
 	"strings"
@@ -11,20 +12,21 @@ import (
 )
 
 type Checker struct {
-	Dict map[rune][]string
-	Rule map[int][]int
+	Dict  map[rune][]string
+	Rule  map[int][]byte
+	RuleZ []byte
 }
 
 func NewChecker(path, rule string) *Checker {
 	e := new(Checker)
 	e.Dict = newDict(path)
-	e.Rule = newRule(rule)
+	e.Rule, e.RuleZ = newRule(rule)
 	return e
 }
 
-func (c *Checker) Check(table table.Table) string {
-	var sb strings.Builder
-	sb.WriteString("词\t编码\t可能的编码\n")
+func (c *Checker) Check(table table.Table) []byte {
+	var buf bytes.Buffer
+	buf.WriteString("词\t编码\t可能的编码\n")
 out:
 	// 遍历整个码表
 	for i := range table {
@@ -42,12 +44,12 @@ out:
 			}
 		}
 		if len(codes) != 0 {
-			sb.WriteString(word + "\t" + code + "\t")
-			sb.WriteString(strings.Join(codes, " "))
-			sb.WriteByte('\n')
+			buf.WriteString(word + "\t" + code + "\t")
+			buf.WriteString(strings.Join(codes, " "))
+			buf.WriteByte('\n')
 		}
 	}
-	return sb.String()
+	return buf.Bytes()
 }
 
 // 读取码表
@@ -90,39 +92,65 @@ out:
 }
 
 // 处理规则 2=AaAbBaBb,0=AaBaCaZa
-func newRule(rule string) map[int][]int {
-	rule = strings.ReplaceAll(rule, "，", ",")
-	sliRule := strings.Split(rule, ",")
-	// 把 AaAbBaBb 转为了 1 1 1 2 2 1 2 2
-	f := func(s string) []int {
-		s = strings.TrimSpace(s)
-		// 65 97
-		ret := make([]int, 0, 10)
-		for i := range s {
-			id := 0
-			if s[i] == 90 || s[i] == 122 {
-				// Z and z 用 0 表示
-			} else if s[i] >= 97 { // A-Z
-				id = int(s[i]) - 96
-			} else { // a-z
-				id = int(s[i]) - 64
-			}
-			ret = append(ret, id)
+func newRule(rule string) (map[int][]byte, []byte) {
+	retMap := make(map[int][]byte)
+	retSli := make([]byte, 0, 1)
+
+	if strings.HasSuffix(rule, "...") {
+		rule = strings.ToLower(rule)
+		rule = strings.TrimSuffix(rule, "...")
+		for i := range rule {
+			retSli = append(retSli, rule[i]-'a')
 		}
-		return ret
+		return retMap, retSli
 	}
 
-	ret := make(map[int][]int)
+	rule = strings.ReplaceAll(rule, "，", ",")
+	sliRule := strings.Split(rule, ",")
+
 	for _, r := range sliRule {
+		// 对每条 2=AaAbBaBb 或 AABB
 		tmp := strings.Split(r, "=")
 		if len(tmp) != 2 {
 			continue
 		}
-		id, err := strconv.Atoi(tmp[0])
+		idx, err := strconv.Atoi(tmp[0])
 		if err != nil {
-			log.Fatal("规则解析错误")
+			panic("规则解析错误")
 		}
-		ret[id] = f(tmp[1])
+		retMap[idx] = fRule(tmp[1])
+	}
+	return retMap, retSli
+}
+
+// AaAbBaBb 转为 0 0 0 1 1 0 1 1
+// ABCC 转为 0 0 1 0 2 0 2 1
+func fRule(s string) []byte {
+	// 大写字母次数
+	stat := make(map[byte]byte)
+	ret := make([]byte, 0, 1)
+	for i := 0; i < len(s); {
+		if s[i] == 'Z' {
+			ret = append(ret, 127)
+		} else {
+			ret = append(ret, s[i]-'A')
+		}
+		idx := stat[s[i]]
+		stat[s[i]]++
+		if i+1 < len(s) {
+			if s[i+1] == 'z' {
+				ret = append(ret, 127)
+			} else if s[i+1] >= 'a' {
+				ret = append(ret, s[i+1]-'a')
+			} else {
+				ret = append(ret, idx)
+				i--
+			}
+			i += 2
+		} else {
+			ret = append(ret, idx)
+			i++
+		}
 	}
 	return ret
 }
