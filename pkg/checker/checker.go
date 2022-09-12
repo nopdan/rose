@@ -2,7 +2,6 @@ package checker
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -23,7 +22,9 @@ func NewChecker(path, rule string) *Checker {
 	return e
 }
 
-func (c *Checker) Check(table table.Table) {
+func (c *Checker) Check(table table.Table) string {
+	var sb strings.Builder
+	sb.WriteString("词\t编码\t可能的编码\n")
 out:
 	// 遍历整个码表
 	for i := range table {
@@ -41,9 +42,12 @@ out:
 			}
 		}
 		if len(codes) != 0 {
-			fmt.Printf("!Check failed: 词: %s, 编码: %s, 可能的编码: %s\n", word, code, codes)
+			sb.WriteString(word + "\t" + code + "\t")
+			sb.WriteString(strings.Join(codes, " "))
+			sb.WriteByte('\n')
 		}
 	}
+	return sb.String()
 }
 
 // 读取码表
@@ -87,7 +91,8 @@ out:
 
 // 处理规则 2=AaAbBaBb,0=AaBaCaZa
 func newRule(rule string) map[int][]int {
-	sliRule := strings.Split(rule, "\n")
+	rule = strings.ReplaceAll(rule, "，", ",")
+	sliRule := strings.Split(rule, ",")
 	// 把 AaAbBaBb 转为了 1 1 1 2 2 1 2 2
 	f := func(s string) []int {
 		s = strings.TrimSpace(s)

@@ -2057,3 +2057,4 @@
 调制解调器	tiao'zhi'jie'tiao'qi
 三百六十行	san'bai'liu'shi'hang
 一二·九运动	yi'er'jiu'yun'dong
+校验	jiao'yan

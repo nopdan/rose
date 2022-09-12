@@ -1,20 +1,25 @@
 package checker
 
 import (
-	"log"
 	"strings"
 
 	"github.com/cxcn/dtool/pkg/util"
 )
 
+type Entry struct {
+	Word  string
+	Codes []string
+}
+
 // 生成编码
-func (c *Checker) Encode(s string) map[string][]string {
-	ret := make(map[string][]string)
+func (c *Checker) Encode(s string) []Entry {
+	ret := make([]Entry, 0, len(s)>>2)
 	words := strings.Split(s, "\n")
 	// 对一个词
 	for _, w := range words {
+		w = strings.Split(w, "\t")[0]
 		w = strings.TrimSpace(w)
-		ret[w] = c.EncodeWord(w)
+		ret = append(ret, Entry{w, c.EncodeWord(w)})
 	}
 	return ret
 }
@@ -23,7 +28,6 @@ func (c *Checker) Encode(s string) map[string][]string {
 func (c *Checker) EncodeWord(s string) []string {
 	word := []rune(s)
 	if len(word) < 2 {
-		log.Println("词条太短", s)
 		return []string{}
 	}
 	rule, ok := c.Rule[len(word)]

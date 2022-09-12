@@ -7,16 +7,18 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Convert: typeof import('./src/components/Convert.vue')['default']
+    Encode: typeof import('./src/components/Encode.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
+    NForm: typeof import('naive-ui')['NForm']
+    NFormItem: typeof import('naive-ui')['NFormItem']
     NInput: typeof import('naive-ui')['NInput']
+    NRadioButton: typeof import('naive-ui')['NRadioButton']
+    NRadioGroup: typeof import('naive-ui')['NRadioGroup']
     NSelect: typeof import('naive-ui')['NSelect']
     NSpace: typeof import('naive-ui')['NSpace']
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
-    NText: typeof import('naive-ui')['NText']
-    Pinyin: typeof import('./src/components/Pinyin.vue')['default']
     Shorten: typeof import('./src/components/Shorten.vue')['default']
-    Tool: typeof import('./src/components/Tool.vue')['default']
-    Zici: typeof import('./src/components/Zici.vue')['default']
   }
 }
