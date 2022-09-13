@@ -47,7 +47,7 @@
 | :----------------- | :-------- | :----- | :----------: |
 | 百度手机自定义方案 | baidu_def | `.def` |      是      |
 | 极点               | jidian_mb | `.mb`  |      否      |
-| fcitx4(WIP)        | fcitx4_mb | `.mb`  |      否      |
+| fcitx4             | fcitx4_mb | `.mb`  |      否      |
 
 ## [全码转简码码表](./pkg/encoder/shortener.go)
 

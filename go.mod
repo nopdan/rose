@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f
-	github.com/wailsapp/wails/v2 v2.0.0-beta.44.2
-	golang.org/x/net v0.0.0-20220907135653-1e95f45603a7
+	github.com/wailsapp/wails/v2 v2.0.0-rc.1.1
+	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
 	golang.org/x/text v0.3.7
 )
 
@@ -24,11 +24,11 @@ require (
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rivo/uniseg v0.3.4 // indirect
+	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/tkrajina/go-reflector v0.5.6 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
 	github.com/wailsapp/mimetype v1.4.1 // indirect
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
-	golang.org/x/sys v0.0.0-20220907062415-87db552b00fd // indirect
+	golang.org/x/sys v0.0.0-20220913120320-3275c407cedc // indirect
 )
