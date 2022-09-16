@@ -13,6 +13,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
+      # 平台依赖
+      - if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install libgtk-3-dev libwebkit2gtk-4.0-dev
+
       # 拉取代码
       - name: Checkout
         uses: actions/checkout@v3
@@ -61,18 +67,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      # 平台依赖
-      - if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt install libgtk-3-dev libwebkit2gtk-4.0-dev
-
       - name: Dependences
         run: |
           cd frontend
           pnpm i
           pnpm build
           cd ..
-
           go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
       # 编译
@@ -80,14 +80,9 @@ jobs:
         run: |
           wails build -u -s
 
-      - name: Build windows
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          wails build -u -s -platform windows
-
       # 使用 upx 压缩可执行文件
       - name: Run UPX
-        if: matrix.os != 'macos-latest'
+        if: matrix.os == 'ubuntu-latest'
         uses: crazy-max/ghaction-upx@v2
         with:
           version: latest
@@ -95,16 +90,14 @@ jobs:
             ./build/bin/*
           args: -fq
 
-      - name: Move Files
-        run: |
-          mv assets/* build/bin/
+      - run: mv assets/* build/bin/
 
       # 上传到 Artifact
-      - name: Upload
+      - name: Upload linux
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v3
         with:
-          name: dtool
+          name: dtool-linux
           path: ./build/bin/
 
       - name: Upload macos
@@ -112,4 +105,29 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: dtool-darwin
+          path: ./build/bin/
+
+      - name: Build windows
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          wails build -u -s -platform windows
+
+      - if: matrix.os == 'ubuntu-latest'
+        run: rm ./build/bin/词库处理工具
+
+      - name: Run UPX
+        if: matrix.os == 'ubuntu-latest'
+        uses: crazy-max/ghaction-upx@v2
+        with:
+          version: latest
+          files: |
+            ./build/bin/*.exe
+          args: -fq
+
+      # 上传到 Artifact
+      - name: Upload windows
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v3
+        with:
+          name: dtool-windows
           path: ./build/bin/
