@@ -66,6 +66,8 @@ func Parse(format, filename string) Dict {
 func Generate(format string, dict Dict) []byte {
 	var g Generator
 	switch format {
+	case "mspy_dat":
+		g = MspyDat{}
 	case "pyjj":
 		g = JiaJia{}
 	case "word_only":

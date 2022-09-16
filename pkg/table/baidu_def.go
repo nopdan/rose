@@ -35,7 +35,7 @@ func (BaiduDef) Parse(filename string) Table {
 		r.Read(tmp)
 		word, _ := util.Decode(tmp, "UTF-16LE")
 		// def = append(def, defEntry{word, code, order})
-		ret = append(ret, Entry{Word: word, Code: code})
+		ret = append(ret, Entry{word, code, 1})
 
 		r.Seek(6, 1) // 6个00，1是相对当前位置
 	}

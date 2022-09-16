@@ -27,3 +27,15 @@ func BytesToInt(b []byte) int {
 	}
 	return ret
 }
+
+func GetUint32(i int) []byte {
+	ret := make([]byte, 4)
+	binary.LittleEndian.PutUint32(ret, uint32(i))
+	return ret
+}
+
+func GetUint16(i int) []byte {
+	ret := make([]byte, 2)
+	binary.LittleEndian.PutUint16(ret, uint16(i))
+	return ret
+}

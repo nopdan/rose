@@ -40,7 +40,7 @@ func (c Common) Parse(filename string) Table {
 			fmt.Println("多多的命令" + word)
 			continue
 		}
-		ret = append(ret, Entry{word, code})
+		ret = append(ret, Entry{word, code, 1})
 	}
 	return ret
 }

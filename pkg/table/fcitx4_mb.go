@@ -3,8 +3,6 @@ package table
 import (
 	"bytes"
 	"os"
-
-	"github.com/cxcn/dtool/pkg/util"
 )
 
 type Fcitx4Mb struct{}
@@ -17,19 +15,19 @@ func (Fcitx4Mb) Parse(filename string) Table {
 
 	r.Seek(0x55, 0)
 	// 词条数
-	dictLen := util.ReadUint32(r)
+	dictLen := ReadUint32(r)
 
 	for i := 0; i < dictLen; i++ {
 		tmp = make([]byte, 5)
 		r.Read(tmp)
 		code := trimSufZero(tmp)
 
-		wordLen := util.ReadUint32(r)
+		wordLen := ReadUint32(r)
 		tmp = make([]byte, wordLen-1)
 		r.Read(tmp)
 		word := string(tmp)
 
-		ret = append(ret, Entry{word, code})
+		ret = append(ret, Entry{word, code, 1})
 		r.Seek(10, 1)
 	}
 	return ret

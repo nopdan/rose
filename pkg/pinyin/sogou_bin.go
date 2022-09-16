@@ -341,14 +341,14 @@ func (ud *usrDict) getData(r *bytes.Reader) []int {
 	return ret
 }
 
-func (ud *usrDict) getHashStore(idx, dataType int) int {
-	if idx < 0 || dataType > 6 || idx > len(ud.headerIdxs) {
-		panic("getHashStore error")
-	}
-	offset := ud.headerIdxs[idx].offset
-	// assert index_offset >= 0
-	size := ud.baseHashSize[idx]
-	offset = offset - 8*size
-	// assert offset >= 0
-	return offset
-}
+// func (ud *usrDict) getHashStore(idx, dataType int) int {
+// 	if idx < 0 || dataType > 6 || idx > len(ud.headerIdxs) {
+// 		panic("getHashStore error")
+// 	}
+// 	offset := ud.headerIdxs[idx].offset
+// 	// assert index_offset >= 0
+// 	size := ud.baseHashSize[idx]
+// 	offset = offset - 8*size
+// 	// assert offset >= 0
+// 	return offset
+// }

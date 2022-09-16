@@ -73,13 +73,9 @@ func TestSogouBin(t *testing.T) {
 	write_out(path, dict)
 }
 
-func TestMspy(t *testing.T) {
+func TestMspyUDL(t *testing.T) {
 	path := "own/ChsPinyinUDL.dat"
 	dict := MspyUDL{}.Parse(path)
-	write_out(path, dict)
-
-	path = "own/SuperRime拓展词库 for Win10拼音版(600万词-含BetterRime)-v20.3.dat"
-	dict = MspyDat{}.Parse(path)
 	write_out(path, dict)
 }
 

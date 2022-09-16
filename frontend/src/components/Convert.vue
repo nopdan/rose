@@ -163,7 +163,7 @@ const srcDict = [
     value: 'ziguang_uwl',
   },
   {
-    label: '微软拼音用户自定义短语.dat',
+    label: '微软用户自定义短语.dat',
     value: 'mspy_dat',
   },
   {
@@ -194,6 +194,10 @@ const srcDict = [
 
 const targetDict = [
   {
+    label: '微软用户自定义短语.dat',
+    value: 'mspy_dat',
+  },
+  {
     label: '搜狗拼音.txt',
     value: 'sogou',
   },
@@ -221,6 +225,14 @@ const targetDict = [
 
 const srcTable = [
   {
+    label: '微软用户自定义短语.dat',
+    value: 'msudp_dat',
+  },
+  {
+    label: '微软五笔.lex',
+    value: 'mswb_dat',
+  },
+  {
     label: '百度手机自定义方案.def',
     value: 'baidu_def',
   },
@@ -247,6 +259,10 @@ const srcTable = [
 ];
 
 const targetTable = [
+  {
+    label: '微软用户自定义短语.dat',
+    value: 'msudp_dat',
+  },
   {
     label: '百度手机自定义方案.def',
     value: 'baidu_def',

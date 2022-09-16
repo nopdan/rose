@@ -7,7 +7,9 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/cxcn/dtool)
 ![GitHub](https://img.shields.io/github/license/cxcn/dtool)
 
-词库处理工具，词库编码，词库格式转换，词库校验，出简不出全
+词库处理工具，词库编码，词库格式转换，词库校验，出简不出全。
+
+关于词库格式的详细解析可以到我的[博客](https://noif.cc/)查看。
 
 ## [拼音词库转换](./pkg/pinyin/)
 
@@ -26,7 +28,7 @@
 
 **二进制：**
 
-> 均不支持输出
+> **加粗**项支持输出
 
 | 描述                         | 代号        | 格式             |
 | :--------------------------- | :---------- | :--------------- |
@@ -35,7 +37,7 @@
 | qq6.0 以下词库               | qq_qpyd     | `.qpyd`          |
 | 百度分类词库                 | baidu_bdict | `.bdict`\|`.bcd` |
 | 紫光（华宇）                 | ziguang_uwl | `.uwl`           |
-| 微软拼音用户自定义短语       | mspy_dat    | `.dat`           |
+| **微软用户自定义短语**       | mspy_dat    | `.dat`           |
 | 微软拼音自学习词汇           | mspy_udl    | `.dat`           |
 
 ## [字词码表转换](./pkg/table/)
@@ -50,11 +52,14 @@
 
 **二进制：**
 
-| 描述               | 代号      | 格式   | 是否支持输出 |
-| :----------------- | :-------- | :----- | :----------: |
-| 百度手机自定义方案 | baidu_def | `.def` |      是      |
-| 极点               | jidian_mb | `.mb`  |      否      |
-| fcitx4             | fcitx4_mb | `.mb`  |      否      |
+> **加粗**项支持输出
+
+| 描述                   | 代号      | 格式   |
+| :--------------------- | :-------- | :----- |
+| **百度手机自定义方案** | baidu_def | `.def` |
+| **微软用户自定义短语** | msudp_dat | `.dat` |
+| 极点                   | jidian_mb | `.mb`  |
+| fcitx4                 | fcitx4_mb | `.mb`  |
 
 ## [转双拼词库](./pkg/double/double_pinyin.go)
 

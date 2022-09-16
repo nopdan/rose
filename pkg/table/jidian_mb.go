@@ -35,7 +35,7 @@ func (JidianMb) Parse(filename string) Table {
 		r.Read(tmp)
 		word, _ := util.Decode(tmp, "UTF-16LE")
 
-		ret = append(ret, Entry{word, code})
+		ret = append(ret, Entry{word, code, 1})
 	}
 	return ret
 }
