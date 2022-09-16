@@ -27,10 +27,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 2em;
 }
 
 .card-tabs {
-  width: 450px;
-  height: 300px;
+  min-width: 450px;
+  min-height: 300px;
 }
 </style>

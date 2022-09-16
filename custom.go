@@ -9,6 +9,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
 	"github.com/cxcn/dtool/pkg/checker"
+	"github.com/cxcn/dtool/pkg/double"
 	"github.com/cxcn/dtool/pkg/encoder"
 	"github.com/cxcn/dtool/pkg/pinyin"
 	"github.com/cxcn/dtool/pkg/table"
@@ -38,7 +39,7 @@ func (a *App) getSavePath(base string) (string, runtime.MessageDialogOptions) {
 	return ret, mdo
 }
 
-func (a *App) Convert(input, iformat, oformat string, isPinyin bool) {
+func (a *App) Convert(input, iformat, oformat string, isPinyin bool, dp bool, dpRule int, dpCfg string) {
 	ret, mdo := a.getSavePath(input)
 	// 没有选
 	if ret == "" {
@@ -47,7 +48,12 @@ func (a *App) Convert(input, iformat, oformat string, isPinyin bool) {
 	var data []byte
 	if isPinyin {
 		dict := pinyin.Parse(iformat, input)
-		data = pinyin.Generate(oformat, dict)
+		if dp {
+			tmp := double.ToDoublePinyin(dict, dpCfg, dpRule)
+			data = table.Generate(oformat, tmp)
+		} else {
+			data = pinyin.Generate(oformat, dict)
+		}
 	} else {
 		dict := table.Parse(iformat, input)
 		data = table.Generate(oformat, dict)

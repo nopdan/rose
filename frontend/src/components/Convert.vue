@@ -33,8 +33,33 @@
     </n-space>
   </div>
 
-  <div style="display: flex; margin-top: 3em">
+  <n-form
+    ref="formRef"
+    inline
+    label-width="auto"
+    style="margin-top: 1em; height: 84px"
+  >
+    <n-form-item label="转为双拼" v-if="isPinyin" style="width: 15%">
+      <n-switch v-model:value="doublePinyin"> </n-switch>
+    </n-form-item>
+    <n-form-item v-if="doublePinyin" label="三字词规则" style="width: 25%">
+      <n-select v-model:value="dpRule" :options="dpOpts" />
+    </n-form-item>
+    <n-form-item v-if="doublePinyin" label="映射表" style="width: 40%">
+      <n-input
+        readonly
+        type="text"
+        placeholder="文件路径..."
+        :value="dpCfg"
+      ></n-input>
+    </n-form-item>
     <div style="margin: auto"></div>
+    <n-form-item v-if="doublePinyin">
+      <n-button @click="selectDpCfg" type="primary" ghost> 选择 </n-button>
+    </n-form-item>
+  </n-form>
+
+  <div style="float: right">
     <n-button
       class="button"
       type="primary"
@@ -68,8 +93,24 @@ const srcOpts = computed(() => {
   return isPinyin.value ? srcDict : srcTable;
 });
 const targetOpts = computed(() => {
-  return isPinyin.value ? targetDict : targetTable;
+  return isPinyin.value && !doublePinyin.value ? targetDict : targetTable;
 });
+
+const doublePinyin = ref(false);
+const dpRule = ref(0);
+const dpOpts = [
+  { label: 'AABC', value: 0 },
+  { label: 'ABCC', value: 1 },
+];
+const dpCfg = ref('');
+function selectDpCfg() {
+  SelectFile().then((result) => {
+    if (result != '') {
+      dpCfg.value = result;
+    }
+  });
+}
+
 const disableBtn = computed(() => {
   return !(inputPath.value && srcFormat.value && targetFormat.value);
 });
@@ -77,10 +118,23 @@ const disableBtn = computed(() => {
 watch(ime, () => {
   srcFormat.value = '';
   targetFormat.value = '';
+  doublePinyin.value = false;
+});
+
+watch(doublePinyin, () => {
+  targetFormat.value = doublePinyin.value ? 'duoduo' : '';
 });
 
 function saveFile() {
-  Convert(inputPath.value, srcFormat.value, targetFormat.value, isPinyin.value);
+  Convert(
+    inputPath.value,
+    srcFormat.value,
+    targetFormat.value,
+    isPinyin.value,
+    doublePinyin.value,
+    dpRule.value,
+    dpCfg.value
+  );
 }
 
 const srcDict = [

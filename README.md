@@ -1,4 +1,11 @@
-# dtool
+# 词库处理工具
+
+[![GitHub Repo stars](https://img.shields.io/github/stars/cxcn/dtool)](https://github.com/cxcn/dtool/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/cxcn/dtool)](https://github.com/cxcn/dtool/network/members)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/cxcn/dtool)](https://github.com/cxcn/dtool/releases)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/cxcn/dtool/Build)](https://github.com/cxcn/dtool/actions/workflows/build.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/cxcn/dtool)
+![GitHub](https://img.shields.io/github/license/cxcn/dtool)
 
 词库处理工具，词库编码，词库格式转换，词库校验，出简不出全
 
@@ -49,16 +56,9 @@
 | 极点               | jidian_mb | `.mb`  |      否      |
 | fcitx4             | fcitx4_mb | `.mb`  |      否      |
 
-## [全码转简码码表](./pkg/encoder/shortener.go)
+## [转双拼词库](./pkg/double/double_pinyin.go)
 
-> 仅支持多多格式，其他格式需先行转换
-
-出简不出全规则：逗号，冒号分隔，默认 1，n 无限
-
-```yaml
-例子: '1:0, 2:3, 3:2, 6:n'
-#  无 1 简，2 码 3 重，3 码 2 重，4 码 1 重，5 码 1 重，6 码无限重
-```
+全拼词库转为双拼四码定长码表，需要一个双拼映射表，格式为手心输入法，具体可以看[示例](assets/双拼映射表/)。
 
 ## [词库编码和校验](./pkg/checker/checker.go)
 
@@ -71,3 +71,14 @@
 也可以简写为 `2=AABB,3=AABC,0=ABCZ`
 
 对于整句，`ab...`(必须以...结尾) 表示取每个字编码的前两码
+
+## [全码转简码码表](./pkg/encoder/shortener.go)
+
+> 仅支持多多格式，其他格式需先行转换
+
+出简不出全规则：逗号，冒号分隔，默认 1，n 无限
+
+```yaml
+例子: '1:0, 2:3, 3:2, 6:n'
+#  无 1 简，2 码 3 重，3 码 2 重，4 码 1 重，5 码 1 重，6 码无限重
+```

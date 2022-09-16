@@ -95,6 +95,10 @@ jobs:
             ./build/bin/*
           args: -fq
 
+      - name: Move Files
+        run: |
+          mv assets/* build/bin/
+
       # 上传到 Artifact
       - name: Upload
         if: matrix.os == 'ubuntu-latest'
