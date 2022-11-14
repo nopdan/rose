@@ -73,7 +73,7 @@ jobs:
           pnpm i
           pnpm build
           cd ..
-          go install github.com/wailsapp/wails/v2/cmd/wails@latest
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.2.0
 
       # 编译
       - name: Build
@@ -90,7 +90,9 @@ jobs:
             ./build/bin/*
           args: -fq
 
-      - run: mv assets/* build/bin/
+      - run: |
+          mv assets/* build/bin/
+          mv README.md build/bin/
 
       # 上传到 Artifact
       - name: Upload linux
