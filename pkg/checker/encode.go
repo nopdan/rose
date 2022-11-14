@@ -16,10 +16,10 @@ func (c *Checker) Encode(s string) []Entry {
 	ret := make([]Entry, 0, len(s)>>2)
 	words := strings.Split(s, "\n")
 	// 对一个词
-	for _, w := range words {
-		w = strings.Split(w, "\t")[0]
-		w = strings.TrimSpace(w)
-		ret = append(ret, Entry{w, c.EncodeWord(w)})
+	for _, word := range words {
+		word = strings.Split(word, "\t")[0]
+		word = strings.TrimSpace(word)
+		ret = append(ret, Entry{word, c.EncodeWord(word)})
 	}
 	return ret
 }
@@ -37,21 +37,10 @@ func (c *Checker) EncodeWord(s string) []string {
 
 	tmp := make([][]byte, 0, 1)
 	if len(c.RuleZ) != 0 {
-		for _, s := range word {
-			codes := c.Dict[s]
+		for _, char := range word {
+			codes := c.Dict[char]
 			for _, idx := range c.RuleZ {
-				ctmp := make([]byte, 0, 1)
-				for _, code := range codes {
-					var c byte
-					if int(idx) >= len(code) {
-						c = code[len(code)-1]
-					} else {
-						c = code[idx]
-					}
-					ctmp = append(ctmp, c)
-				}
-				ctmp = util.RmRepeat(ctmp)
-				tmp = append(tmp, ctmp)
+				tmp = append(tmp, currCodes(codes, int(idx)))
 			}
 		}
 	} else {
@@ -63,10 +52,10 @@ func (c *Checker) EncodeWord(s string) []string {
 	for i := range tmp {
 		ret[i] = string(tmp[i])
 	}
-	// fmt.Println(sliCode, ret)
 	return ret
 }
 
+// 定长规则
 func (c *Checker) getCodes(rule []byte, word []rune) [][]byte {
 	ret := make([][]byte, 0, 1)
 	for i := 0; i < len(rule)/2; i++ {
@@ -81,21 +70,24 @@ func (c *Checker) getCodes(rule []byte, word []rune) [][]byte {
 			char = word[wi]
 		}
 		codes := c.Dict[char]
+		ret = append(ret, currCodes(codes, int(ci)))
 		// fmt.Println("char", string(char), "codes", codes)
-
-		// 当前位置所有可能的字符
-		tmp := make([]byte, 0, 1)
-		for _, code := range codes {
-			var c byte
-			if int(ci) >= len(code) {
-				c = code[len(code)-1]
-			} else {
-				c = code[ci]
-			}
-			tmp = append(tmp, c)
-		}
-		tmp = util.RmRepeat(tmp)
-		ret = append(ret, tmp)
 	}
 	return ret
+}
+
+// 当前位置所有可能的字符
+func currCodes(codes []string, idx int) []byte {
+	tmp := make([]byte, 0, 1)
+	for _, code := range codes {
+		var b byte
+		if idx >= len(code) {
+			b = code[len(code)-1]
+		} else {
+			b = code[idx]
+		}
+		tmp = append(tmp, b)
+	}
+	tmp = util.RmRepeat(tmp)
+	return tmp
 }

@@ -14,23 +14,23 @@ type MsUDP struct{}
 func (MsUDP) Parse(filename string) Table {
 	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(Table, 0, r.Len()>>8)
 
 	// 词库偏移量
 	r.Seek(0x10, 0)
 	offset_start := ReadUint32(r) // 偏移表开始
 	entry_start := ReadUint32(r)  // 词条开始
 	entry_end := ReadUint32(r)    // 词条结束
-	entry_count := ReadUint32(r)  // 词条数
-	export_time := ReadUint32(r)  // 导出的时间
-	t := time.Unix(int64(export_time), 0)
-	fmt.Println(t, entry_end)
+	count := ReadUint32(r)        // 词条数
+	ret := make(Table, 0, count)
+	export_stamp := ReadUint32(r) // 导出的时间戳
+	export_time := time.Unix(int64(export_stamp), 0)
+	fmt.Println(entry_end, export_time)
 
 	// 第一个偏移量
 	offset := 0
-	for i := 0; i < entry_count; i++ {
+	for i := 0; i < count; i++ {
 		var next, length int
-		if i == entry_count-1 {
+		if i == count-1 {
 			length = entry_end - entry_start - offset
 		} else {
 			r.Seek(int64(offset_start+4*(i+1)), 0)
@@ -41,20 +41,25 @@ func (MsUDP) Parse(filename string) Table {
 
 		r.Seek(int64(offset+entry_start), 0)
 		offset = next
-		ReadUint32(r)            // 0x10001000
+		r.Seek(4, 1)             // 0x10001000
 		codeLen := ReadUint16(r) // 编码字节长+0x12
 		order, _ := r.ReadByte() // 顺序
-		_, _ = r.ReadByte()      // 0x06 不明
-		ReadUint32(r)            // 4 个空字节
-		ReadUint32(r)            // 时间戳
+		r.ReadByte()             // 0x06 不明
+		r.Seek(4, 1)             // 4 个空字节
+		r.Seek(4, 1)             // 时间戳
+		// insert_stamp := ReadUint32(r)
+		// insert_time := time.Unix(int64(insert_stamp), 0)
+		// insert_time = insert_time.Add(946684800 * time.Second)
+		// fmt.Println(insert_time)
+
 		tmp := make([]byte, codeLen-0x12)
 		r.Read(tmp)
 		code, _ := util.Decode(tmp, "UTF-16LE")
-		ReadUint16(r) // 两个空字节
+		r.Seek(2, 1) // 两个空字节
 		tmp = make([]byte, length-codeLen-2)
 		r.Read(tmp)
 		word, _ := util.Decode(tmp, "UTF-16LE")
-		fmt.Println(code, word)
+		// fmt.Println(code, word)
 		ret = append(ret, Entry{word, code, order})
 	}
 	return ret
@@ -62,14 +67,16 @@ func (MsUDP) Parse(filename string) Table {
 
 func (MsUDP) Gen(table Table) []byte {
 	var buf bytes.Buffer
-	stamp := util.GetUint32(int(time.Now().Unix()))
+	now := time.Now()
+	export_stamp := util.GetUint32(int(now.Unix()))
+	insert_stamp := util.GetUint32(int(now.Add(-946684800 * time.Second).Unix()))
 	buf.Write([]byte{0x6D, 0x73, 0x63, 0x68, 0x78, 0x75, 0x64, 0x70,
 		0x02, 0x00, 0x60, 0x00, 0x01, 0x00, 0x00, 0x00})
 	buf.Write(util.GetUint32(0x40))
 	buf.Write(util.GetUint32(0x40 + 4*len(table)))
 	buf.Write(make([]byte, 4)) // 待定 文件总长
 	buf.Write(util.GetUint32(len(table)))
-	buf.Write(stamp)
+	buf.Write(export_stamp)
 	buf.Write(make([]byte, 28))
 	buf.Write(make([]byte, 4))
 
@@ -90,10 +97,14 @@ func (MsUDP) Gen(table Table) []byte {
 		buf.Write([]byte{0x10, 0x00, 0x10, 0x00})
 		// fmt.Println(words[i], len(words[i]), codes[i], len(codes[i]))
 		buf.Write(util.GetUint16(len(codes[i]) + 18))
-		buf.WriteByte(table[i].Order)
+		pos := table[i].Pos
+		if pos < 1 {
+			pos = 1
+		}
+		buf.WriteByte(pos)
 		buf.WriteByte(0x06)
 		buf.Write(make([]byte, 4))
-		buf.Write(stamp)
+		buf.Write(insert_stamp)
 		buf.Write(codes[i])
 		buf.Write([]byte{0, 0})
 		buf.Write(words[i])

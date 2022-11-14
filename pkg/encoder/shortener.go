@@ -9,7 +9,7 @@ import (
 
 // rule 1:0,2:3,3:2,6:n 默认1，n 无限
 func Shorten(table *table.Table, rule string) {
-	rl := handleRule(rule)
+	rl := parseRule(rule)
 	countMap := make(map[string]int)
 	for i := 0; i < len(*table); i++ {
 		wc := (*table)[i]
@@ -28,7 +28,7 @@ func Shorten(table *table.Table, rule string) {
 }
 
 // [0,3,2,1,1,1e5]
-func handleRule(rule string) []int {
+func parseRule(rule string) []int {
 	ret := make([]int, 0)
 	rule = strings.ReplaceAll(rule, " ", "")
 	rule = strings.ReplaceAll(rule, "，", ",")

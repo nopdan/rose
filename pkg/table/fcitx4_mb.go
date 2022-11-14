@@ -10,14 +10,14 @@ type Fcitx4Mb struct{}
 func (Fcitx4Mb) Parse(filename string) Table {
 	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
-	ret := make(Table, 0, r.Len()>>8)
 	var tmp []byte
 
 	r.Seek(0x55, 0)
 	// 词条数
-	dictLen := ReadUint32(r)
+	count := ReadUint32(r)
+	ret := make(Table, 0, count)
 
-	for i := 0; i < dictLen; i++ {
+	for i := 0; i < count; i++ {
 		tmp = make([]byte, 5)
 		r.Read(tmp)
 		code := trimSufZero(tmp)

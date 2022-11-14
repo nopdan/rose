@@ -13,9 +13,9 @@ type Table []Entry
 
 // 词，编码
 type Entry struct {
-	Word  string
-	Code  string
-	Order byte
+	Word string
+	Code string
+	Pos  byte // 在候选中的位置
 }
 
 type Parser interface {

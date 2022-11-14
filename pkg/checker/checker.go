@@ -3,7 +3,7 @@ package checker
 import (
 	"bufio"
 	"bytes"
-	"log"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -18,10 +18,10 @@ type Checker struct {
 }
 
 func NewChecker(path, rule string) *Checker {
-	e := new(Checker)
-	e.Dict = newDict(path)
-	e.Rule, e.RuleZ = newRule(rule)
-	return e
+	c := new(Checker)
+	c.Dict = readDict(path)
+	c.Rule, c.RuleZ = parseRule(rule)
+	return c
 }
 
 func (c *Checker) Check(table table.Table) []byte {
@@ -53,62 +53,63 @@ out:
 }
 
 // 读取码表
-func newDict(path string) map[rune][]string {
+func readDict(path string) map[rune][]string {
 	rd, err := util.Read(path)
 	if err != nil {
-		log.Fatal("读取码表失败")
+		panic("读取码表失败")
 	}
 	scan := bufio.NewScanner(rd)
-	d := make(map[rune][]string, 1e4)
+	dict := make(map[rune][]string, 1e4)
 out:
 	for scan.Scan() {
-		items := strings.Split(scan.Text(), "\t")
-		if len(items) < 2 {
-			log.Println("这一行没有以\\t分割", scan.Text())
+		entry := strings.Split(scan.Text(), "\t")
+		if len(entry) < 2 {
+			fmt.Println("这一行没有以\\t分割", scan.Text())
 			continue
 		}
-		ws, c := []rune(items[0]), items[1]
-		if len(ws) != 1 {
+		word, code := entry[0], entry[1]
+		if len([]rune(word)) != 1 {
 			// log.Println("不是单字，跳过", ws)
 			continue
 		}
-		w := ws[0] // 是一个字
+		char := []rune(word)[0] // 是一个字
 		// 去重，取较长的编码
-		if _, ok := d[w]; !ok {
-			d[w] = []string{c}
+		if _, ok := dict[char]; !ok {
+			dict[char] = []string{code}
 		} else {
-			for i, v := range d[w] {
-				if strings.HasPrefix(v, c) { // 原来的编码更长
+			for i, v := range dict[char] {
+				if strings.HasPrefix(v, code) { // 原来的编码更长
 					continue out
-				} else if strings.HasPrefix(c, v) { // 当前的编码更长
-					d[w][i] = c
+				} else if strings.HasPrefix(code, v) { // 当前的编码更长
+					dict[char][i] = code
 					continue out
 				}
 			}
-			d[w] = append(d[w], c)
+			dict[char] = append(dict[char], code)
 		}
 	}
-	return d
+	return dict
 }
 
-// 处理规则 2=AaAbBaBb,0=AaBaCaZa
-func newRule(rule string) (map[int][]byte, []byte) {
-	retMap := make(map[int][]byte)
-	retSli := make([]byte, 0, 1)
+// 解析规则 2=AaAbBaBb,0=AaBaCaZa
+func parseRule(s string) (map[int][]byte, []byte) {
+	rule := make(map[int][]byte)
 
-	if strings.HasSuffix(rule, "...") {
-		rule = strings.ToLower(rule)
-		rule = strings.TrimSuffix(rule, "...")
-		for i := range rule {
-			retSli = append(retSli, rule[i]-'a')
+	// 整句规则
+	ruleZ := make([]byte, 0, 1)
+	if strings.HasSuffix(s, "...") {
+		s = strings.ToLower(s)
+		s = strings.TrimSuffix(s, "...")
+		for i := range s {
+			ruleZ = append(ruleZ, s[i]-'a')
 		}
-		return retMap, retSli
+		return rule, ruleZ
 	}
 
-	rule = strings.ReplaceAll(rule, "，", ",")
-	sliRule := strings.Split(rule, ",")
+	s = strings.ReplaceAll(s, "，", ",")
+	ruleSli := strings.Split(s, ",")
 
-	for _, r := range sliRule {
+	for _, r := range ruleSli {
 		// 对每条 2=AaAbBaBb 或 AABB
 		tmp := strings.Split(r, "=")
 		if len(tmp) != 2 {
@@ -118,14 +119,14 @@ func newRule(rule string) (map[int][]byte, []byte) {
 		if err != nil {
 			panic("规则解析错误")
 		}
-		retMap[idx] = fRule(tmp[1])
+		rule[idx] = partOfRule(tmp[1])
 	}
-	return retMap, retSli
+	return rule, ruleZ
 }
 
 // AaAbBaBb 转为 0 0 0 1 1 0 1 1
 // ABCC 转为 0 0 1 0 2 0 2 1
-func fRule(s string) []byte {
+func partOfRule(s string) []byte {
 	// 大写字母次数
 	stat := make(map[byte]byte)
 	ret := make([]byte, 0, 1)

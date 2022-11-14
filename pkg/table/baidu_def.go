@@ -61,7 +61,7 @@ func (BaiduDef) Gen(table Table) []byte {
 			buf.WriteByte(byte(len(sliWord) + 2))               // 写词字节长+2
 			buf.WriteString(code)                               // 写编码
 			buf.Write(sliWord)                                  // 写词
-			buf.Write([]byte{0, 0, 0, 0, 0, 0})                 // 写6个0
+			buf.Write(make([]byte, 6))                          // 写6个0
 
 			// 编码长度 + 词字节长 + 6，不包括长度本身占的2个字节
 			lengthMap[code[0]] += len(code) + len(sliWord) + 2 + 6

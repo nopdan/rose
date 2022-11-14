@@ -8,11 +8,11 @@ import (
 )
 
 func TestRule(t *testing.T) {
-	fmt.Println(newRule("2=AaAbBaBb,3=AaAbBaCa,0=AaBaCaZa"))
-	fmt.Println(newRule("2=AaAbBaBb,3=AaBaCaCb,0=AaBaCaZa"))
-	fmt.Println(newRule("2=AaAbBaBbAcBc,3=AaBaCaAcBcCc,0=AaBaCaZaAcBc"))
-	fmt.Println(newRule("2=AABB,3=ABCC,0=ABCZ"))
-	fmt.Println(newRule("ab..."))
+	fmt.Println(parseRule("2=AaAbBaBb,3=AaAbBaCa,0=AaBaCaZa"))
+	fmt.Println(parseRule("2=AaAbBaBb,3=AaBaCaCb,0=AaBaCaZa"))
+	fmt.Println(parseRule("2=AaAbBaBbAcBc,3=AaBaCaAcBcCc,0=AaBaCaZaAcBc"))
+	fmt.Println(parseRule("2=AABB,3=ABCC,0=ABCZ"))
+	fmt.Println(parseRule("ab..."))
 }
 
 func TestChecker(t *testing.T) {
@@ -23,7 +23,7 @@ func TestChecker(t *testing.T) {
 	fmt.Println(string(c.Check(table)))
 
 	tmp := c.Encode("温柔\n没有人\n好不容易\n对外贸易法")
-	for word, codes := range tmp {
-		fmt.Println(word, "\n", codes)
+	for i := range tmp {
+		fmt.Println(tmp[i].Word, "\t", tmp[i].Codes)
 	}
 }

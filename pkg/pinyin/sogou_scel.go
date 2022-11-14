@@ -2,6 +2,7 @@ package pinyin
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 
 	"github.com/cxcn/dtool/pkg/util"
@@ -88,15 +89,14 @@ func (SogouScel) Parse(filename string) Dict {
 	// 黑名单
 	r.Seek(12, 1)
 	blackLen := ReadUint16(r)
-	var black_list bytes.Buffer
+	black_list := make([]string, 0, blackLen)
 	for i := 0; i < blackLen; i++ {
 		wordLen := ReadUint16(r)
 		tmp = make([]byte, wordLen*2)
 		r.Read(tmp)
 		word, _ := util.Decode(tmp, "UTF-16LE")
-		black_list.WriteString(word)
-		black_list.WriteByte('\n')
+		black_list = append(black_list, word)
 	}
-	// os.WriteFile("black_list.txt", black_list.Bytes(), 0666)
+	fmt.Println("黑名单：", black_list)
 	return ret
 }

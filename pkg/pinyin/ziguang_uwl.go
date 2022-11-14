@@ -40,7 +40,7 @@ func (ZiguangUwl) Parse(filename string) Dict {
 	return ret
 }
 
-func parseZgUwlPart(r *bytes.Reader, ret Dict, e byte) Dict {
+func parseZgUwlPart(r *bytes.Reader, ret Dict, encoding byte) Dict {
 	r.Seek(12, 1)
 	// 词条占用字节数
 	max := ReadUint32(r)
@@ -77,7 +77,7 @@ func parseZgUwlPart(r *bytes.Reader, ret Dict, e byte) Dict {
 		tmp := make([]byte, wordLen)
 		r.Read(tmp)
 		var word string
-		switch e {
+		switch encoding {
 		case 0x08:
 			word, _ = util.Decode(tmp, "GBK")
 		case 0x09:

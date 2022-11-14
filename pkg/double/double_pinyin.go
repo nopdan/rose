@@ -24,12 +24,12 @@ const (
 )
 
 func ToDoublePinyin(dict pinyin.Dict, path string, rule int) table.Table {
-	config := newMapping(path, rule)
+	m := newMapping(path, rule)
 	ret := make(table.Table, 0, len(dict))
 	for i := range dict {
 		ret = append(ret, table.Entry{
 			Word: dict[i].Word,
-			Code: config.match(dict[i].Pinyin),
+			Code: m.match(dict[i].Pinyin),
 		})
 	}
 	return ret
@@ -41,29 +41,30 @@ func newMapping(path string, rule int) *mapping {
 		fmt.Printf("Fail to read file: %v", err)
 		os.Exit(1)
 	}
-	config := &mapping{
+	m := &mapping{
 		shengmu: cfg.Section("ShengMu").KeysHash(),
 		yunmu:   cfg.Section("YunMu").KeysHash(),
 		yinjie:  cfg.Section("YinJie").KeysHash(),
 		rule:    rule,
 	}
-	config.shengmu = toLower(config.shengmu)
-	config.yunmu = toLower(config.yunmu)
-	config.yinjie = toLower(config.yinjie)
-	return config
+	toLower(m.shengmu)
+	toLower(m.yunmu)
+	toLower(m.yinjie)
+	return m
 }
 
 func (m *mapping) match(pinyin []string) string {
 	var ret string
-	if len(pinyin) < 2 {
+	switch {
+	case len(pinyin) < 2:
 		ret = m.get(pinyin[0])
-	} else if len(pinyin) == 2 {
+	case len(pinyin) == 2:
 		ret = m.get(pinyin[0]) + m.get(pinyin[1])
-	} else if len(pinyin) >= 4 {
+	case len(pinyin) >= 4:
 		ret = string([]byte{
 			m.get(pinyin[0])[0], m.get(pinyin[1])[0], m.get(pinyin[2])[0], m.get(pinyin[len(pinyin)-1])[0],
 		})
-	} else {
+	default:
 		switch m.rule {
 		case AABC:
 			ret = m.get(pinyin[0]) + string([]byte{m.get(pinyin[1])[0], m.get(pinyin[2])[0]})
@@ -107,9 +108,8 @@ func (m *mapping) get(yinjie string) string {
 	return yj
 }
 
-func toLower(m map[string]string) map[string]string {
+func toLower(m map[string]string) {
 	for k, v := range m {
 		m[k] = strings.ToLower(v)
 	}
-	return m
 }

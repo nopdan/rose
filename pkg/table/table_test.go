@@ -13,7 +13,7 @@ func TestMswbLex(t *testing.T) {
 }
 
 func TestMsUDP(t *testing.T) {
-	path := "own/SuperRime拓展词库 for Win10拼音版(600万词-含BetterRime)-v20.3.dat"
+	path := "own/UserDefinedPhrase.dat"
 	dict := MsUDP{}.Parse(path)
 	write_out(path, dict)
 }
