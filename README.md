@@ -3,7 +3,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/cxcn/dtool)](https://github.com/cxcn/dtool/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/cxcn/dtool)](https://github.com/cxcn/dtool/network/members)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/cxcn/dtool)](https://github.com/cxcn/dtool/releases)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/cxcn/dtool/Build)](https://github.com/cxcn/dtool/actions/workflows/build.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/cxcn/dtool/build.yml)](https://github.com/cxcn/dtool/actions/workflows/build.yml)
 ![GitHub repo size](https://img.shields.io/github/repo-size/cxcn/dtool)
 ![GitHub](https://img.shields.io/github/license/cxcn/dtool)
 
