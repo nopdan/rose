@@ -112,7 +112,7 @@ jobs:
       - name: Build windows
         if: matrix.os == 'ubuntu-latest'
         run: |
-          wails build -u -s -platform windows
+          wails build -u -s -platform windows/amd64
 
       - if: matrix.os == 'ubuntu-latest'
         run: rm ./build/bin/词库处理工具
