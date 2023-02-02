@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 type BaiduDef struct{}
@@ -56,12 +56,12 @@ func (BaiduDef) Gen(table Table) []byte {
 			if i != 0 { // 不在首选的写入位置信息，好像没什么用？
 				code = v.Code + "=" + strconv.Itoa(i+1)
 			}
-			sliWord, _ := util.Encode([]byte(word), "UTF-16LE") // 转为utf-16le
-			buf.WriteByte(byte(len(code)))                      // 写编码长度
-			buf.WriteByte(byte(len(sliWord) + 2))               // 写词字节长+2
-			buf.WriteString(code)                               // 写编码
-			buf.Write(sliWord)                                  // 写词
-			buf.Write(make([]byte, 6))                          // 写6个0
+			sliWord, _ := util.Encode(word, "UTF-16LE") // 转为utf-16le
+			buf.WriteByte(byte(len(code)))              // 写编码长度
+			buf.WriteByte(byte(len(sliWord) + 2))       // 写词字节长+2
+			buf.WriteString(code)                       // 写编码
+			buf.Write(sliWord)                          // 写词
+			buf.Write(make([]byte, 6))                  // 写6个0
 
 			// 编码长度 + 词字节长 + 6，不包括长度本身占的2个字节
 			lengthMap[code[0]] += len(code) + len(sliWord) + 2 + 6

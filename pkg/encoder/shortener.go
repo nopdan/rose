@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/table"
+	"github.com/imetool/dtool/pkg/table"
 )
 
 // rule 1:0,2:3,3:2,6:n 默认1，n 无限

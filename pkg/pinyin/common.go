@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 // 通用规则

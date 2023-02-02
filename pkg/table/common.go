@@ -2,12 +2,11 @@ package table
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"log"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 type Common struct {
@@ -46,21 +45,22 @@ func (c Common) Parse(filename string) Table {
 }
 
 func (c Common) Gen(table Table) []byte {
-	var buf bytes.Buffer
+	var sb strings.Builder
+	sb.Grow(len(table))
 	for _, v := range table {
 		if c.WordFirst {
-			buf.WriteString(v.Word)
-			buf.WriteByte('\t')
-			buf.WriteString(v.Code)
+			sb.WriteString(v.Word)
+			sb.WriteByte('\t')
+			sb.WriteString(v.Code)
 		} else {
-			buf.WriteString(v.Code)
-			buf.WriteByte('\t')
-			buf.WriteString(v.Word)
+			sb.WriteString(v.Code)
+			sb.WriteByte('\t')
+			sb.WriteString(v.Word)
 		}
-		buf.WriteByte('\r')
-		buf.WriteByte('\n')
+		sb.WriteByte('\r')
+		sb.WriteByte('\n')
 	}
-	ret, _ := util.Encode(buf.Bytes(), c.Encoding)
+	ret, _ := util.Encode(sb.String(), c.Encoding)
 	if c.Encoding == "UTF-16LE" {
 		ret = append([]byte{0xff, 0xfe}, ret...)
 	}

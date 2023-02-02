@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cxcn/dtool/pkg/table"
+	"github.com/imetool/dtool/pkg/table"
 )
 
 func TestShorten(t *testing.T) {

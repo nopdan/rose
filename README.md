@@ -1,11 +1,11 @@
 # 词库处理工具
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/cxcn/dtool)](https://github.com/cxcn/dtool/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/cxcn/dtool)](https://github.com/cxcn/dtool/network/members)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/cxcn/dtool)](https://github.com/cxcn/dtool/releases)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/cxcn/dtool/build.yml)](https://github.com/cxcn/dtool/actions/workflows/build.yml)
-![GitHub repo size](https://img.shields.io/github/repo-size/cxcn/dtool)
-![GitHub](https://img.shields.io/github/license/cxcn/dtool)
+[![GitHub Repo stars](https://img.shields.io/github/stars/imetool/dtool)](https://github.com/imetool/dtool/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/imetool/dtool)](https://github.com/imetool/dtool/network/members)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/imetool/dtool)](https://github.com/imetool/dtool/releases)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/imetool/dtool/build.yml)](https://github.com/imetool/dtool/actions/workflows/build.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/imetool/dtool)
+![GitHub](https://img.shields.io/github/license/imetool/dtool)
 
 词库处理工具，词库编码，词库格式转换，词库校验，出简不出全。
 

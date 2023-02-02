@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"os"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 var bdictSm = []string{
@@ -31,7 +31,7 @@ func (BaiduBdict) Parse(filename string) Dict {
 		// 拼音长
 		pyLen := ReadUint16(r)
 		// 词频
-		freq := ReadUint16(r)
+		freq := int(ReadUint16(r))
 
 		// 判断下两个字节
 		tmp = make([]byte, 2)
@@ -73,7 +73,7 @@ func (BaiduBdict) Parse(filename string) Dict {
 		// 一般格式
 		r.Seek(-2, 1)
 		pinyin := make([]string, 0, pyLen)
-		for i := 0; i < pyLen; i++ {
+		for i := _u16; i < pyLen; i++ {
 			smIdx, _ := r.ReadByte()
 			ymIdx, _ := r.ReadByte()
 			// 带英文的词组

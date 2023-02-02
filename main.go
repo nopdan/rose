@@ -76,7 +76,7 @@ func mainWails() {
 			WindowIsTranslucent:  true,
 			About: &mac.AboutInfo{
 				Title:   "词库处理工具",
-				Message: "https://github.com/cxcn/dtool",
+				Message: "https://github.com/imetool/dtool",
 				Icon:    icon,
 			},
 		},

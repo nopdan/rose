@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cxcn/dtool/pkg/table"
+	"github.com/imetool/dtool/pkg/table"
 )
 
 func TestRule(t *testing.T) {

@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/table"
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/dtool/pkg/table"
+	"github.com/imetool/goutil/util"
 )
 
 type Checker struct {

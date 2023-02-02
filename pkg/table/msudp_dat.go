@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 type MsUDP struct{}
@@ -27,9 +27,9 @@ func (MsUDP) Parse(filename string) Table {
 	fmt.Println(entry_end, export_time)
 
 	// 第一个偏移量
-	offset := 0
-	for i := 0; i < count; i++ {
-		var next, length int
+	offset := _u32
+	for i := _u32; i < count; i++ {
+		var next, length uint32
 		if i == count-1 {
 			length = entry_end - entry_start - offset
 		} else {
@@ -56,7 +56,7 @@ func (MsUDP) Parse(filename string) Table {
 		r.Read(tmp)
 		code, _ := util.Decode(tmp, "UTF-16LE")
 		r.Seek(2, 1) // 两个空字节
-		tmp = make([]byte, length-codeLen-2)
+		tmp = make([]byte, length-uint32(codeLen)-2)
 		r.Read(tmp)
 		word, _ := util.Decode(tmp, "UTF-16LE")
 		// fmt.Println(code, word)
@@ -68,14 +68,14 @@ func (MsUDP) Parse(filename string) Table {
 func (MsUDP) Gen(table Table) []byte {
 	var buf bytes.Buffer
 	now := time.Now()
-	export_stamp := util.GetUint32(int(now.Unix()))
-	insert_stamp := util.GetUint32(int(now.Add(-946684800 * time.Second).Unix()))
+	export_stamp := util.To4Bytes(uint32(now.Unix()))
+	insert_stamp := util.To4Bytes(uint32(now.Add(-946684800 * time.Second).Unix()))
 	buf.Write([]byte{0x6D, 0x73, 0x63, 0x68, 0x78, 0x75, 0x64, 0x70,
 		0x02, 0x00, 0x60, 0x00, 0x01, 0x00, 0x00, 0x00})
-	buf.Write(util.GetUint32(0x40))
-	buf.Write(util.GetUint32(0x40 + 4*len(table)))
+	buf.Write(util.To4Bytes(0x40))
+	buf.Write(util.To4Bytes(uint32(0x40 + 4*len(table))))
 	buf.Write(make([]byte, 4)) // 待定 文件总长
-	buf.Write(util.GetUint32(len(table)))
+	buf.Write(util.To4Bytes(uint32(len(table))))
 	buf.Write(export_stamp)
 	buf.Write(make([]byte, 28))
 	buf.Write(make([]byte, 4))
@@ -84,19 +84,19 @@ func (MsUDP) Gen(table Table) []byte {
 	codes := make([][]byte, 0, len(table))
 	sum := 0
 	for i := range table {
-		word, _ := util.Encode([]byte(table[i].Word), "UTF-16LE")
-		code, _ := util.Encode([]byte(table[i].Code), "UTF-16LE")
+		word, _ := util.Encode(table[i].Word, "UTF-16LE")
+		code, _ := util.Encode(table[i].Code, "UTF-16LE")
 		words = append(words, word)
 		codes = append(codes, code)
 		if i != len(table)-1 {
 			sum += len(word) + len(code) + 20
-			buf.Write(util.GetUint32(sum))
+			buf.Write(util.To4Bytes(uint32(sum)))
 		}
 	}
 	for i := range table {
 		buf.Write([]byte{0x10, 0x00, 0x10, 0x00})
 		// fmt.Println(words[i], len(words[i]), codes[i], len(codes[i]))
-		buf.Write(util.GetUint16(len(codes[i]) + 18))
+		buf.Write(util.To2Bytes(uint16(len(codes[i]) + 18)))
 		pos := table[i].Pos
 		if pos < 1 {
 			pos = 1
@@ -111,6 +111,6 @@ func (MsUDP) Gen(table Table) []byte {
 		buf.Write([]byte{0, 0})
 	}
 	b := buf.Bytes()
-	copy(b[0x18:0x1c], util.GetUint32(len(b)))
+	copy(b[0x18:0x1c], util.To4Bytes(uint32(len(b))))
 	return b
 }

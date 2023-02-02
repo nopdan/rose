@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 type SogouScel struct{}
@@ -32,7 +32,7 @@ func (SogouScel) Parse(filename string) Dict {
 	r.Seek(2, 1)
 
 	// 读拼音表
-	for i := 0; i < pyTableLen; i++ {
+	for i := _u16; i < pyTableLen; i++ {
 		// 索引，2字节
 		idx := ReadUint16(r)
 		// 拼音长度，2字节
@@ -46,7 +46,7 @@ func (SogouScel) Parse(filename string) Dict {
 	}
 
 	// 读码表
-	for j := 0; j < dictLen; j++ {
+	for j := _u32; j < dictLen; j++ {
 		// 重码数（同一串音对应多个词）
 		repeat := ReadUint16(r)
 
@@ -55,7 +55,7 @@ func (SogouScel) Parse(filename string) Dict {
 
 		// 读取编码
 		var pinyin []string
-		for i := 0; i < pinyinSize/2; i++ {
+		for i := _u16; i < pinyinSize/2; i++ {
 			theIdx := ReadUint16(r)
 			if theIdx >= pyTableLen {
 				pinyin = append(pinyin, string(byte(theIdx-pyTableLen+97)))
@@ -65,7 +65,7 @@ func (SogouScel) Parse(filename string) Dict {
 		}
 
 		// 读取一个或多个词
-		for i := 1; i <= repeat; i++ {
+		for i := _u16 + 1; i <= repeat; i++ {
 			// 词长
 			wordSize := ReadUint16(r)
 
@@ -90,7 +90,7 @@ func (SogouScel) Parse(filename string) Dict {
 	r.Seek(12, 1)
 	blackLen := ReadUint16(r)
 	black_list := make([]string, 0, blackLen)
-	for i := 0; i < blackLen; i++ {
+	for i := _u16; i < blackLen; i++ {
 		wordLen := ReadUint16(r)
 		tmp = make([]byte, wordLen*2)
 		r.Read(tmp)

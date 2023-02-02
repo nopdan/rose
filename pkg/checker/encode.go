@@ -3,7 +3,7 @@ package checker
 import (
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/dtool/pkg/util"
 )
 
 type Entry struct {

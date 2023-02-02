@@ -3,8 +3,8 @@ package pinyin
 import (
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/encoder"
-	"github.com/cxcn/dtool/pkg/table"
+	"github.com/imetool/dtool/pkg/encoder"
+	"github.com/imetool/dtool/pkg/table"
 )
 
 type MspyDat struct{}

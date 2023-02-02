@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 // 极点形式码表

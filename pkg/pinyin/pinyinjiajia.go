@@ -6,8 +6,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/encoder"
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/dtool/pkg/encoder"
+	"github.com/imetool/goutil/util"
 )
 
 type JiaJia struct{}

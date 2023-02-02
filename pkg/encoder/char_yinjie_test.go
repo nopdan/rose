@@ -8,7 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cxcn/dtool/pkg/util"
+	dutil "github.com/imetool/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 // 处理原始单字拼音表
@@ -45,7 +46,7 @@ func TestGenCharYinjieMap(t *testing.T) {
 	}
 	ocwSli := make([]ocw, 0, len(charMap))
 	for k, v := range charMap {
-		ocwSli = append(ocwSli, ocw{v.order, util.RmRepeat(v.codes), k})
+		ocwSli = append(ocwSli, ocw{v.order, dutil.RmRepeat(v.codes), k})
 	}
 	sort.Slice(ocwSli, func(i, j int) bool {
 		return ocwSli[i].order < ocwSli[j].order

@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 type MswbLex struct{}

@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 type QqQpyd struct{}
@@ -47,7 +47,7 @@ func (QqQpyd) Parse(filename string) Dict {
 	// 解压完了
 	r.Reset(buf.Bytes())
 
-	for i := 0; i < dictLen; i++ {
+	for i := _u32; i < dictLen; i++ {
 		// 指向当前
 		r.Seek(int64(10*i), 0)
 

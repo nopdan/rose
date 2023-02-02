@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"os"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 type JidianMb struct{}

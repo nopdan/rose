@@ -8,12 +8,12 @@ import (
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
-	"github.com/cxcn/dtool/pkg/checker"
-	"github.com/cxcn/dtool/pkg/double"
-	"github.com/cxcn/dtool/pkg/encoder"
-	"github.com/cxcn/dtool/pkg/pinyin"
-	"github.com/cxcn/dtool/pkg/table"
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/dtool/pkg/checker"
+	"github.com/imetool/dtool/pkg/double"
+	"github.com/imetool/dtool/pkg/encoder"
+	"github.com/imetool/dtool/pkg/pinyin"
+	"github.com/imetool/dtool/pkg/table"
+	"github.com/imetool/goutil/util"
 )
 
 // 选择文件

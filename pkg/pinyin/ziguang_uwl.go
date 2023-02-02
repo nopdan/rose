@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"os"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 var uwlSm = []string{
@@ -32,7 +32,7 @@ func (ZiguangUwl) Parse(filename string) Dict {
 	// 分段
 	r.Seek(0x48, 0)
 	partLen := ReadUint32(r)
-	for i := 0; i < partLen; i++ {
+	for i := _u32; i < partLen; i++ {
 		r.Seek(0xC00+int64(i)<<10, 0)
 		ret = parseZgUwlPart(r, ret, encoding)
 	}
@@ -45,7 +45,7 @@ func parseZgUwlPart(r *bytes.Reader, ret Dict, encoding byte) Dict {
 	// 词条占用字节数
 	max := ReadUint32(r)
 	// 当前字节
-	curr := 0
+	curr := _u32
 	for curr < max {
 		head := make([]byte, 4)
 		r.Read(head)
@@ -56,7 +56,7 @@ func parseZgUwlPart(r *bytes.Reader, ret Dict, encoding byte) Dict {
 		// 频率
 		freq := BytesToInt(head[2:])
 		// fmt.Println(freqSli, freq)
-		curr += int(4 + wordLen + codeLen*2)
+		curr += uint32(4 + wordLen + codeLen*2)
 
 		// 拼音
 		code := make([]string, 0, codeLen)

@@ -1,6 +1,11 @@
 package pinyin
 
-import "github.com/cxcn/dtool/pkg/util"
+import "github.com/imetool/goutil/util"
+
+const (
+	_u16 = uint16(0)
+	_u32 = uint32(0)
+)
 
 var (
 	ReadUint16 = util.ReadUint16

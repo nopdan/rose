@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cxcn/dtool/pkg/pinyin"
+	"github.com/imetool/dtool/pkg/pinyin"
 )
 
 func TestMapping(t *testing.T) {

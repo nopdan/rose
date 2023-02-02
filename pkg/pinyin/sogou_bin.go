@@ -4,32 +4,32 @@ import (
 	"bytes"
 	"os"
 
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/goutil/util"
 )
 
 type key struct {
-	dictType    int // 2 字节
-	dataTypeLen int // 2 字节
-	dataType    []int
-	attrIdx     int // 4 字节
-	keyDataIdx  int // 4 字节
-	dataIdx     int // 4 字节
-	v6          int // 4 字节
+	dictType    uint16
+	dataTypeLen uint16
+	dataType    []uint16
+	attrIdx     uint32
+	keyDataIdx  uint32
+	dataIdx     uint32
+	v6          uint32
 }
 
 // 全是 4 字节
 type attr struct {
-	count  int
-	a2     int
-	dataId int
-	b2     int
+	count  uint32
+	a2     uint32
+	dataId uint32
+	b2     uint32
 }
 
 // 全是 4 字节
 type header struct {
-	offset       int // 偏移量
-	dataSize     int
-	usedDataSize int
+	offset       uint32 // 偏移量
+	dataSize     uint32
+	usedDataSize uint32
 }
 
 func (h *header) parse(r *bytes.Reader) {
@@ -55,12 +55,12 @@ func (SogouBin) Parse(filename string) Dict {
 	// fmt.Println(fileChksum, size1, keyLen, attrLen, aintLen)
 
 	keys := make([]key, 0, 1)
-	for i := 0; i < keyLen; i++ {
+	for i := _u32; i < keyLen; i++ {
 		var k key
 		k.dictType = ReadUint16(r)
 		k.dataTypeLen = ReadUint16(r)
-		k.dataType = make([]int, 0, 1)
-		for j := 0; j < k.dataTypeLen; j++ {
+		k.dataType = make([]uint16, 0, 1)
+		for j := _u16; j < k.dataTypeLen; j++ {
 			dataType := ReadUint16(r)
 			k.dataType = append(k.dataType, dataType)
 		}
@@ -74,7 +74,7 @@ func (SogouBin) Parse(filename string) Dict {
 	}
 
 	attrs := make([]attr, 0, 1)
-	for i := 0; i < attrLen; i++ {
+	for i := _u32; i < attrLen; i++ {
 		var a attr
 		a.count = ReadUint32(r)
 		a.a2 = ReadUint32(r)
@@ -83,8 +83,8 @@ func (SogouBin) Parse(filename string) Dict {
 		attrs = append(attrs, a)
 	}
 
-	aints := make([]int, 0, 1)
-	for i := 0; i < aintLen; i++ {
+	aints := make([]uint32, 0, 1)
+	for i := _u32; i < aintLen; i++ {
 		aint := ReadUint32(r)
 		aints = append(aints, aint)
 	}
@@ -109,17 +109,17 @@ func (SogouBin) Parse(filename string) Dict {
 	hsLen := ReadUint32(r)
 	// fmt.Println(hiLen, haLen, hsLen)
 
-	for i := 0; i < hiLen; i++ {
+	for i := _u32; i < hiLen; i++ {
 		var h header
 		h.parse(r)
 		ud.headerIdxs = append(ud.headerIdxs, h)
 	}
-	for i := 0; i < haLen; i++ {
+	for i := _u32; i < haLen; i++ {
 		var h header
 		h.parse(r)
 		ud.headerAttrs = append(ud.headerAttrs, h)
 	}
-	for i := 0; i < hsLen; i++ {
+	for i := _u32; i < hsLen; i++ {
 		var h header
 		h.parse(r)
 		ud.dataStore = append(ud.dataStore, h)
@@ -142,7 +142,7 @@ func (SogouBin) Parse(filename string) Dict {
 		a, b := d[2*i], d[2*i+1]
 		r.Seek(int64(a), 0)
 		pos := ReadUint32(r)
-		offset := int(preOffset) + ud.dataStore[ud.keys[0].keyDataIdx].offset + pos
+		offset := uint32(preOffset) + ud.dataStore[ud.keys[0].keyDataIdx].offset + pos
 		pys := decryptPinyin(r, offset)
 		// fmt.Printf("a: %v, b: %v, offset: %v, pos: %v, py: %v\n", a, b, offset, pos, pys)
 
@@ -153,37 +153,37 @@ func (SogouBin) Parse(filename string) Dict {
 		// GetWordData
 		attrId := ud.keys[0].attrIdx
 		dataId := ud.attrs[attrId].dataId
-		offset = int(preOffset) + ud.dataStore[dataId].offset + wordInfo.offset
+		offset = uint32(preOffset) + ud.dataStore[dataId].offset + wordInfo.offset
 		// fmt.Printf("offset: %v\n", offset)
 		// DecryptWordsEx
-		word := decryptWordsEx(r, offset, wordInfo.p1, p2, p3)
-		ret = append(ret, Entry{word, pys, wordInfo.freq})
+		word := decryptWordsEx(r, offset, int(wordInfo.p1), p2, p3)
+		ret = append(ret, Entry{word, pys, int(wordInfo.freq)})
 		// fmt.Printf("word: %v\tcode: %v\tfreq: %v\n", word, codes, wordInfo.freq)
 	}
 	return ret
 }
 
-func decryptPinyin(r *bytes.Reader, offset int) []string {
+func decryptPinyin(r *bytes.Reader, offset uint32) []string {
 	r.Seek(int64(offset), 0)
 	n := ReadUint16(r) / 2
 	ps := make([]string, 0)
-	for i := 0; i < n; i++ {
+	for i := _u16; i < n; i++ {
 		p := ReadUint16(r)
 		ps = append(ps, sg_pinyin[p])
 	}
 	return ps
 }
 
-func decryptWordsEx(r *bytes.Reader, offset, p1, p2, p3 int) string {
+func decryptWordsEx(r *bytes.Reader, offset uint32, p1, p2, p3 int) string {
 	k1 := (p1 + p2) << 2
 	k2 := (p1 + p3) << 2
 	xk := (k1 + k2) & 0xFFFF
 	r.Seek(int64(offset), 0)
 	n := ReadUint16(r) / 2
 	decWords := make([]byte, 0, 1)
-	for i := 0; i < n; i++ {
+	for i := _u16; i < n; i++ {
 		shift := p2 % 8
-		ch := ReadUint16(r)
+		ch := int(ReadUint16(r))
 		dch := (ch<<(16-(shift%8)) | (ch >> shift)) & 0xFFFF
 		dch ^= xk
 		if dch > 0x10000 {
@@ -196,12 +196,12 @@ func decryptWordsEx(r *bytes.Reader, offset, p1, p2, p3 int) string {
 }
 
 type attrWordData struct {
-	offset int
-	freq   int
-	aflag  int
-	i8     int
-	p1     int
-	iE     int
+	offset uint32
+	freq   uint16
+	aflag  uint16
+	i8     uint32
+	p1     uint16
+	iE     uint32
 }
 
 func (a *attrWordData) parse(r *bytes.Reader) {
@@ -217,19 +217,19 @@ func (a *attrWordData) parse(r *bytes.Reader) {
 type usrDict struct {
 	keys        []key
 	attrs       []attr
-	aints       []int
+	aints       []uint32
 	headerIdxs  []header
 	headerAttrs []header
 	dataStore   []header
 
-	dataTypeSize []int
-	attrSize     []int
+	dataTypeSize []uint32
+	attrSize     []uint32
 	baseHashSize []int
 	keyHashSize  []int
 	aflag        bool
 }
 
-var keyDataTypeSize = []int{4, 1, 1, 2, 1, 2, 2, 4, 4, 8, 4, 4, 4, 0, 0, 0}
+var keyDataTypeSize = []uint32{4, 1, 1, 2, 1, 2, 2, 4, 4, 8, 4, 4, 4, 0, 0, 0}
 var dataTypeHashSize = []int{0, 27, 414, 512, -1, -1, 512, 0}
 
 func newUsrDict() *usrDict {
@@ -238,7 +238,7 @@ func newUsrDict() *usrDict {
 	ud.headerAttrs = make([]header, 0, 1)
 	ud.dataStore = make([]header, 0, 1)
 
-	ud.dataTypeSize = make([]int, 0, 1)
+	ud.dataTypeSize = make([]uint32, 0, 1)
 	// ud.attrSize = make([]int, 0, 1)
 	ud.baseHashSize = make([]int, 0, 1)
 	ud.keyHashSize = make([]int, 10)
@@ -248,11 +248,11 @@ func newUsrDict() *usrDict {
 }
 
 func (ud *usrDict) init() {
-	ud.attrSize = make([]int, len(ud.attrs))
+	ud.attrSize = make([]uint32, len(ud.attrs))
 
 	for i, k := range ud.keys {
-		size := (k.dictType >> 2) & 4
-		maskedType := k.dictType & 0xFFFFFF8F
+		size := (uint32(k.dictType) >> 2) & 4
+		maskedType := int(k.dictType) & 0xFFFFFF8F
 		// hash item
 		if ud.keyHashSize[i] > 0 {
 			ud.baseHashSize = append(ud.baseHashSize, ud.keyHashSize[i])
@@ -262,7 +262,7 @@ func (ud *usrDict) init() {
 		// dataType size
 		attrCount := ud.attrs[k.attrIdx].count
 		// non-attr data size
-		nonAttrCount := len(k.dataType) - attrCount
+		nonAttrCount := len(k.dataType) - int(attrCount)
 		for j := 0; j < nonAttrCount; j++ {
 			if j > 0 || maskedType != 4 {
 				size += keyDataTypeSize[k.dataType[i]]
@@ -274,7 +274,7 @@ func (ud *usrDict) init() {
 		size += 4
 		ud.dataTypeSize = append(ud.dataTypeSize, size)
 		// attr data size
-		attrSize := 0
+		var attrSize uint32
 		for j := nonAttrCount; j < len(k.dataType); j++ {
 			attrSize += keyDataTypeSize[k.dataType[j]]
 		}
@@ -290,15 +290,15 @@ func (ud *usrDict) init() {
 	// fmt.Printf("init UsrDict%+v\n", ud)
 }
 
-func (ud *usrDict) getData(r *bytes.Reader) []int {
+func (ud *usrDict) getData(r *bytes.Reader) []uint32 {
 
-	ret := make([]int, 0, 0xff)
+	ret := make([]uint32, 0, 0xff)
 	keyId := 0
 	theKey := ud.keys[keyId]
 
 	// hashStoreBase := ud.getHashStore(keyId, theKey.dictType&0xFFFFFF8F)
 	headerAttr := ud.headerAttrs[theKey.attrIdx]
-	var attrCount int
+	var attrCount uint32
 
 	if headerAttr.usedDataSize == 0 {
 		attrCount = headerAttr.dataSize
@@ -315,16 +315,16 @@ func (ud *usrDict) getData(r *bytes.Reader) []int {
 		hashStoreCount := ReadUint32(r)
 
 		// fmt.Printf("hashstore [ offset: {%v}, count: {%v} ]\n", hashStoreOffset, hashStoreCount)
-		for j := 0; j < hashStoreCount; j++ {
+		for j := _u32; j < hashStoreCount; j++ {
 
-			attrOffset := int(preOffset) + ud.headerIdxs[keyId].offset + hashStoreOffset + ud.dataTypeSize[keyId]*j
-			offset := attrOffset + ud.dataTypeSize[keyId] - 4
+			attrOffset := uint32(preOffset) + ud.headerIdxs[keyId].offset + hashStoreOffset + ud.dataTypeSize[keyId]*j
+			offset := attrOffset + uint32(ud.dataTypeSize[keyId]) - 4
 			r.Seek(int64(offset), 0)
 			offset = ReadUint32(r)
 			// fmt.Printf("\tattrOffset, %d %d\n", attrOffset, offset)
-			for k := 0; k < attrCount; k++ {
+			for k := _u32; k < attrCount; k++ {
 
-				attr2Offset := int(preOffset) + ud.headerAttrs[ud.keys[keyId].attrIdx].offset + offset
+				attr2Offset := uint32(preOffset) + ud.headerAttrs[ud.keys[keyId].attrIdx].offset + offset
 				ret = append(ret, attrOffset, attr2Offset)
 
 				offset = attr2Offset + ud.attrSize[theKey.attrIdx] - 4

@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cxcn/dtool/pkg/pinyin"
-	"github.com/cxcn/dtool/pkg/table"
+	"github.com/imetool/dtool/pkg/pinyin"
+	"github.com/imetool/dtool/pkg/table"
 	"gopkg.in/ini.v1"
 )
 

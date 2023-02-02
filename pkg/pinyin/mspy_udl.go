@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/cxcn/dtool/pkg/encoder"
-	"github.com/cxcn/dtool/pkg/util"
+	"github.com/imetool/dtool/pkg/encoder"
+	"github.com/imetool/goutil/util"
 )
 
 type MspyUDL struct{}
@@ -24,7 +24,7 @@ func (MspyUDL) Parse(filename string) Dict {
 	export_time := time.Unix(int64(export_stamp), 0).Add(946684800 * time.Second)
 	fmt.Printf("词条数: %d, 时间: %v\n", count, export_time)
 
-	for i := 0; i < count; i++ {
+	for i := _u32; i < count; i++ {
 		r.Seek(0x2400+60*int64(i), 0)
 		// insert_stamp := ReadUint32(r)
 		// insert_time := time.Unix(int64(insert_stamp), 0).Add(946684800 * time.Second)

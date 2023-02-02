@@ -17,7 +17,7 @@ func (Fcitx4Mb) Parse(filename string) Table {
 	count := ReadUint32(r)
 	ret := make(Table, 0, count)
 
-	for i := 0; i < count; i++ {
+	for i := _u32; i < count; i++ {
 		tmp = make([]byte, 5)
 		r.Read(tmp)
 		code := trimSufZero(tmp)
