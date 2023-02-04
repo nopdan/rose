@@ -43,7 +43,7 @@ func (MsUDP) Parse(filename string) Table {
 		offset = next
 		r.Seek(4, 1)             // 0x10001000
 		codeLen := ReadUint16(r) // 编码字节长+0x12
-		order, _ := r.ReadByte() // 顺序
+		pos, _ := r.ReadByte()   // 顺序
 		r.ReadByte()             // 0x06 不明
 		r.Seek(4, 1)             // 4 个空字节
 		r.Seek(4, 1)             // 时间戳
@@ -60,7 +60,7 @@ func (MsUDP) Parse(filename string) Table {
 		r.Read(tmp)
 		word, _ := util.Decode(tmp, "UTF-16LE")
 		// fmt.Println(code, word)
-		ret = append(ret, Entry{word, code, order})
+		ret = append(ret, Entry{word, code, int(pos)})
 	}
 	return ret
 }
@@ -101,7 +101,7 @@ func (MsUDP) Gen(table Table) []byte {
 		if pos < 1 {
 			pos = 1
 		}
-		buf.WriteByte(pos)
+		buf.WriteByte(byte(pos))
 		buf.WriteByte(0x06)
 		buf.Write(make([]byte, 4))
 		buf.Write(insert_stamp)

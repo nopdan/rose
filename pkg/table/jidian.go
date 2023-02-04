@@ -34,7 +34,7 @@ func (Jidian) Parse(filename string) Table {
 			continue
 		}
 		for i := 1; i < len(entry); i++ {
-			ret = append(ret, Entry{entry[i], entry[0], byte(i)})
+			ret = append(ret, Entry{entry[i], entry[0], i})
 		}
 	}
 	return ret

@@ -20,7 +20,16 @@ type Table []Entry
 type Entry struct {
 	Word string
 	Code string
-	Pos  byte // 在候选中的位置
+	Pos  int // 在候选中的位置
+}
+
+// 按码表顺序生成候选位置
+func (t Table) GenPos() {
+	count := make(map[string]int)
+	for i := range t {
+		count[t[i].Code] += 1
+		t[i].Pos = count[t[i].Code]
+	}
 }
 
 type Parser interface {
@@ -47,11 +56,11 @@ func Parse(format, filename string) Table {
 	case "fcitx4_mb":
 		p = Fcitx4Mb{}
 	// 字词的纯文本
-	case "duoduo":
+	case "duoduo", "dd":
 		p = DuoDuo
-	case "bingling":
+	case "bingling", "bl":
 		p = Bingling
-	case "jidian":
+	case "jidian", "jd":
 		p = Jidian{}
 	default:
 		panic("输入格式不支持：" + format)
@@ -64,11 +73,11 @@ func Generate(format string, table Table) []byte {
 	switch format {
 	case "msudp_dat":
 		g = MsUDP{}
-	case "duoduo":
+	case "duoduo", "dd":
 		g = DuoDuo
-	case "bingling":
+	case "bingling", "bl":
 		g = Bingling
-	case "jidian":
+	case "jidian", "jd":
 		g = Jidian{}
 	case "baidu_def":
 		g = BaiduDef{}
