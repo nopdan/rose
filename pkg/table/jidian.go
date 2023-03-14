@@ -55,6 +55,9 @@ func (Jidian) Gen(table Table) []byte {
 
 // 转为 极点形式，一码多词
 func ToJdTable(table Table) JdTable {
+	sort.Slice(table, func(i, j int) bool {
+		return table[i].Pos < table[j].Pos
+	})
 	codeMap := make(map[string][]string)
 	for _, wc := range table {
 		if _, ok := codeMap[wc.Code]; !ok {
