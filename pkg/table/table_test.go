@@ -39,6 +39,22 @@ func TestFcitx4Mb(t *testing.T) {
 	write_out(path, table)
 }
 
+func TestPang(t *testing.T) {
+	path := "own/binary.main.bin"
+	table := Pang{}.Parse(path)
+	// write_out(path, table)
+	os.WriteFile(filepath.Dir(path)+"/out_"+filepath.Base(path)+".txt",
+		Jidian{}.Gen(table), 0666)
+}
+
+func TestPangAssoc(t *testing.T) {
+	path := "own/binary.assoc.bin"
+	table := PangAssoc{}.Parse(path)
+	// write_out(path, table)
+	os.WriteFile(filepath.Dir(path)+"/out_"+filepath.Base(path)+".txt",
+		DuoDuo.Gen(table), 0666)
+}
+
 func write_out(path string, table Table) {
 	os.WriteFile(filepath.Dir(path)+"/out_"+filepath.Base(path)+".txt",
 		DuoDuo.Gen(table), 0666)
