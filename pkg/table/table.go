@@ -55,6 +55,10 @@ func Parse(format, filename string) Table {
 		p = JidianMb{}
 	case "fcitx4_mb":
 		p = Fcitx4Mb{}
+	case "pang":
+		p = Pang{}
+	case "pang_assoc":
+		p = PangAssoc{}
 	// 字词的纯文本
 	case "duoduo", "dd":
 		p = DuoDuo

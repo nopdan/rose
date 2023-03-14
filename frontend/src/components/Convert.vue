@@ -245,6 +245,14 @@ const srcTable = [
     value: 'fcitx4_mb',
   },
   {
+    label: '小胖输入法 binary',
+    value: 'pang',
+  },
+  {
+    label: '小胖输入法 assoc',
+    value: 'pang_assoc',
+  },
+  {
     label: '多多.txt',
     value: 'duoduo',
   },

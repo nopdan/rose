@@ -73,7 +73,7 @@ jobs:
           pnpm i
           pnpm build
           cd ..
-          go install github.com/wailsapp/wails/v2/cmd/wails@v2.3.1
+          go install github.com/wailsapp/wails/v2/cmd/wails@v2.4.0
 
       # 编译
       - name: Build
