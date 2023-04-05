@@ -38,9 +38,7 @@ func (h *header) parse(r *bytes.Reader) {
 	h.usedDataSize = ReadUint32(r)
 }
 
-type SogouBin struct{}
-
-func (SogouBin) Parse(filename string) Dict {
+func (SogouBin) ParseOld(filename string) Dict {
 	data, _ := os.ReadFile(filename)
 	r := bytes.NewReader(data)
 	ret := make(Dict, 0, r.Len()>>8)

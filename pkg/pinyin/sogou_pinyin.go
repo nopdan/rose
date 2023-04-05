@@ -1,5 +1,13 @@
 package pinyin
 
+import (
+	"bytes"
+	"fmt"
+	"os"
+
+	"github.com/imetool/goutil/util"
+)
+
 var sg_pinyin = []string{"a", "ai", "an", "ang", "ao", "ba", "bai", "ban",
 	"bang", "bao", "bei", "ben", "beng", "bi", "bian", "biao", "bie", "bin",
 	"bing", "bo", "bu", "ca", "cai", "can", "cang", "cao", "ce", "cen", "ceng",
@@ -43,3 +51,55 @@ var sg_pinyin = []string{"a", "ai", "an", "ang", "ao", "ba", "bai", "ban",
 	"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
 	"q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",
 	"6", "7", "8", "9", "#"}
+
+type SogouBin struct{}
+
+func (SogouBin) Parse(filename string) Dict {
+	data, _ := os.ReadFile(filename)
+	r := bytes.NewReader(data)
+	ret := make(Dict, 0, r.Len()>>8)
+
+	header := make([]byte, 4) // SGPU
+	r.Read(header)
+	if !bytes.Equal(header, []byte{0x53, 0x47, 0x50, 0x55}) {
+		r.Seek(0, 0)
+		return SogouBin{}.ParseOld(filename)
+	}
+
+	r.Seek(12, 1)
+	fileSize := ReadUint32(r) // file total size
+	r.Seek(36, 1)
+	idxBegin := ReadUint32(r) // index begin
+	idxSize := ReadUint32(r)  // index size
+	wordCount := ReadUint32(r)
+	dictBegin := ReadUint32(r)     // = idxBegin + idxSize
+	dictTotalSize := ReadUint32(r) // file total size - dictBegin
+	dictSize := ReadUint32(r)      // effective dict size
+	fmt.Println(fileSize, idxBegin, idxSize, dictBegin, dictTotalSize, dictSize)
+
+	for i := _u32; i < wordCount; i++ {
+		r.Seek(int64(idxBegin+4*i), 0)
+		idx := ReadUint32(r)
+		if idx == 0 && i != 0 {
+			break
+		}
+		r.Seek(int64(idx+dictBegin), 0)
+		freq := ReadUint32(r)
+		r.Seek(5, 1) // 00 00 FE 07 02
+		pyLen := ReadUint16(r) / 2
+		py := make([]string, 0, pyLen)
+		for j := _u16; j < pyLen; j++ {
+			p := ReadUint16(r)
+			py = append(py, sg_pinyin[p])
+		}
+		ReadUint16(r) // word size + code size（include idx）
+		wordSize := ReadUint16(r)
+		tmp := make([]byte, wordSize)
+		r.Read(tmp)
+		word, _ := util.Decode(tmp, "UTF-16LE")
+
+		ret = append(ret, Entry{word, py, int(freq)})
+		// repeat code
+	}
+	return ret
+}

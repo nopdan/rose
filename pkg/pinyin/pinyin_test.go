@@ -73,6 +73,12 @@ func TestSogouBin(t *testing.T) {
 	write_out(path, dict)
 }
 
+func TestSogouBinNew(t *testing.T) {
+	path := "own/搜狗词库备份_2023_4_5.bin"
+	dict := SogouBin{}.Parse(path)
+	write_out(path, dict)
+}
+
 func TestMspyUDL(t *testing.T) {
 	path := "own/ChsPinyinUDL.dat"
 	dict := MspyUDL{}.Parse(path)
