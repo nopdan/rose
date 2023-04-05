@@ -54,14 +54,12 @@
 
 > **加粗**项支持输出
 
-| 描述                   | 代号       | 格式         |
-| :--------------------- | :--------- | :----------- |
-| **百度手机自定义方案** | baidu_def  | `.def`       |
-| **微软用户自定义短语** | msudp_dat  | `.dat`       |
-| 极点                   | jidian_mb  | `.mb`        |
-| fcitx4                 | fcitx4_mb  | `.mb`        |
-| 小胖输入法             | pang       | `.bin`       |
-| 小胖输入法 assoc       | pang_assoc | `.assoc.bin` |
+| 描述                   | 代号      | 格式   |
+| :--------------------- | :-------- | :----- |
+| **百度手机自定义方案** | baidu_def | `.def` |
+| **微软用户自定义短语** | msudp_dat | `.dat` |
+| 极点                   | jidian_mb | `.mb`  |
+| fcitx4                 | fcitx4_mb | `.mb`  |
 
 ## [转双拼词库](./pkg/double/double_pinyin.go)
 
