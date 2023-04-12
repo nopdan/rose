@@ -7,7 +7,7 @@ import (
 
 	_ "embed"
 
-	"github.com/flowerime/gosmq/pkg/matcher"
+	"github.com/flowerime/rose/pkg/matcher"
 )
 
 //go:embed assets/char_pinyin.txt
