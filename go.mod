@@ -9,7 +9,7 @@ require (
 
 // replace github.com/flowerime/goutil => ../goutil
 
-replace github.com/flowerime/gosmq => ../gosmq
+// replace github.com/flowerime/gosmq => ../gosmq
 
 require (
 	github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f // indirect
