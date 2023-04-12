@@ -17,9 +17,8 @@
 build/bin/
 old/
 
+pkg/*/gen/
 pkg/*/out/
 pkg/*/own/
 
 pkg/*/black_list.txt
-out_*
-gen_*

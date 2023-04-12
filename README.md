@@ -1,17 +1,15 @@
-# 词库处理工具
+# 蔷薇词库转换
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/imetool/dtool)](https://github.com/imetool/dtool/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/imetool/dtool)](https://github.com/imetool/dtool/network/members)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/imetool/dtool)](https://github.com/imetool/dtool/releases)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/imetool/dtool/build.yml)](https://github.com/imetool/dtool/actions/workflows/build.yml)
-![GitHub repo size](https://img.shields.io/github/repo-size/imetool/dtool)
-![GitHub](https://img.shields.io/github/license/imetool/dtool)
+[![GitHub Repo stars](https://img.shields.io/github/stars/flowerime/rose)](https://github.com/flowerime/rose/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/flowerime/rose)](https://github.com/flowerime/rose/network/members)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/flowerime/rose)](https://github.com/flowerime/rose/releases)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/flowerime/rose/build.yml)](https://github.com/flowerime/rose/actions/workflows/build.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/flowerime/rose)
+![GitHub](https://img.shields.io/github/license/flowerime/rose)
 
-词库处理工具，词库编码，词库格式转换，词库校验，出简不出全。
+关于词库格式的详细解析可以到我的[博客](https://nopdan.com/)查看。
 
-关于词库格式的详细解析可以到我的[博客](https://noif.cc/)查看。
-
-## [拼音词库转换](./pkg/pinyin/)
+## 拼音词库格式
 
 **纯文本：**
 
@@ -24,7 +22,7 @@
 | 拼音加加 | pyjj      | 字音字音字音...              |          |
 | 纯汉字   | word_only | 一词一行                     |          |
 
-> 纯汉字词库会[自动注音](./pkg/encoder/pinyin.go)，所以你可以当成注音工具使用。
+> 纯汉字词库会[自动注音](./pkg/zhuyin/zhuyin.go)，所以你可以当成注音工具使用。
 
 **二进制：**
 
@@ -40,7 +38,7 @@
 | **微软用户自定义短语**       | mspy_dat    | `.dat`           |
 | 微软拼音自学习词汇           | mspy_udl    | `.dat`           |
 
-## [字词码表转换](./pkg/table/)
+## 字词码表格式
 
 **纯文本：**
 
@@ -60,30 +58,3 @@
 | **微软用户自定义短语** | msudp_dat | `.dat` |
 | 极点                   | jidian_mb | `.mb`  |
 | fcitx4                 | fcitx4_mb | `.mb`  |
-
-## [转双拼词库](./pkg/double/double_pinyin.go)
-
-全拼词库转为双拼四码定长码表，需要一个双拼映射表，格式为手心输入法，具体可以看[示例](assets/双拼映射表/)。
-
-## [词库编码和校验](./pkg/checker/checker.go)
-
-> 仅支持多多格式，其他格式需先行转换
-
-编码选择纯词词库，校验选择带编码的多多格式词库。
-
-形如 `2=AaAbBaBb,3=AaAbBaCa,0=AaBaCaZa` ，等号前数字表示词长，0 表示未指定的词长。
-
-也可以简写为 `2=AABB,3=AABC,0=ABCZ`
-
-对于整句，`ab...`(必须以...结尾) 表示取每个字编码的前两码
-
-## [全码转简码码表](./pkg/encoder/shortener.go)
-
-> 仅支持多多格式，其他格式需先行转换
-
-出简不出全规则：逗号，冒号分隔，默认 1，n 无限
-
-```yaml
-例子: "1:0, 2:3, 3:2, 6:n"
-#  无 1 简，2 码 3 重，3 码 2 重，4 码 1 重，5 码 1 重，6 码无限重
-```

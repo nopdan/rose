@@ -1,88 +1,47 @@
+/*
+Copyright © 2023 nopdan <me@nopdan.com>
+*/
 package main
 
 import (
-	"embed"
-	"log"
+	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 
-	"github.com/wailsapp/wails/v2/pkg/options/mac"
-
-	"github.com/wailsapp/wails/v2"
-	"github.com/wailsapp/wails/v2/pkg/logger"
-	"github.com/wailsapp/wails/v2/pkg/options"
-	"github.com/wailsapp/wails/v2/pkg/options/windows"
+	"github.com/flowerime/rose/pkg/rose"
 )
 
-//go:embed frontend/dist
-var assets embed.FS
-
-//go:embed build/appicon.png
-var icon []byte
-
 func main() {
-	// core.Test()
-	mainWails()
+
+	if len(os.Args) != 3 {
+		wrong()
+		return
+	}
+	path := os.Args[1]
+	format := os.Args[2]
+	tmp := strings.Split(format, ":")
+	if len(tmp) != 2 {
+		wrong()
+		return
+	}
+	iFormat, oFormat := tmp[0], tmp[1]
+	if iFormat == "" {
+		iFormat = "dd"
+	}
+	d := rose.Parse(path, iFormat)
+	if oFormat == "" {
+		if d.IsPinyin {
+			oFormat = "rime"
+		} else {
+			oFormat = "dd"
+		}
+	}
+	data := rose.Generate(d, oFormat)
+	od := rose.NewFormat(oFormat).GetDict()
+	os.WriteFile(filepath.Base(path)+"_"+oFormat+"."+od.Suffix, data, 0666)
 }
 
-func mainWails() {
-	// Create an instance of the app structure
-	app := NewApp()
-
-	// Create application with options
-	err := wails.Run(&options.App{
-		Title:  "词库处理工具",
-		Width:  500,
-		Height: 350,
-		// MinWidth:          770,
-		// MinHeight:         580,
-		// MaxWidth:          1920,
-		// MaxHeight:         1080,
-		DisableResize:     false,
-		Fullscreen:        false,
-		Frameless:         false,
-		StartHidden:       false,
-		HideWindowOnClose: false,
-		BackgroundColour:  options.NewRGBA(255, 255, 255, 255),
-		Assets:            assets,
-		Menu:              nil,
-		Logger:            nil,
-		LogLevel:          logger.DEBUG,
-		OnStartup:         app.startup,
-		OnDomReady:        app.domReady,
-		OnBeforeClose:     app.beforeClose,
-		OnShutdown:        app.shutdown,
-		WindowStartState:  options.Normal,
-		Bind: []interface{}{
-			app,
-		},
-		// Windows platform specific options
-		Windows: &windows.Options{
-			WebviewIsTransparent: false,
-			WindowIsTranslucent:  false,
-			DisableWindowIcon:    false,
-			// DisableFramelessWindowDecorations: false,
-			WebviewUserDataPath: "",
-		},
-		Mac: &mac.Options{
-			TitleBar: &mac.TitleBar{
-				TitlebarAppearsTransparent: true,
-				HideTitle:                  false,
-				HideTitleBar:               false,
-				FullSizeContent:            false,
-				UseToolbar:                 false,
-				HideToolbarSeparator:       true,
-			},
-			Appearance:           mac.NSAppearanceNameDarkAqua,
-			WebviewIsTransparent: true,
-			WindowIsTranslucent:  true,
-			About: &mac.AboutInfo{
-				Title:   "词库处理工具",
-				Message: "https://github.com/imetool/dtool",
-				Icon:    icon,
-			},
-		},
-	})
-
-	if err != nil {
-		log.Fatal(err)
-	}
+func wrong() {
+	fmt.Println("输入参数有误")
 }
