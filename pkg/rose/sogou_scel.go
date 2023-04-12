@@ -2,10 +2,12 @@ package rose
 
 import (
 	"bytes"
-	"fmt"
 )
 
-type SogouScel struct{ Dict }
+type SogouScel struct {
+	Dict
+	BlackList []string
+}
 
 func NewSogouScel() *SogouScel {
 	d := new(SogouScel)
@@ -99,15 +101,14 @@ func (d *SogouScel) Parse() {
 	// 黑名单
 	r.Seek(12, 1)
 	blackLen := ReadUint16(r)
-	black_list := make([]string, 0, blackLen)
+	d.BlackList = make([]string, 0, blackLen)
 	for i := _u16; i < blackLen; i++ {
 		wordLen := ReadUint16(r)
 		tmp := make([]byte, wordLen*2)
 		r.Read(tmp)
 		word, _ := Decode(tmp, "UTF-16LE")
-		black_list = append(black_list, word)
+		d.BlackList = append(d.BlackList, word)
 	}
-	fmt.Println("黑名单：", black_list)
 	d.pyt = pyt
 }
 
