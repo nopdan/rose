@@ -14,6 +14,10 @@ import (
 
 func main() {
 
+	if len(os.Args) == 1 {
+		fmt.Println("蔷薇词库转换v1.0\nhttps://github.com/flowerime/rose")
+	}
+
 	if len(os.Args) != 3 {
 		wrong()
 		return

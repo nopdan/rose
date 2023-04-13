@@ -111,14 +111,14 @@ func NewFormat(format string) Format {
 		fm = NewSogouBin()
 	case "ziguang_uwl", "uwl":
 		fm = NewZiguangUwl()
-	case "msudp_dat", "mspy_dat":
+	case "msudp_dat", "mspy_dat", "udp":
 		fm = NewMsUDP()
-	case "mspy_udl":
+	case "mspy_udl", "udl":
 		fm = NewMspyUDL()
 	// 纯文本拼音
 	case "jiajia", "pyjj", "jj":
 		fm = NewJiaJia()
-	case "word_only":
+	case "word_only", "w":
 		fm = NewWordOnly()
 	case "sogou", "sg":
 		fm = NewCommonPyTable("sg")
@@ -239,4 +239,8 @@ func (d *Dict) PyToTable(sep string) {
 		table = append(table, &TableEntry{d.pyt[i].Word, strings.Join(d.pyt[i].Pinyin, sep), 1})
 	}
 	d.table = table
+}
+
+func (d *Dict) GetTable() Table {
+	return d.table
 }
