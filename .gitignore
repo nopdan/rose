@@ -22,3 +22,5 @@ pkg/*/out/
 pkg/*/own/
 
 pkg/*/black_list.txt
+
+*.zip
