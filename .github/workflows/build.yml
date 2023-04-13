@@ -53,6 +53,7 @@ jobs:
 
       - run: |
           mv README.md bin/
+          mv CHANGELOG.md bin/
 
       # 上传到 Artifact
       - name: Upload windows
