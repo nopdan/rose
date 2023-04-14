@@ -20,10 +20,6 @@ func NewMspyUDL() *MspyUDL {
 	return d
 }
 
-func (d *MspyUDL) GetDict() *Dict {
-	return &d.Dict
-}
-
 // 自学习词库，纯汉字
 func (d *MspyUDL) Parse() {
 	r := bytes.NewReader(d.data)
@@ -52,8 +48,4 @@ func (d *MspyUDL) Parse() {
 		// fmt.Printf("时间: %v, 简拼: %s, 词: %s\n", insert_time, string(jianpin), word)
 	}
 	d.pyt = pyt
-}
-
-func (d *MspyUDL) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }

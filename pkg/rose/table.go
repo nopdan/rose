@@ -28,10 +28,6 @@ func NewCommonTable(format string) *CommonTable {
 	return d
 }
 
-func (d *CommonTable) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *CommonTable) Parse() {
 	table := make(Table, 0, d.size>>8)
 

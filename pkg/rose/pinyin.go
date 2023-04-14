@@ -53,10 +53,6 @@ func NewCommonPyTable(format string) *CommonPyTable {
 	return d
 }
 
-func (d *CommonPyTable) GetDict() *Dict {
-	return &d.Dict
-}
-
 // 拼音通用格式解析
 func (d *CommonPyTable) Parse() {
 	pyt := make(PyTable, 0, 0xff)

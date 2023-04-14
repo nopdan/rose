@@ -62,10 +62,6 @@ func NewSogouBin() *SogouBin {
 	return d
 }
 
-func (d *SogouBin) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *SogouBin) Parse() {
 	pyt := make(PyTable, 0, d.size>>8)
 
@@ -114,8 +110,4 @@ func (d *SogouBin) Parse() {
 		// repeat code
 	}
 	d.pyt = pyt
-}
-
-func (d *SogouBin) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }

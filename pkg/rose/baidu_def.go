@@ -18,10 +18,6 @@ func NewBaiduDef() *BaiduDef {
 	return d
 }
 
-func (d *BaiduDef) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *BaiduDef) Parse() {
 	table := make(Table, 0, d.size>>8)
 

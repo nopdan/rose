@@ -19,10 +19,6 @@ func NewMswbLex() *MswbLex {
 	return d
 }
 
-func (d *MswbLex) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *MswbLex) Parse() {
 	table := make(Table, 0, d.size>>8)
 
@@ -58,8 +54,4 @@ func (d *MswbLex) Parse() {
 	// 	return ret[i].Code < ret[j].Code
 	// })
 	d.table = table
-}
-
-func (d *MswbLex) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }

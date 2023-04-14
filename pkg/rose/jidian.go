@@ -16,10 +16,6 @@ func NewJidian() *Jidian {
 	return d
 }
 
-func (d *Jidian) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *Jidian) Parse() {
 	table := make(CodeTable, 0, d.size>>8)
 

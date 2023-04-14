@@ -18,10 +18,6 @@ func NewSogouScel() *SogouScel {
 	return d
 }
 
-func (d *SogouScel) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *SogouScel) Parse() {
 	pyt := make(PyTable, 0, d.size>>8)
 
@@ -110,8 +106,4 @@ func (d *SogouScel) Parse() {
 		d.BlackList = append(d.BlackList, word)
 	}
 	d.pyt = pyt
-}
-
-func (d *SogouScel) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }

@@ -19,10 +19,6 @@ func NewMsUDP() *MsUDP {
 	return d
 }
 
-func (d *MsUDP) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *MsUDP) Parse() {
 	r := bytes.NewReader(d.data)
 

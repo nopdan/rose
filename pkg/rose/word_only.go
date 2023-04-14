@@ -18,10 +18,6 @@ func NewWordOnly() *WordOnly {
 	return d
 }
 
-func (d *WordOnly) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *WordOnly) Parse() {
 	pyt := make(PyTable, 0, 0xff)
 	scan := bufio.NewScanner(d.rd)

@@ -15,10 +15,6 @@ func NewFcitx4Mb() *Fcitx4Mb {
 	return d
 }
 
-func (d *Fcitx4Mb) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *Fcitx4Mb) Parse() {
 	r := bytes.NewReader(d.data)
 
@@ -42,10 +38,6 @@ func (d *Fcitx4Mb) Parse() {
 		r.Seek(10, 1)
 	}
 	d.table = table
-}
-
-func (d *Fcitx4Mb) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }
 
 func trimSufZero(b []byte) string {

@@ -7,6 +7,7 @@ import (
 )
 
 func outPyt(path string, dict *Dict) {
+	os.Mkdir("out", 0666)
 	os.WriteFile("out/"+filepath.Base(path)+".txt",
 		Generate(dict, "rime"), 0666)
 }
@@ -51,7 +52,7 @@ func TestSogouBin(t *testing.T) {
 	outPyt(path, dict)
 
 	// new
-	path = "own/搜狗词库备份_2023_4_5.bin"
+	path = "own/sogou-bin/搜狗词库备份_2023_4_5.bin"
 	dict = Parse(path, "sogou_bin")
 	outPyt(path, dict)
 }
@@ -91,6 +92,7 @@ func TestJiajia(t *testing.T) {
 }
 
 func TestPytOut(t *testing.T) {
+	os.Mkdir("gen", 0666)
 	dict := Parse("test/qq.qcel", "qcel")
 	os.WriteFile("gen/pyjj.txt", Generate(dict, "jj"), 0666)
 	os.WriteFile("gen/word_only.txt", Generate(dict, "word_only"), 0666)
@@ -102,6 +104,7 @@ func TestPytOut(t *testing.T) {
 }
 
 func tableOut(path string, dict *Dict) {
+	os.Mkdir("out", 0666)
 	os.WriteFile("out/"+filepath.Base(path)+".txt",
 		Generate(dict, "dd"), 0666)
 }
@@ -133,23 +136,8 @@ func TestFcitx4Mb(t *testing.T) {
 	tableOut(path, table)
 }
 
-// func TestPang(t *testing.T) {
-// 	path := "own/binary.main.bin"
-// 	table := Parse(path, "pang")
-// 	// tableOut(path, table)
-// 	os.WriteFile(filepath.Dir(path)+"/out_"+filepath.Base(path)+".txt",
-// 		Jidian{}.Gen(table), 0666)
-// }
-
-// func TestPangAssoc(t *testing.T) {
-// 	path := "own/binary.assoc.bin"
-// 	table := Parse(path, "pang_assoc")
-// 	// tableOut(path, table)
-// 	os.WriteFile(filepath.Dir(path)+"/out_"+filepath.Base(path)+".txt",
-// 		DuoDuo.Gen(table), 0666)
-// }
-
 func TestGen(t *testing.T) {
+	os.Mkdir("gen", 0666)
 	// 哲哲豆词库 1w 多条
 	table := Parse("test/duoduo.txt", "dd")
 	os.WriteFile("gen/msudp.dat", Generate(table, "msudp_dat"), 0666)

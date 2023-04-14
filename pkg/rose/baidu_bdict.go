@@ -15,10 +15,6 @@ func NewBaiduBdict() *BaiduBdict {
 	return d
 }
 
-func (d *BaiduBdict) GetDict() *Dict {
-	return &d.Dict
-}
-
 var bdictSm = []string{
 	"c", "d", "b", "f", "g", "h", "ch", "j", "k", "l", "m", "n",
 	"", "p", "q", "r", "s", "t", "sh", "zh", "w", "x", "y", "z",
@@ -91,8 +87,4 @@ func (d *BaiduBdict) Parse() {
 		pyt = append(pyt, &PinyinEntry{word, pinyin, freq})
 	}
 	d.pyt = pyt
-}
-
-func (d *BaiduBdict) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }

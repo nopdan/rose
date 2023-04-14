@@ -15,10 +15,6 @@ func NewJidianMb() *JidianMb {
 	return d
 }
 
-func (d *JidianMb) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *JidianMb) Parse() {
 	table := make(Table, 0, d.size>>8)
 
@@ -47,8 +43,4 @@ func (d *JidianMb) Parse() {
 		table = append(table, &TableEntry{word, code, 1})
 	}
 	d.table = table
-}
-
-func (d *JidianMb) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }

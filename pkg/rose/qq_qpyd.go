@@ -19,10 +19,6 @@ func NewQqQpyd() *QqQpyd {
 	return d
 }
 
-func (d *QqQpyd) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *QqQpyd) Parse() {
 	pyt := make(PyTable, 0, d.size>>8)
 
@@ -77,8 +73,4 @@ func (d *QqQpyd) Parse() {
 		pyt = append(pyt, &PinyinEntry{word, strings.Split(code, "'"), 1})
 	}
 	d.pyt = pyt
-}
-
-func (d *QqQpyd) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }

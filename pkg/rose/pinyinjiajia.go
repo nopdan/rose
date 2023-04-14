@@ -19,10 +19,6 @@ func NewJiaJia() *JiaJia {
 	return d
 }
 
-func (d *JiaJia) GetDict() *Dict {
-	return &d.Dict
-}
-
 func (d *JiaJia) Parse() {
 	pyt := make(PyTable, 0, 0xff)
 	scan := bufio.NewScanner(d.rd)

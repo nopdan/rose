@@ -18,10 +18,6 @@ func NewZiguangUwl() *ZiguangUwl {
 	return d
 }
 
-func (d *ZiguangUwl) GetDict() *Dict {
-	return &d.Dict
-}
-
 var uwlSm = []string{
 	"", "b", "c", "ch", "d", "f", "g", "h", "j", "k", "l", "m", "n",
 	"p", "q", "r", "s", "sh", "t", "w", "x", "y", "z", "zh",
@@ -98,8 +94,4 @@ func (d *ZiguangUwl) parse(r *bytes.Reader, pyt *PyTable) {
 		// fmt.Println(string(word))
 		*pyt = append(*pyt, &PinyinEntry{word, code, freq})
 	}
-}
-
-func (d *ZiguangUwl) GenFrom(src *Dict) []byte {
-	return genErr(d.Name)
 }
