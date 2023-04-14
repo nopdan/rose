@@ -4,6 +4,7 @@ Copyright © 2023 nopdan <me@nopdan.com>
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -67,20 +68,30 @@ func wrong() {
 }
 
 func ask() {
-	var path string
-	fmt.Print("待转换的码表：\n> ")
-	fmt.Scanf("%s\n", &path)
-	fmt.Println()
 
-	var iFormat string
-	fmt.Print("待转换码表的格式：\n> ")
-	fmt.Scanf("%s\n", &iFormat)
-	fmt.Println()
+	askOne := func(hint string) string {
+		fmt.Printf("%s\n> ", hint)
+		reader := bufio.NewReader(os.Stdin)
+		var value string
+		value, _ = reader.ReadString('\n')
+		value = strings.ReplaceAll(value, "\r", "")
+		value = strings.ReplaceAll(value, "\n", "")
+		last := value[len(value)-1]
+		if len(value) > 3 {
+			if last == '"' && value[0] == '"' {
+				value = value[1 : len(value)-1]
+			} else if len(value) > 4 && last == '\'' && value[:3] == "& '" {
+				value = value[3 : len(value)-1]
+			}
+		}
 
-	var oFormat string
-	fmt.Print("转换为的格式：\n> ")
-	fmt.Scanf("%s\n", &oFormat)
-	fmt.Println()
+		fmt.Println()
+		return value
+	}
+
+	path := askOne("待转换的码表：")
+	iFormat := askOne("待转换码表的格式：")
+	oFormat := askOne("转换为的格式：")
 
 	convert(path, iFormat, oFormat)
 }
