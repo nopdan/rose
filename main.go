@@ -24,6 +24,10 @@ func main() {
 		case "-v", "version":
 			fmt.Println("蔷薇词库转换v1.0\nhttps://github.com/flowerime/rose")
 			return
+		case "-h", "help":
+			fmt.Printf("Usage: .\\rose.exe [path] [input_format]:[output_format]\n")
+			fmt.Printf("Example: .\\rose.exe .\\sogou.scel scel:rime\n")
+			return
 		}
 	case 3:
 	default:
