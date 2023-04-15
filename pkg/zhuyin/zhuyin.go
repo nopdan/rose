@@ -10,7 +10,7 @@ func Get(word string) []string {
 	for i := 0; i < len(chars); {
 		len, code, _ := m.Match(chars[i:])
 		if len == 0 {
-			pinyin = append(pinyin, "#")
+			pinyin = append(pinyin, string([]rune{'#', chars[i]}))
 			i++
 			continue
 		}
