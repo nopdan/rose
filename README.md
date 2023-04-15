@@ -1,4 +1,8 @@
-# 蔷薇词库转换
+<div align="center">
+
+<h1> 蔷薇词库转换</h1>
+
+<img src="logo.png"  width="150" height="150"> </img>
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/flowerime/rose)](https://github.com/flowerime/rose/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/flowerime/rose)](https://github.com/flowerime/rose/network/members)
@@ -8,6 +12,8 @@
 ![GitHub](https://img.shields.io/github/license/flowerime/rose)
 
 关于词库格式的详细解析可以到我的[博客](https://nopdan.com/)查看。
+
+</div>
 
 ## 使用
 
