@@ -55,15 +55,13 @@ type SogouBin struct{ Dict }
 
 func NewSogouBin() *SogouBin {
 	d := new(SogouBin)
-	d.IsPinyin = true
-	d.IsBinary = true
 	d.Name = "搜狗拼音备份.bin"
 	d.Suffix = "bin"
 	return d
 }
 
 func (d *SogouBin) Parse() {
-	pyt := make(PyTable, 0, d.size>>8)
+	wl := make([]Entry, 0, d.size>>8)
 
 	r := bytes.NewReader(d.data)
 	header := make([]byte, 4) // SGPU
@@ -83,7 +81,12 @@ func (d *SogouBin) Parse() {
 	dictBegin := ReadUint32(r)     // = idxBegin + idxSize
 	dictTotalSize := ReadUint32(r) // file total size - dictBegin
 	dictSize := ReadUint32(r)      // effective dict size
-	fmt.Println(fileSize, idxBegin, idxSize, dictBegin, dictTotalSize, dictSize)
+	fmt.Printf("fileSize: 0x%x\n", fileSize)
+	fmt.Printf("idxBegin: 0x%x\n", idxBegin)
+	fmt.Printf("idxSize: 0x%x\n", idxSize)
+	fmt.Printf("dictBegin: 0x%x\n", dictBegin)
+	fmt.Printf("dictTotalSize: 0x%x\n", dictTotalSize)
+	fmt.Printf("dictSize: 0x%x\n", dictSize)
 
 	for i := _u32; i < wordCount; i++ {
 		r.Seek(int64(idxBegin+4*i), 0)
@@ -106,8 +109,8 @@ func (d *SogouBin) Parse() {
 		r.Read(tmp)
 		word, _ := util.Decode(tmp, "UTF-16LE")
 
-		pyt = append(pyt, &PinyinEntry{word, py, int(freq)})
+		wl = append(wl, &PinyinEntry{word, py, int(freq)})
 		// repeat code
 	}
-	d.pyt = pyt
+	d.WordLibrary = wl
 }

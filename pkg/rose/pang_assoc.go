@@ -4,9 +4,9 @@ import "bytes"
 
 type PangAssoc struct{}
 
-func (PangAssoc) Parse(b []byte) Table {
+func (PangAssoc) Parse(b []byte) WubiTable {
 	r := bytes.NewReader(b)
-	ret := make(Table, 0, len(b)>>8)
+	ret := make(WubiTable, 0, len(b)>>8)
 	var tmp []byte
 
 	readWord := func(word *[]rune, r *bytes.Reader) {
@@ -48,7 +48,7 @@ func (PangAssoc) Parse(b []byte) Table {
 		readWord(&word, r)
 		r.Seek(1, 1)
 
-		ret = append(ret, &TableEntry{string(word), string(tmp), 1})
+		ret = append(ret, &WubiEntry{string(word), string(tmp), 1})
 		// fmt.Printf("词:%s, 编码:%s\n", string(word), string(tmp))
 	}
 	return ret

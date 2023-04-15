@@ -2,30 +2,27 @@ package rose
 
 import (
 	"bytes"
+	"fmt"
 )
 
-type SogouScel struct {
-	Dict
-	BlackList []string
-}
+type SogouScel struct{ Dict }
 
 func NewSogouScel() *SogouScel {
 	d := new(SogouScel)
-	d.IsPinyin = true
-	d.IsBinary = true
 	d.Name = "搜狗拼音.scel"
 	d.Suffix = "scel"
 	return d
 }
 
 func (d *SogouScel) Parse() {
-	pyt := make(PyTable, 0, d.size>>8)
+	wl := make([]Entry, 0, d.size>>8)
 
 	r := bytes.NewReader(d.data)
 
 	// 不展开的词条数
 	r.Seek(0x120, 0)
 	dictLen := ReadUint32(r)
+	fmt.Printf("未展开的词条数: %d\n", dictLen)
 
 	// 拼音表偏移量
 	r.Seek(0x1540, 0)
@@ -33,7 +30,7 @@ func (d *SogouScel) Parse() {
 	// 前两个字节是拼音表长度，413
 	pyTableLen := ReadUint16(r)
 	pyTable := make([]string, pyTableLen)
-	// fmt.Println("拼音表长度", pyTableLen)
+	fmt.Printf("拼音表长度: %d\n", pyTableLen)
 
 	// 丢掉两个字节
 	r.Seek(2, 1)
@@ -86,24 +83,23 @@ func (d *SogouScel) Parse() {
 			ext := make([]byte, extSize)
 			r.Read(ext)
 
-			pyt = append(pyt, &PinyinEntry{word, pinyin, 1})
+			wl = append(wl, &PinyinEntry{word, pinyin, 1})
 		}
 	}
+	d.WordLibrary = wl
 	if r.Len() < 16 {
-		d.pyt = pyt
 		return
 	}
 
 	// 黑名单
 	r.Seek(12, 1)
 	blackLen := ReadUint16(r)
-	d.BlackList = make([]string, 0, blackLen)
+	fmt.Printf("以下是词库自带的黑名单: \n\n")
 	for i := _u16; i < blackLen; i++ {
 		wordLen := ReadUint16(r)
 		tmp := make([]byte, wordLen*2)
 		r.Read(tmp)
 		word, _ := Decode(tmp, "UTF-16LE")
-		d.BlackList = append(d.BlackList, word)
+		fmt.Println(word)
 	}
-	d.pyt = pyt
 }

@@ -10,7 +10,7 @@ import (
 )
 
 // 通用规则
-type CommonPyTable struct {
+type Pinyin struct {
 	Dict
 	Sep   byte // 分隔符
 	PySep byte // 拼音分隔符
@@ -19,10 +19,8 @@ type CommonPyTable struct {
 	Rule string
 }
 
-func NewCommonPyTable(format string) *CommonPyTable {
-	d := new(CommonPyTable)
-	d.IsPinyin = true
-	d.IsBinary = false
+func NewPinyin(format string) *Pinyin {
+	d := new(Pinyin)
 	switch format {
 	case "sg":
 		d.Sep = ' '
@@ -54,8 +52,9 @@ func NewCommonPyTable(format string) *CommonPyTable {
 }
 
 // 拼音通用格式解析
-func (d *CommonPyTable) Parse() {
-	pyt := make(PyTable, 0, 0xff)
+func (d *Pinyin) Parse() {
+	wl := make([]Entry, 0, d.size>>8)
+
 	scan := bufio.NewScanner(d.rd)
 	for scan.Scan() {
 		e := strings.Split(scan.Text(), string(d.Sep))
@@ -77,29 +76,29 @@ func (d *CommonPyTable) Parse() {
 				pinyin = strings.Split(tmp, string(d.PySep))
 			}
 		}
-		pyt = append(pyt, &PinyinEntry{word, pinyin, freq})
+		wl = append(wl, &PinyinEntry{word, pinyin, freq})
 	}
-	d.pyt = pyt
+	d.WordLibrary = wl
 }
 
 // 拼音通用格式生成
-func (d *CommonPyTable) GenFrom(src *Dict) []byte {
+func (d *Pinyin) GenFrom(wl WordLibrary) []byte {
 	var buf bytes.Buffer
-	for _, v := range src.pyt {
+	for _, v := range wl {
 		for i := 0; i < len(d.Rule); i++ {
 			if i != 0 {
 				buf.WriteByte(d.Sep)
 			}
 			switch d.Rule[i] {
 			case 'w':
-				buf.WriteString(v.Word)
+				buf.WriteString(v.GetWord())
 			case 'f':
-				buf.WriteString(strconv.Itoa(v.Freq))
+				buf.WriteString(strconv.Itoa(v.GetFreq()))
 			case 'c', 'p':
 				if d.Rule[i] == 'p' {
 					buf.WriteByte(d.PySep)
 				}
-				pinyin := strings.Join(v.Pinyin, string(d.PySep))
+				pinyin := strings.Join(v.GetPinyin(), string(d.PySep))
 				buf.WriteString(pinyin)
 			}
 		}

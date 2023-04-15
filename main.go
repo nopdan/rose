@@ -52,13 +52,10 @@ func convert(path, iFormat, oFormat string) {
 	}
 	d := rose.Parse(path, iFormat)
 	if oFormat == "" {
-		if d.IsPinyin {
-			oFormat = "rime"
-		} else {
-			oFormat = "dd"
-		}
+		oFormat = "rime"
+
 	}
-	data := rose.Generate(d, oFormat)
+	data := rose.Generate(d.WordLibrary, oFormat)
 	od := rose.NewFormat(oFormat).GetDict()
 	oPath := filepath.Base(path) + "_" + oFormat + "." + od.Suffix
 	err := os.WriteFile(oPath, data, 0666)

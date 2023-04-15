@@ -10,14 +10,12 @@ type Jidian struct{ Dict }
 
 func NewJidian() *Jidian {
 	d := new(Jidian)
-	d.IsPinyin = false
-	d.IsBinary = false
 	d.Name = "极点码表.txt"
 	return d
 }
 
 func (d *Jidian) Parse() {
-	table := make(CodeTable, 0, d.size>>8)
+	wl := make([]Entry, 0, d.size>>8)
 
 	scan := bufio.NewScanner(d.rd)
 	for scan.Scan() {
@@ -25,15 +23,17 @@ func (d *Jidian) Parse() {
 		if len(entry) < 2 {
 			continue
 		}
-		table = append(table, &CodeEntry{entry[0], entry[1:]})
+		for i := 1; i < len(entry); i++ {
+			wl = append(wl, &WubiEntry{entry[i], entry[0], i})
+		}
 	}
-	d.codet = table
+	d.WordLibrary = wl
 }
 
-func (Jidian) GenFrom(d *Dict) []byte {
-	d.ToCodeTable()
+func (Jidian) GenFrom(wl WordLibrary) []byte {
+	ct := wl.ToCodeTable()
 	var buf bytes.Buffer
-	for _, v := range d.codet {
+	for _, v := range ct {
 		buf.WriteString(v.Code)
 		buf.WriteByte('\t')
 		buf.WriteString(strings.Join(v.Words, " "))

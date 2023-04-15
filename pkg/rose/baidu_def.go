@@ -11,15 +11,13 @@ type BaiduDef struct{ Dict }
 
 func NewBaiduDef() *BaiduDef {
 	d := new(BaiduDef)
-	d.IsPinyin = false
-	d.IsBinary = true
 	d.Name = "百度自定义方案.def"
 	d.Suffix = "def"
 	return d
 }
 
 func (d *BaiduDef) Parse() {
-	table := make(Table, 0, d.size>>8)
+	wl := make([]Entry, 0, d.size>>8)
 
 	r := bytes.NewReader(d.data)
 	r.Seek(0x6D, 0) // 从 0x6D 开始读
@@ -40,21 +38,21 @@ func (d *BaiduDef) Parse() {
 		r.Read(tmp)
 		word, _ := Decode(tmp, "UTF-16LE")
 		// def = append(def, defEntry{word, code, order})
-		table = append(table, &TableEntry{word, code, 1})
+		wl = append(wl, &WubiEntry{word, code, 1})
 
 		r.Seek(6, 1) // 6个00，1是相对当前位置
 	}
-	d.table = table
+	d.WordLibrary = wl
 }
 
-func (BaiduDef) GenFrom(d *Dict) []byte {
-	d.ToCodeTable()
+func (BaiduDef) GenFrom(wl WordLibrary) []byte {
 	var buf bytes.Buffer
 	// 首字母词条字节数统计
 	lengthMap := make(map[byte]int)
 	buf.Write(make([]byte, 0x6D))
 
-	for _, v := range d.codet {
+	ct := wl.ToCodeTable()
+	for _, v := range ct {
 		code := v.Code
 
 		for i, word := range v.Words {

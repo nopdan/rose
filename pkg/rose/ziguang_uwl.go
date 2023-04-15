@@ -11,8 +11,6 @@ type ZiguangUwl struct {
 
 func NewZiguangUwl() *ZiguangUwl {
 	d := new(ZiguangUwl)
-	d.IsPinyin = true
-	d.IsBinary = true
 	d.Name = "紫光词库.uwl"
 	d.Suffix = "uwl"
 	return d
@@ -31,7 +29,7 @@ var uwlYm = []string{
 }
 
 func (d *ZiguangUwl) Parse() {
-	pyt := make(PyTable, 0, d.size>>8)
+	wl := make([]Entry, 0, d.size>>8)
 
 	r := bytes.NewReader(d.data)
 	r.Seek(2, 0)
@@ -50,12 +48,12 @@ func (d *ZiguangUwl) Parse() {
 	for i := _u32; i < partLen; i++ {
 		r.Seek(0xC00+int64(i)<<10, 0)
 		r.Seek(12, 1)
-		d.parse(r, &pyt)
+		d.parse(r, &wl)
 	}
-	d.pyt = pyt
+	d.WordLibrary = wl
 }
 
-func (d *ZiguangUwl) parse(r *bytes.Reader, pyt *PyTable) {
+func (d *ZiguangUwl) parse(r *bytes.Reader, wl *[]Entry) {
 	// 词条占用字节数
 	max := ReadUint32(r)
 	// 当前字节
@@ -92,6 +90,6 @@ func (d *ZiguangUwl) parse(r *bytes.Reader, pyt *PyTable) {
 		r.Read(tmp)
 		word, _ := Decode(tmp, d.Encoding)
 		// fmt.Println(string(word))
-		*pyt = append(*pyt, &PinyinEntry{word, code, freq})
+		*wl = append(*wl, &PinyinEntry{word, code, freq})
 	}
 }

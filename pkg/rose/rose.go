@@ -1,7 +1,8 @@
 package rose
 
 import (
-	"log"
+	"bytes"
+	"fmt"
 
 	util "github.com/flowerime/goutil"
 )
@@ -20,37 +21,39 @@ var (
 	Decode = util.Decode
 )
 
+func DecodeY(b []byte, e string) string {
+	v, _ := Decode(b, e)
+	return v
+}
+
+func PrintInfo(r *bytes.Reader, size uint32, info string) {
+	tmp := make([]byte, size)
+	r.Read(tmp)
+	fmt.Printf("%s%s\n", info, DecodeY(tmp, "UTF-16LE"))
+}
+
 type Format interface {
 	GetDict() *Dict
 	Parse()
-	GenFrom(*Dict) []byte
+	GenFrom(WordLibrary) []byte
 }
 
 func Parse(path string, format string) *Dict {
+	fmt.Println("正在解析词库：", path)
 	fm := NewFormat(format)
 	d := fm.GetDict()
-	d.path = path
 	d.read(path)
+	fmt.Printf("> 词库格式：%s -> %s\n", format, d.Name)
 	fm.Parse()
+	fmt.Printf("> 解析成功！词条数：%d\n\n", len(d.WordLibrary))
 	return d
 }
 
-func Generate(src *Dict, format string) []byte {
+func Generate(wl WordLibrary, format string) []byte {
 	// 要转为的格式
 	fm := NewFormat(format)
-	d := fm.GetDict()
-	if !d.IsPinyin {
-		if src.IsPinyin {
-			log.Panicln("不支持拼音词库转为", format)
-		}
-		return fm.GenFrom(src)
-	}
-
-	// 转为拼音
-	if !src.IsPinyin {
-		src.ToPyTable()
-	}
-	data := fm.GenFrom(src)
+	// d := fm.GetDict()
+	data := fm.GenFrom(wl)
 	return data
 }
 
@@ -68,8 +71,6 @@ func NewFormat(format string) Format {
 		fm = NewSogouBin()
 	case "ziguang_uwl", "uwl":
 		fm = NewZiguangUwl()
-	case "msudp_dat", "mspy_dat", "udp":
-		fm = NewMsUDP()
 	case "mspy_udl", "udl":
 		fm = NewMspyUDL()
 	// 纯文本拼音
@@ -78,17 +79,19 @@ func NewFormat(format string) Format {
 	case "word_only", "w":
 		fm = NewWordOnly()
 	case "sogou", "sg":
-		fm = NewCommonPyTable("sg")
+		fm = NewPinyin("sg")
 	case "qq":
-		fm = NewCommonPyTable("qq")
+		fm = NewPinyin("qq")
 	case "baidu", "bd":
-		fm = NewCommonPyTable("bd")
+		fm = NewPinyin("bd")
 	case "google", "gg":
-		fm = NewCommonPyTable("gg")
+		fm = NewPinyin("gg")
 	case "rime":
-		fm = NewCommonPyTable("rime")
+		fm = NewPinyin("rime")
 
 	// 二进制字词码表
+	case "msudp_dat", "mspy_dat", "udp":
+		fm = NewMsUDP()
 	case "mswb_lex", "lex":
 		fm = NewMswbLex()
 	case "baidu_def", "def":
@@ -99,18 +102,13 @@ func NewFormat(format string) Format {
 		fm = NewFcitx4Mb()
 	// 字词的纯文本
 	case "duoduo", "dd":
-		fm = NewCommonTable("dd")
+		fm = NewWubi("dd")
 	case "bingling", "bl":
-		fm = NewCommonTable("bl")
+		fm = NewWubi("bl")
 	case "jidian", "jd":
 		fm = NewJidian()
 	default:
 		panic("输入格式不支持：" + format)
-	}
-
-	d := fm.GetDict()
-	if !d.IsBinary {
-		d.Suffix = "txt"
 	}
 	return fm
 }

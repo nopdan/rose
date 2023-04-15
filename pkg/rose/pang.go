@@ -4,9 +4,9 @@ import "bytes"
 
 type Pang struct{}
 
-func (Pang) Parse(b []byte) Table {
+func (Pang) Parse(b []byte) WubiTable {
 	r := bytes.NewReader(b)
-	ret := make(Table, 0, len(b)>>8)
+	ret := make(WubiTable, 0, len(b)>>8)
 	var tmp []byte
 
 	r.Seek(0x16, 0) // 从 0x16 开始读
@@ -77,7 +77,7 @@ func (Pang) Parse(b []byte) Table {
 		r.Read(tmp)
 
 		pos := ReadUint32(r)
-		ret = append(ret, &TableEntry{string(word), string(tmp), int(pos)})
+		ret = append(ret, &WubiEntry{string(word), string(tmp), int(pos)})
 		// fmt.Printf("词:%s, 编码:%s, 位置:%d\n", string(word), string(tmp), pos)
 	}
 	return ret

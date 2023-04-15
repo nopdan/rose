@@ -3,34 +3,42 @@ package rose
 import (
 	"bufio"
 	"bytes"
+	"strings"
 
 	util "github.com/flowerime/goutil"
 	"github.com/flowerime/rose/pkg/zhuyin"
 )
 
+// 纯词词库
+type WordEntry struct{ Word string }
+
+func (e *WordEntry) GetWord() string     { return e.Word }
+func (e *WordEntry) GetCode() string     { return strings.Join(e.GetPinyin(), "") }
+func (e *WordEntry) GetPos() int         { return 1 }
+func (e *WordEntry) GetPinyin() []string { return zhuyin.Get(e.Word) }
+func (e *WordEntry) GetFreq() int        { return 1 }
+
 type WordOnly struct{ Dict }
 
 func NewWordOnly() *WordOnly {
 	d := new(WordOnly)
-	d.IsPinyin = true
-	d.IsBinary = false
 	d.Name = "纯汉字.txt"
 	return d
 }
 
 func (d *WordOnly) Parse() {
-	pyt := make(PyTable, 0, 0xff)
+	wl := make([]Entry, 0, 0xff)
 	scan := bufio.NewScanner(d.rd)
 	for scan.Scan() {
-		pyt = append(pyt, &PinyinEntry{scan.Text(), zhuyin.Get(scan.Text()), 1})
+		wl = append(wl, &WordEntry{scan.Text()})
 	}
-	d.pyt = pyt
+	d.WordLibrary = wl
 }
 
-func (d *WordOnly) GenFrom(src *Dict) []byte {
+func (WordOnly) GenFrom(wl WordLibrary) []byte {
 	var buf bytes.Buffer
-	for _, v := range src.pyt {
-		buf.WriteString(v.Word)
+	for _, entry := range wl {
+		buf.WriteString(entry.GetWord())
 		buf.WriteString(util.LineBreak)
 	}
 	return buf.Bytes()

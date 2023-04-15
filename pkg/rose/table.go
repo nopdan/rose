@@ -6,30 +6,28 @@ import (
 	"strings"
 )
 
-type CommonTable struct {
+type Wubi struct {
 	Dict
 	WordFirst bool
 	Encoding  string
 }
 
-func NewCommonTable(format string) *CommonTable {
-	d := new(CommonTable)
-	d.IsPinyin = false
-	d.IsBinary = false
+func NewWubi(format string) *Wubi {
+	d := new(Wubi)
 	if format == "dd" {
+		d.Name = "多多.txt"
 		d.WordFirst = true
 		d.Encoding = "UTF-8"
-		d.Name = "多多.txt"
 	} else if format == "bl" {
+		d.Name = "冰凌.txt"
 		d.WordFirst = false
 		d.Encoding = "UTF-16LE"
-		d.Name = "冰凌.txt"
 	}
 	return d
 }
 
-func (d *CommonTable) Parse() {
-	table := make(Table, 0, d.size>>8)
+func (d *Wubi) Parse() {
+	wl := make([]Entry, 0, d.size>>8)
 
 	scan := bufio.NewScanner(d.rd)
 	for scan.Scan() {
@@ -45,23 +43,23 @@ func (d *CommonTable) Parse() {
 			fmt.Println("多多的命令" + word)
 			continue
 		}
-		table = append(table, &TableEntry{word, code, 1})
+		wl = append(wl, &WubiEntry{word, code, 1})
 	}
-	d.table = table
+	d.WordLibrary = wl
 }
 
-func (d *CommonTable) GenFrom(src *Dict) []byte {
+func (d *Wubi) GenFrom(wl WordLibrary) []byte {
 	var sb strings.Builder
-	sb.Grow(len(src.table))
-	for _, v := range src.table {
+	sb.Grow(len(wl))
+	for _, v := range wl {
 		if d.WordFirst {
-			sb.WriteString(v.Word)
+			sb.WriteString(v.GetWord())
 			sb.WriteByte('\t')
-			sb.WriteString(v.Code)
+			sb.WriteString(v.GetCode())
 		} else {
-			sb.WriteString(v.Code)
+			sb.WriteString(v.GetCode())
 			sb.WriteByte('\t')
-			sb.WriteString(v.Word)
+			sb.WriteString(v.GetWord())
 		}
 		sb.WriteByte('\r')
 		sb.WriteByte('\n')

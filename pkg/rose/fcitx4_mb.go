@@ -8,8 +8,6 @@ type Fcitx4Mb struct{ Dict }
 
 func NewFcitx4Mb() *Fcitx4Mb {
 	d := new(Fcitx4Mb)
-	d.IsPinyin = false
-	d.IsBinary = true
 	d.Name = "fcitx4.mb"
 	d.Suffix = "mb"
 	return d
@@ -21,7 +19,7 @@ func (d *Fcitx4Mb) Parse() {
 	r.Seek(0x55, 0)
 	// 词条数
 	count := ReadUint32(r)
-	table := make(Table, 0, count)
+	wl := make([]Entry, 0, count)
 
 	for i := _u32; i < count; i++ {
 		var tmp []byte
@@ -34,10 +32,10 @@ func (d *Fcitx4Mb) Parse() {
 		r.Read(tmp)
 		word := string(tmp)
 
-		table = append(table, &TableEntry{word, code, 1})
+		wl = append(wl, &WubiEntry{word, code, 1})
 		r.Seek(10, 1)
 	}
-	d.table = table
+	d.WordLibrary = wl
 }
 
 func trimSufZero(b []byte) string {

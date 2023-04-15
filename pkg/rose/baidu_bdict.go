@@ -8,8 +8,6 @@ type BaiduBdict struct{ Dict }
 
 func NewBaiduBdict() *BaiduBdict {
 	d := new(BaiduBdict)
-	d.IsPinyin = true
-	d.IsBinary = true
 	d.Name = "百度分类词库.bdict(.bcd)"
 	d.Suffix = "bdict"
 	return d
@@ -27,10 +25,16 @@ var bdictYm = []string{
 }
 
 func (d *BaiduBdict) Parse() {
-	pyt := make(PyTable, 0, d.size>>8)
-
 	r := bytes.NewReader(d.data)
-	r.Seek(0x350, 0)
+	r.Seek(0x70, 0)
+	count := ReadUint32(r) // 词条数
+	wl := make([]Entry, 0, count)
+	r.Seek(0x90, 0)
+	PrintInfo(r, 0xD0-0x90, "词库名: ")
+	PrintInfo(r, 0x110-0xD0, "词库作者: ")
+	PrintInfo(r, 0x150-0x110, "示例词: ")
+	PrintInfo(r, 0x350-0x150, "词库描述: ")
+
 	for r.Len() > 4 {
 		var tmp []byte
 		// 拼音长
@@ -54,7 +58,7 @@ func (d *BaiduBdict) Parse() {
 			r.Read(tmp)
 			word, _ := Decode(tmp, "UTF-16LE")
 
-			pyt = append(pyt, &PinyinEntry{word, []string{code}, freq})
+			wl = append(wl, &PinyinEntry{word, []string{code}, freq})
 			continue
 		}
 
@@ -63,7 +67,7 @@ func (d *BaiduBdict) Parse() {
 			r.Seek(-2, 1)
 			eng := make([]byte, pyLen)
 			r.Read(eng)
-			pyt = append(pyt, &PinyinEntry{string(eng), []string{string(eng)}, freq})
+			wl = append(wl, &PinyinEntry{string(eng), []string{string(eng)}, freq})
 			continue
 		}
 
@@ -84,7 +88,7 @@ func (d *BaiduBdict) Parse() {
 		tmp = make([]byte, pyLen*2)
 		r.Read(tmp)
 		word, _ := Decode(tmp, "UTF-16LE")
-		pyt = append(pyt, &PinyinEntry{word, pinyin, freq})
+		wl = append(wl, &PinyinEntry{word, pinyin, freq})
 	}
-	d.pyt = pyt
+	d.WordLibrary = wl
 }

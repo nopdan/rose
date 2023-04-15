@@ -13,14 +13,13 @@ type JiaJia struct{ Dict }
 
 func NewJiaJia() *JiaJia {
 	d := new(JiaJia)
-	d.IsPinyin = true
-	d.IsBinary = false
 	d.Name = "拼音加加.txt"
 	return d
 }
 
 func (d *JiaJia) Parse() {
-	pyt := make(PyTable, 0, 0xff)
+	wl := make([]Entry, 0, d.size>>8)
+
 	scan := bufio.NewScanner(d.rd)
 	for scan.Scan() {
 		entry := []rune(strings.TrimSpace(scan.Text()))
@@ -49,21 +48,21 @@ func (d *JiaJia) Parse() {
 			pinyin = append(pinyin, code)
 			i++
 		}
-		pyt = append(pyt, &PinyinEntry{string(word), pinyin, 1})
+		wl = append(wl, &PinyinEntry{string(word), pinyin, 1})
 	}
-	d.pyt = pyt
+	d.WordLibrary = wl
 }
 
-func (d *JiaJia) GenFrom(src *Dict) []byte {
+func (JiaJia) GenFrom(wl WordLibrary) []byte {
 	var buf bytes.Buffer
-	for _, v := range src.pyt {
-		words := []rune(v.Word)
-		if len(words) != len(v.Pinyin) {
+	for _, v := range wl {
+		words := []rune(v.GetWord())
+		if len(words) != len(v.GetPinyin()) {
 			continue
 		}
 		for i := 0; i < len(words); i++ {
 			buf.WriteString(string(words[i]))
-			buf.WriteString(v.Pinyin[i])
+			buf.WriteString(v.GetPinyin()[i])
 		}
 		buf.WriteString(util.LineBreak)
 	}

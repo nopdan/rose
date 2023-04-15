@@ -38,7 +38,7 @@ func (h *header) parse(r *bytes.Reader) {
 }
 
 func (s *SogouBin) ParseOld() {
-	pyt := make(PyTable, 0, s.size>>8)
+	wl := make([]Entry, 0, s.size>>8)
 	data := s.data
 	r := bytes.NewReader(s.data)
 	// fileChksum := ReadUint32(r)
@@ -152,10 +152,10 @@ func (s *SogouBin) ParseOld() {
 		// fmt.Printf("offset: %v\n", offset)
 		// DecryptWordsEx
 		word := decryptWordsEx(r, offset, int(wordInfo.p1), p2, p3)
-		pyt = append(pyt, &PinyinEntry{word, pys, int(wordInfo.freq)})
+		wl = append(wl, &PinyinEntry{word, pys, int(wordInfo.freq)})
 		// fmt.Printf("word: %v\tcode: %v\tfreq: %v\n", word, codes, wordInfo.freq)
 	}
-	s.pyt = pyt
+	s.WordLibrary = wl
 }
 
 func decryptPinyin(r *bytes.Reader, offset uint32) []string {

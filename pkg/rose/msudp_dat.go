@@ -12,8 +12,6 @@ type MsUDP struct{ Dict }
 
 func NewMsUDP() *MsUDP {
 	d := new(MsUDP)
-	d.IsPinyin = false
-	d.IsBinary = true
 	d.Name = "微软用户自定义短语.dat"
 	d.Suffix = "dat"
 	return d
@@ -26,12 +24,14 @@ func (d *MsUDP) Parse() {
 	r.Seek(0x10, 0)
 	offset_start := ReadUint32(r) // 偏移表开始
 	entry_start := ReadUint32(r)  // 词条开始
-	entry_end := ReadUint32(r)    // 词条结束
-	count := ReadUint32(r)        // 词条数
-	table := make(Table, 0, count)
+	// entry_end := ReadUint32(r)    // 词条结束
+	r.Seek(4, 1)
+	count := ReadUint32(r) // 词条数
+	wl := make([]Entry, 0, count)
+
 	export_stamp := ReadUint32(r) // 导出的时间戳
 	export_time := time.Unix(int64(export_stamp), 0)
-	fmt.Println(entry_end, export_time)
+	fmt.Printf("时间: %v\n", export_time)
 
 	for i := _u32; i < count; i++ {
 		r.Seek(int64(offset_start+4*i), 0)
@@ -64,16 +64,12 @@ func (d *MsUDP) Parse() {
 		c, _ := Decode(code, "UTF-16LE")
 		w, _ := Decode(word, "UTF-16LE")
 		// fmt.Println(c, w)
-		table = append(table, &TableEntry{w, c, int(pos)})
+		wl = append(wl, &WubiEntry{w, c, int(pos)})
 	}
-	d.table = table
+	d.WordLibrary = wl
 }
 
-func (MsUDP) GenFrom(d *Dict) []byte {
-	if d.IsPinyin {
-		d.PyToTable("")
-	}
-	table := d.table
+func (MsUDP) GenFrom(wl WordLibrary) []byte {
 	var buf bytes.Buffer
 	now := time.Now()
 	export_stamp := util.To4Bytes(uint32(now.Unix()))
@@ -81,31 +77,31 @@ func (MsUDP) GenFrom(d *Dict) []byte {
 	buf.Write([]byte{0x6D, 0x73, 0x63, 0x68, 0x78, 0x75, 0x64, 0x70,
 		0x02, 0x00, 0x60, 0x00, 0x01, 0x00, 0x00, 0x00})
 	buf.Write(util.To4Bytes(0x40))
-	buf.Write(util.To4Bytes(uint32(0x40 + 4*len(table))))
+	buf.Write(util.To4Bytes(uint32(0x40 + 4*len(wl))))
 	buf.Write(make([]byte, 4)) // 待定 文件总长
-	buf.Write(util.To4Bytes(uint32(len(table))))
+	buf.Write(util.To4Bytes(uint32(len(wl))))
 	buf.Write(export_stamp)
 	buf.Write(make([]byte, 28))
 	buf.Write(make([]byte, 4))
 
-	words := make([][]byte, 0, len(table))
-	codes := make([][]byte, 0, len(table))
+	words := make([][]byte, 0, len(wl))
+	codes := make([][]byte, 0, len(wl))
 	sum := 0
-	for i := range table {
-		word, _ := util.Encode(table[i].Word, "UTF-16LE")
-		code, _ := util.Encode(table[i].Code, "UTF-16LE")
+	for i := range wl {
+		word, _ := util.Encode(wl[i].GetWord(), "UTF-16LE")
+		code, _ := util.Encode(wl[i].GetCode(), "UTF-16LE")
 		words = append(words, word)
 		codes = append(codes, code)
-		if i != len(table)-1 {
+		if i != len(wl)-1 {
 			sum += len(word) + len(code) + 20
 			buf.Write(util.To4Bytes(uint32(sum)))
 		}
 	}
-	for i := range table {
+	for i := range wl {
 		buf.Write([]byte{0x10, 0x00, 0x10, 0x00})
 		// fmt.Println(words[i], len(words[i]), codes[i], len(codes[i]))
 		buf.Write(util.To2Bytes(uint16(len(codes[i]) + 18)))
-		pos := table[i].Pos
+		pos := wl[i].GetPos()
 		if pos < 1 {
 			pos = 1
 		}

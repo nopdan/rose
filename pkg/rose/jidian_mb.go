@@ -8,17 +8,17 @@ type JidianMb struct{ Dict }
 
 func NewJidianMb() *JidianMb {
 	d := new(JidianMb)
-	d.IsPinyin = false
-	d.IsBinary = true
 	d.Name = "极点码表.mb"
 	d.Suffix = "mb"
 	return d
 }
 
 func (d *JidianMb) Parse() {
-	table := make(Table, 0, d.size>>8)
+	wl := make([]Entry, 0, d.size>>8)
 
 	r := bytes.NewReader(d.data)
+	r.Seek(0x17, 0)
+	PrintInfo(r, 0x11F-0x17, "")
 	r.Seek(0x1B620, 0) // 从 0x1B620 开始读
 	for r.Len() > 3 {
 		var tmp []byte
@@ -40,7 +40,7 @@ func (d *JidianMb) Parse() {
 		r.Read(tmp)
 		word, _ := Decode(tmp, "UTF-16LE")
 
-		table = append(table, &TableEntry{word, code, 1})
+		wl = append(wl, &WubiEntry{word, code, 1})
 	}
-	d.table = table
+	d.WordLibrary = wl
 }
