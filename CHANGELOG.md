@@ -1,3 +1,12 @@
+<a name="v1.0.1"></a>
+
+## [v1.0.1](https://github.com/flowerime/rose/compare/v1.0...v1.0.1) (2023-04-15)
+
+### Feat
+
+- 添加交互式命令行
+- 添加 `-v` 和 `-h` 命令
+
 <a name="v1.0"></a>
 
 ## [v1.0](https://github.com/flowerime/rose/compare/v0.7.3...v1.0) (2023-04-13)
