@@ -9,19 +9,17 @@ import (
 func outPyt(path string, dict *Dict) {
 	os.Mkdir("out", 0666)
 	os.WriteFile("out/"+filepath.Base(path)+".txt",
-		Generate(dict, "rime"), 0666)
+		Generate(dict.WordLibrary, "rime"), 0666)
 }
 
 func TestBdict(t *testing.T) {
-	// 计算机硬件词汇 https://shurufa.baidu.com/dict
-	path := "test/baidu.bdict"
-	dict := Parse(path, "bdict")
-	outPyt(path, dict)
-
-	// 计算机 https://mime.baidu.com/web/iw/index/
-	path = "test/baidu.bcd"
-	dict = Parse(path, "bcd")
-	outPyt(path, dict)
+	for _, path := range []string{
+		"test/baidu.bdict", // 计算机硬件词汇 https://shurufa.baidu.com/dict
+		"test/baidu.bcd",   // 计算机 https://mime.baidu.com/web/iw/index/
+	} {
+		dict := Parse(path, "bdict")
+		outPyt(path, dict)
+	}
 }
 
 func TestQpyd(t *testing.T) {
@@ -31,86 +29,90 @@ func TestQpyd(t *testing.T) {
 }
 
 func TestScel(t *testing.T) {
-	path := "test/sogou.scel"
-	dict := Parse(path, "scel")
-	outPyt(path, dict)
+	for _, path := range []string{
+		"test/sogou.scel",
+		"test/qq.qcel", // 网络流行新词【官方推荐】 http://cdict.qq.pinyin.cn/detail?dict_id=s4
 
-	path = "own/搜狗标准词库.scel"
-	dict = Parse(path, "scel")
-	outPyt(path, dict)
-
-	// 网络流行新词【官方推荐】 http://cdict.qq.pinyin.cn/detail?dict_id=s4
-	path = "test/qq.qcel"
-	dict = Parse(path, "qcel")
-	outPyt(path, dict)
+		// "own/搜狗标准词库.scel",
+	} {
+		dict := Parse(path, "scel")
+		outPyt(path, dict)
+	}
 }
 
 func TestSogouBin(t *testing.T) {
-	// 搜狗词库备份_2021_05_10.bin
-	path := "test/sogou_bak.bin"
-	dict := Parse(path, "sogou_bin")
-	outPyt(path, dict)
+	for _, path := range []string{
+		"test/sogou_bak.bin", // 搜狗词库备份_2021_05_10.bin
 
-	// new
-	path = "own/sogou-bin/搜狗词库备份_2023_4_5.bin"
-	dict = Parse(path, "sogou_bin")
-	outPyt(path, dict)
+		"test/sogou_bak_new.bin", // new
+	} {
+		dict := Parse(path, "sogou_bin")
+		outPyt(path, dict)
+	}
 }
 
 func TestUwl(t *testing.T) {
-	// 来源，紫光内置
-	path := "test/music.uwl"
-	dict := Parse(path, "uwl")
-	outPyt(path, dict)
+	for _, path := range []string{
+		"test/music.uwl", // 来源，紫光内置
 
-	path = "own/sys7.uwl"
-	dict = Parse(path, "uwl")
-	outPyt(path, dict)
-
-	path = "own/大词库第六版.uwl"
-	dict = Parse(path, "uwl")
-	outPyt(path, dict)
+		// "own/sys7.uwl",
+		// "own/大词库第六版.uwl",
+	} {
+		dict := Parse(path, "uwl")
+		outPyt(path, dict)
+	}
 }
 
 func TestMspyUDL(t *testing.T) {
-	path := "own/ChsPinyinUDL.dat"
+	path := "test/ChsPinyinUDL.dat"
 	dict := Parse(path, "mspy_udl")
-	outPyt(path, dict)
-}
-
-func TestMsUDP(t *testing.T) {
-	path := "own/UserDefinedPhrase.dat"
-	dict := Parse(path, "msudp_dat")
 	outPyt(path, dict)
 }
 
 // 拼音加加测试
 func TestJiajia(t *testing.T) {
-	path := "own/拼音加加-305万大词库.txt"
+	path := "test/jiajia.txt"
 	dict := Parse(path, "jj")
+	outPyt(path, dict)
+}
+
+func TestWordOnly(t *testing.T) {
+	path := "test/words.txt"
+	dict := Parse(path, "w")
 	outPyt(path, dict)
 }
 
 func TestPytOut(t *testing.T) {
 	os.Mkdir("gen", 0666)
-	dict := Parse("test/qq.qcel", "qcel")
-	os.WriteFile("gen/pyjj.txt", Generate(dict, "jj"), 0666)
-	os.WriteFile("gen/word_only.txt", Generate(dict, "word_only"), 0666)
-	os.WriteFile("gen/sogou.txt", Generate(dict, "sg"), 0666)
-	os.WriteFile("gen/qq.txt", Generate(dict, "qq"), 0666)
-	os.WriteFile("gen/baidu.txt", Generate(dict, "bd"), 0666)
-	os.WriteFile("gen/google.txt", Generate(dict, "gg"), 0666)
-	os.WriteFile("gen/rime.txt", Generate(dict, "rime"), 0666)
+	wl := Parse("test/qq.qcel", "qcel").WordLibrary
+	os.WriteFile("gen/msudppy.dat", Generate(wl, "msudp_dat"), 0666)
+	os.WriteFile("gen/pyjj.txt", Generate(wl, "jj"), 0666)
+	os.WriteFile("gen/word_only.txt", Generate(wl, "word_only"), 0666)
+	os.WriteFile("gen/sogou.txt", Generate(wl, "sg"), 0666)
+	os.WriteFile("gen/qq.txt", Generate(wl, "qq"), 0666)
+	os.WriteFile("gen/baidu.txt", Generate(wl, "bd"), 0666)
+	os.WriteFile("gen/google.txt", Generate(wl, "gg"), 0666)
+	os.WriteFile("gen/rime.txt", Generate(wl, "rime"), 0666)
 }
 
 func tableOut(path string, dict *Dict) {
 	os.Mkdir("out", 0666)
 	os.WriteFile("out/"+filepath.Base(path)+".txt",
-		Generate(dict, "dd"), 0666)
+		Generate(dict.WordLibrary, "dd"), 0666)
+}
+
+func TestMsUDP(t *testing.T) {
+	for _, path := range []string{
+		"test/UserDefinedPhrase.dat",
+		"test/ChsPinyinUDP.lex",
+	} {
+		dict := Parse(path, "msudp_dat")
+		outPyt(path, dict)
+	}
 }
 
 func TestMswbLex(t *testing.T) {
-	path := "own/ChsWubiNew.lex"
+	path := "test/ChsWubi.lex"
 	table := Parse(path, "mswb_lex")
 	tableOut(path, table)
 }
@@ -139,9 +141,9 @@ func TestFcitx4Mb(t *testing.T) {
 func TestGen(t *testing.T) {
 	os.Mkdir("gen", 0666)
 	// 哲哲豆词库 1w 多条
-	table := Parse("test/duoduo.txt", "dd")
-	os.WriteFile("gen/msudp.dat", Generate(table, "msudp_dat"), 0666)
-	os.WriteFile("gen/baidu.def", Generate(table, "def"), 0666)
-	os.WriteFile("gen/duoduo.txt", Generate(table, "dd"), 0666)
-	os.WriteFile("gen/bingling.txt", Generate(table, "bl"), 0666)
+	wl := Parse("test/duoduo.txt", "dd").WordLibrary
+	os.WriteFile("gen/msudp.dat", Generate(wl, "msudp_dat"), 0666)
+	os.WriteFile("gen/baidu.def", Generate(wl, "def"), 0666)
+	os.WriteFile("gen/duoduo.txt", Generate(wl, "dd"), 0666)
+	os.WriteFile("gen/bingling.txt", Generate(wl, "bl"), 0666)
 }
