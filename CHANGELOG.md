@@ -1,3 +1,15 @@
+<a name="v1.1.0"></a>
+
+## [v1.1.0](https://github.com/flowerime/rose/compare/v1.0.1...v1.1.0) (2023-04-15)
+
+### Style
+
+- 抽象 Entry 接口
+
+### Test
+
+- 添加更多测试词库
+
 <a name="v1.0.1"></a>
 
 ## [v1.0.1](https://github.com/flowerime/rose/compare/v1.0...v1.0.1) (2023-04-15)
