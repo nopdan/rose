@@ -55,20 +55,6 @@ type Entry interface {
 	GetFreq() int
 }
 
-// 类五笔码表
-type WubiTable []*WubiEntry
-type WubiEntry struct {
-	Word string
-	Code string
-	Pos  int // 重码顺序
-}
-
-func (e *WubiEntry) GetWord() string     { return e.Word }
-func (e *WubiEntry) GetCode() string     { return e.Code }
-func (e *WubiEntry) GetPos() int         { return e.Pos }
-func (e *WubiEntry) GetPinyin() []string { return zhuyin.Get(e.Word) }
-func (e *WubiEntry) GetFreq() int        { return 1 }
-
 // 拼音输入法词库
 type PinyinTable []*PinyinEntry
 type PinyinEntry struct {
@@ -83,12 +69,27 @@ func (e *PinyinEntry) GetPos() int         { return 1 }
 func (e *PinyinEntry) GetPinyin() []string { return e.Pinyin }
 func (e *PinyinEntry) GetFreq() int        { return e.Freq }
 
-// 类极点，一码多词
-type CodeTable []*CodeEntry
-type CodeEntry struct {
-	Code  string
-	Words []string
+func (wl WordLibrary) ToPinyinTable() PinyinTable {
+	pyt := make(PinyinTable, 0, len(wl))
+	for _, entry := range wl {
+		pyt = append(pyt, &PinyinEntry{entry.GetWord(), entry.GetPinyin(), 1})
+	}
+	return pyt
 }
+
+// 类五笔码表
+type WubiTable []*WubiEntry
+type WubiEntry struct {
+	Word string
+	Code string
+	Pos  int // 重码顺序
+}
+
+func (e *WubiEntry) GetWord() string     { return e.Word }
+func (e *WubiEntry) GetCode() string     { return e.Code }
+func (e *WubiEntry) GetPos() int         { return e.Pos }
+func (e *WubiEntry) GetPinyin() []string { return zhuyin.Get(e.Word) }
+func (e *WubiEntry) GetFreq() int        { return 1 }
 
 func (wl WordLibrary) ToWubiTable() WubiTable {
 	wt := make(WubiTable, 0, len(wl))
@@ -96,6 +97,13 @@ func (wl WordLibrary) ToWubiTable() WubiTable {
 		wt = append(wt, &WubiEntry{entry.GetWord(), entry.GetCode(), entry.GetPos()})
 	}
 	return wt
+}
+
+// 类极点，一码多词
+type CodeTable []*CodeEntry
+type CodeEntry struct {
+	Code  string
+	Words []string
 }
 
 func (wl WordLibrary) ToCodeTable() CodeTable {
@@ -122,10 +130,12 @@ func (wl WordLibrary) ToCodeTable() CodeTable {
 	return ct
 }
 
-func (wl WordLibrary) ToPinyinTable() PinyinTable {
-	pyt := make(PinyinTable, 0, len(wl))
-	for _, entry := range wl {
-		pyt = append(pyt, &PinyinEntry{entry.GetWord(), entry.GetPinyin(), 1})
+func (ct CodeTable) ToWubiTable() WubiTable {
+	wt := make(WubiTable, 0, len(ct))
+	for _, entry := range ct {
+		for i, word := range entry.Words {
+			wt = append(wt, &WubiEntry{word, entry.Code, i})
+		}
 	}
-	return pyt
+	return wt
 }
