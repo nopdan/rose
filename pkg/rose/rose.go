@@ -40,12 +40,7 @@ type Format interface {
 }
 
 func Parse(path, format string) *Dict {
-	var fm Format
-	if format == "" {
-		fm = DetectFormat(path)
-	} else {
-		fm = NewFormat(format)
-	}
+	fm := DetectFormat(path, format)
 	return FParse(path, fm)
 }
 
@@ -120,8 +115,12 @@ func NewFormat(format string) Format {
 	return fm
 }
 
-func DetectFormat(path string) Format {
+func DetectFormat(path string, format string) Format {
 	var fm Format
+	if format != "" {
+		return NewFormat(format)
+	}
+
 	tmp := strings.Split(path, ".")
 	if len(tmp) < 1 {
 		return NewPinyin("rime")

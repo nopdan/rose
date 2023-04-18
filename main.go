@@ -13,8 +13,14 @@ import (
 	"github.com/flowerime/rose/pkg/rose"
 )
 
-func main() {
+var (
+	input         string // 输入词库
+	output        string // 保存路径
+	input_format  string // 输入词库的格式
+	output_format string // 保存的词库格式
+)
 
+func main() {
 	switch len(os.Args) {
 	case 1:
 		ask()
@@ -25,43 +31,50 @@ func main() {
 			fmt.Println("蔷薇词库转换v1.1.0\nhttps://github.com/flowerime/rose")
 			return
 		case "-h", "help":
-			fmt.Printf("Usage: .\\rose.exe [path] [input_format]:[output_format]\n")
-			fmt.Printf("Example: .\\rose.exe .\\sogou.scel scel:rime\n")
+			fmt.Printf("Usage: .\\rose.exe [input] [input_format]:[output_format] [output]\n")
+			fmt.Printf("Example: .\\rose.exe .\\sogou.scel scel:rime rime.dict.yaml\n")
 			return
 		}
-	case 3:
-	default:
-		wrong()
-		return
 	}
 
-	path := os.Args[1]
-	format := os.Args[2]
-	tmp := strings.Split(format, ":")
-	if len(tmp) != 2 {
-		wrong()
-		return
+	if len(os.Args) >= 3 {
+		goto NORMAL
 	}
-	iFormat, oFormat := tmp[0], tmp[1]
-	convert(path, iFormat, oFormat)
+	wrong()
+	return
+
+NORMAL:
+	input = os.Args[1]
+	fm := strings.Split(os.Args[2], ":")
+	if len(fm) == 2 {
+		input_format = fm[0]
+		output_format = fm[1]
+	}
+	if len(os.Args) > 3 {
+		output = os.Args[3]
+	}
+	// fmt.Println(input, output, input_format, output_format)
+	convert(input, output, input_format, output_format)
 }
 
-func convert(path, iFormat, oFormat string) {
-	if iFormat == "" {
-		spl := strings.Split(path, ".")
-		iFormat = spl[len(spl)-1]
-	}
-	d := rose.Parse(path, iFormat)
-	if oFormat == "" {
-		oFormat = "rime"
-	}
+func convert(input, output, input_format, output_format string) {
 
-	data := rose.Generate(d.WordLibrary, oFormat)
-	od := rose.NewFormat(oFormat).GetDict()
-	oPath := filepath.Base(path) + "_" + oFormat + "." + od.Suffix
-	err := os.WriteFile(oPath, data, 0666)
-	if err == nil {
-		fmt.Println("转换成功，输出到", oPath)
+	ifm := rose.DetectFormat(input, input_format)
+	fmt.Println("输入词库:", input)
+	fmt.Println("词库格式:", ifm.GetDict().Name, input_format)
+	d := rose.Parse(input, input_format)
+	fmt.Println("解析成功: 词条数 ", len(d.WordLibrary))
+	fmt.Println()
+
+	ofm := rose.DetectFormat(output, output_format)
+	if output == "" {
+		output = filepath.Base(input) + "_" + ofm.GetDict().Name
+	}
+	fmt.Println("输出词库:", output)
+	fmt.Println("词库格式:", ofm.GetDict().Name, output_format)
+	data := ofm.GenFrom(d.WordLibrary)
+	if err := os.WriteFile(output, data, 0666); err == nil {
+		fmt.Println("转换成功")
 	}
 }
 
@@ -69,8 +82,8 @@ func wrong() {
 	fmt.Println("输入参数有误")
 }
 
+// 交互式
 func ask() {
-
 	askOne := func(hint string) string {
 		fmt.Printf("%s\n> ", hint)
 		reader := bufio.NewReader(os.Stdin)
@@ -91,9 +104,11 @@ func ask() {
 		return value
 	}
 
-	path := askOne("待转换的码表：")
-	iFormat := askOne("待转换码表的格式：")
-	oFormat := askOne("转换为的格式：")
+	input = askOne("输入词库：")
+	input_format = askOne("词库格式：")
+	output = askOne("输出词库：")
+	output_format = askOne("词库格式：")
 
-	convert(path, iFormat, oFormat)
+	convert(input, output, input_format, output_format)
+	fmt.Scanln()
 }

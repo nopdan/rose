@@ -17,9 +17,9 @@
 
 ## 使用
 
-`.\rose.exe path input_format:output_format`
+`.\rose.exe input input_format:output_format output`
 
-> 例：`.\rose.exe .\sogou.scel scel:rime`
+> 例：`.\rose.exe .\sogou.scel scel:rime rime.dict.yaml`
 
 ## 拼音词库格式
 
