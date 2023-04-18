@@ -26,7 +26,7 @@
 | 词库                         | 代号        | 简写  | 格式                         | 备注       |
 | ---------------------------- | ----------- | ----- | ---------------------------- | ---------- |
 | 搜狗细胞词库、qq6.0 以上词库 | sogou_scel  | scel  | `.scel`\|`.qcel`             | 不支持输出 |
-| 搜狗拼音备份词库             | sogou_bin   |       | `.bin`                       | 不支持输出 |
+| 搜狗拼音备份词库             | sogou_bin   | sgbin | `.bin`                       | 不支持输出 |
 | qq6.0 以下词库               | qq_qpyd     | qpyd  | `.qpyd`                      | 不支持输出 |
 | 百度分类词库                 | baidu_bdict | bdict | `.bdict`\|`.bcd`             | 不支持输出 |
 | 紫光（华宇）                 | ziguang_uwl | uwl   | `.uwl`                       | 不支持输出 |
@@ -49,8 +49,8 @@
 | 百度手机自定义方案 | baidu_def | def  | `.def`                 |            |
 | 微软用户自定义短语 | msudp_dat | udp  | `.dat`                 |            |
 | 微软五笔           | mswb_lex  | lex  | `.lex`                 | 不支持输出 |
-| 极点               | jidian_mb |      | `.mb`                  | 不支持输出 |
-| fcitx4             | fcitx4_mb |      | `.mb`                  | 不支持输出 |
+| 极点               | jidian_mb | jdmb | `.mb`                  | 不支持输出 |
+| fcitx4             | fcitx4_mb | f4mb | `.mb`                  | 不支持输出 |
 | 多多               | duoduo    | dd   | 词`\t`编码             |            |
 | 冰凌               | bingling  | bl   | 编码`\t`词             | UTF-16LE   |
 | 极点               | jidian    | jd   | 编码`\t`词 1` `词 2... |            |

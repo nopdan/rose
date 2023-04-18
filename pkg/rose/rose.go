@@ -67,7 +67,7 @@ func NewFormat(format string) Format {
 		fm = NewQqQpyd()
 	case "sogou_scel", "qq_qcel", "scel", "qcel":
 		fm = NewSogouScel()
-	case "sogou_bin":
+	case "sogou_bin", "sgbin":
 		fm = NewSogouBin()
 	case "ziguang_uwl", "uwl":
 		fm = NewZiguangUwl()
@@ -96,9 +96,9 @@ func NewFormat(format string) Format {
 		fm = NewMswbLex()
 	case "baidu_def", "def":
 		fm = NewBaiduDef()
-	case "jidian_mb":
+	case "jidian_mb", "jdmb":
 		fm = NewJidianMb()
-	case "fcitx4_mb":
+	case "fcitx4_mb", "f4mb":
 		fm = NewFcitx4Mb()
 	// 字词的纯文本
 	case "duoduo", "dd":
