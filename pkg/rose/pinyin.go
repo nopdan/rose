@@ -66,6 +66,9 @@ func (d *Pinyin) Parse() {
 		pinyin := make([]string, 0, 1)
 		freq := 1
 		for i := 0; i < len(d.Rule); i++ {
+			if i >= len(e) {
+				continue
+			}
 			switch d.Rule[i] {
 			case 'w':
 				word = e[i]
