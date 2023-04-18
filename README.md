@@ -31,7 +31,7 @@
 | 百度分类词库                 | baidu_bdict | bdict | `.bdict`\|`.bcd`             | 不支持输出 |
 | 紫光（华宇）                 | ziguang_uwl | uwl   | `.uwl`                       | 不支持输出 |
 | 微软用户自定义短语           | mspy_dat    | udp   | `.dat`                       |            |
-| 微软拼音自学习词汇           | mspy_udl    | udl   | `.dat`                       | 不支持输出 |
+| 微软拼音自学习词汇           | mspy_udl    | udl   | `.dat`                       |            |
 | 搜狗拼音                     | sogou       | sg    | 拼音('分隔)` `词             |            |
 | qq 拼音                      | qq          |       | 拼音('分隔)` `词` `词频      |            |
 | 百度拼音                     | baidu       | bd    | 词`\t`拼音('分隔)`\t`词频    |            |

@@ -43,8 +43,7 @@ func (d *MsUDP) Parse() {
 		r.Seek(4, 1)           // 4 个空字节
 		r.Seek(4, 1)           // 时间戳
 		// insert_stamp := ReadUint32(r)
-		// insert_time := time.Unix(int64(insert_stamp), 0)
-		// insert_time = insert_time.Add(946684800 * time.Second)
+		// insert_time := MspyTime(insert_stamp)
 		// fmt.Println(insert_time)
 		code := make([]byte, 0, 1)
 		word := make([]byte, 0, 1)
@@ -73,7 +72,7 @@ func (MsUDP) GenFrom(wl WordLibrary) []byte {
 	var buf bytes.Buffer
 	now := time.Now()
 	export_stamp := util.To4Bytes(uint32(now.Unix()))
-	insert_stamp := util.To4Bytes(uint32(now.Add(-946684800 * time.Second).Unix()))
+	insert_stamp := MspyTimeTo(now)
 	buf.Write([]byte{0x6D, 0x73, 0x63, 0x68, 0x78, 0x75, 0x64, 0x70,
 		0x02, 0x00, 0x60, 0x00, 0x01, 0x00, 0x00, 0x00})
 	buf.Write(util.To4Bytes(0x40))
