@@ -39,8 +39,9 @@ func (d *MspyUDL) Parse() {
 		// jianpin := data[4:7]
 		wordLen := data[10]
 		p := 12 + int(wordLen)*2
-		if p >= 60 {
+		if wordLen > 12 {
 			fmt.Println(p, r.Size()-int64(r.Len()), data)
+			continue
 		}
 		wordSli := data[12:p]
 		word, _ := Decode(wordSli, "UTF-16LE")
@@ -67,8 +68,8 @@ func (d *MspyUDL) GenFrom(wl WordLibrary) []byte {
 	now := time.Now()
 	timeBytes := MspyTimeTo(now)
 	buf.Write([]byte{0x55, 0xAA, 0x88, 0x81, 0x02, 0x00, 0x60, 0x00, 0x55, 0xAA, 0x55, 0xAA})
-	buf.Write(util.To4Bytes(uint32(len(wl))))
-	buf.Write(make([]byte, 4))
+	count := len(wl)
+	buf.Write(make([]byte, 8))
 	buf.Write(timeBytes)
 	buf.Write(make([]byte, 0x2400-0x18))
 	for i := range wl {
@@ -82,13 +83,21 @@ func (d *MspyUDL) GenFrom(wl WordLibrary) []byte {
 		b[10] = byte(len(word) / 2)
 		b[11] = 0x5A
 		copy(b[12:], word)
-		copy(b[12+len(word):], MspyGetIndex(py))
+		if len(word)/2 > 12 {
+			fmt.Println("这个词太长了：", w)
+			count--
+			continue
+		} else {
+			copy(b[12+len(word):], MspyGetIndex(py))
+		}
 		buf.Write(b)
 	}
 	// 补 0
 	size := 1024 - (0x2400+60*len(wl))%1024
 	buf.Write(make([]byte, size))
-	return buf.Bytes()
+	b := buf.Bytes()
+	copy(b[12:16], util.To4Bytes(uint32(count)))
+	return b
 }
 
 func MspyGetIndex(py []string) []byte {
@@ -126,7 +135,8 @@ func init() {
 	}
 }
 
-var mspy = []string{"a",
+var mspy = []string{
+	"a",
 	"ai",
 	"an",
 	"ang",
