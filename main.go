@@ -73,6 +73,9 @@ func convert(input, output, input_format, output_format string) {
 	fmt.Println("输出词库:", output)
 	fmt.Println("词库格式:", ofm.GetDict().Name, output_format)
 	data := ofm.GenFrom(d.WordLibrary)
+	if len(data) == 0 {
+		return
+	}
 	if err := os.WriteFile(output, data, 0666); err == nil {
 		fmt.Println("转换成功")
 	}
