@@ -28,7 +28,7 @@ func main() {
 	case 2:
 		switch os.Args[1] {
 		case "-v", "version":
-			fmt.Println("蔷薇词库转换v1.1.0\nhttps://github.com/flowerime/rose")
+			fmt.Println("蔷薇词库转换v1.1.1\nhttps://github.com/flowerime/rose")
 			return
 		case "-h", "help":
 			fmt.Printf("Usage: .\\rose.exe [input] [input_format]:[output_format] [output]\n")

@@ -1,3 +1,17 @@
+<a name="v1.1.1"></a>
+
+## [v1.1.1](https://github.com/flowerime/rose/compare/v1.1.0...v1.1.1) (2023-04-18)
+
+### Feat
+
+- 自定义保存路径
+- DetectFormat
+- CodeTable.ToWubiTable
+
+### Perf
+
+- 添加一些简写
+
 <a name="v1.1.0"></a>
 
 ## [v1.1.0](https://github.com/flowerime/rose/compare/v1.0.1...v1.1.0) (2023-04-15)
