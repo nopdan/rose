@@ -3,6 +3,7 @@ package rose
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	util "github.com/flowerime/goutil"
 )
@@ -38,14 +39,20 @@ type Format interface {
 	GenFrom(WordLibrary) []byte
 }
 
-func Parse(path string, format string) *Dict {
-	fmt.Println("正在解析词库：", path)
-	fm := NewFormat(format)
+func Parse(path, format string) *Dict {
+	var fm Format
+	if format == "" {
+		fm = DetectFormat(path)
+	} else {
+		fm = NewFormat(format)
+	}
+	return FParse(path, fm)
+}
+
+func FParse(path string, fm Format) *Dict {
 	d := fm.GetDict()
 	d.read(path)
-	fmt.Printf("> 词库格式：%s -> %s\n", format, d.Name)
 	fm.Parse()
-	fmt.Printf("> 解析成功！词条数：%d\n\n", len(d.WordLibrary))
 	return d
 }
 
@@ -109,6 +116,28 @@ func NewFormat(format string) Format {
 		fm = NewJidian()
 	default:
 		panic("输入格式不支持：" + format)
+	}
+	return fm
+}
+
+func DetectFormat(path string) Format {
+	var fm Format
+	tmp := strings.Split(path, ".")
+	if len(tmp) < 1 {
+		return NewPinyin("rime")
+	}
+	suffix := tmp[len(tmp)-1]
+	switch suffix {
+	case "bdict", "bcd", "qpyd", "scel", "qcel", "uwl", "lex", "def":
+		fm = NewFormat(suffix)
+	case "bin":
+		fm = NewSogouBin()
+	case "dat":
+		fm = NewMsUDP()
+	case "mb":
+		fm = NewJidianMb()
+	default:
+		fm = NewPinyin("rime")
 	}
 	return fm
 }
