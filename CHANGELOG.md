@@ -1,3 +1,20 @@
+<a name="v1.1.2"></a>
+
+## [v1.1.2](https://github.com/flowerime/rose/compare/v1.1.1...v1.1.2) (2023-04-19)
+
+### Feat
+
+- 支持微软五笔 lex 格式输出
+- 支持微软拼音自学习词汇生成
+
+### Fix
+
+- 自学习过滤长词
+
+### Perf
+
+- 转换失败直接退出
+
 <a name="v1.1.1"></a>
 
 ## [v1.1.1](https://github.com/flowerime/rose/compare/v1.1.0...v1.1.1) (2023-04-18)
