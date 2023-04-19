@@ -48,7 +48,7 @@
 | ------------------ | --------- | ---- | ---------------------- | ---------- |
 | 百度手机自定义方案 | baidu_def | def  | `.def`                 |            |
 | 微软用户自定义短语 | msudp_dat | udp  | `.dat`                 |            |
-| 微软五笔           | mswb_lex  | lex  | `.lex`                 | 不支持输出 |
+| 微软五笔           | mswb_lex  | lex  | `.lex`                 |            |
 | 极点               | jidian_mb | jdmb | `.mb`                  | 不支持输出 |
 | fcitx4             | fcitx4_mb | f4mb | `.mb`                  | 不支持输出 |
 | 多多               | duoduo    | dd   | 词`\t`编码             |            |

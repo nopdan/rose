@@ -1,6 +1,8 @@
 package rose
 
 import (
+	"bytes"
+	"compress/gzip"
 	"os"
 	"path/filepath"
 	"testing"
@@ -146,4 +148,14 @@ func TestGen(t *testing.T) {
 	os.WriteFile("gen/baidu.def", Generate(wl, "def"), 0666)
 	os.WriteFile("gen/duoduo.txt", Generate(wl, "dd"), 0666)
 	os.WriteFile("gen/bingling.txt", Generate(wl, "bl"), 0666)
+}
+
+func TestLexInitWordWeight(t *testing.T) {
+	data, _ := os.ReadFile("assets/word_weight.txt")
+	var buffer bytes.Buffer
+	w := gzip.NewWriter(&buffer)
+	w.Write(data)
+	w.Flush()
+	f, _ := os.OpenFile("assets/word_weight.bin", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+	buffer.WriteTo(f)
 }
