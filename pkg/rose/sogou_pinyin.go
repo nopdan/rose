@@ -52,12 +52,10 @@ func (d *SogouBin) Parse() {
 	for i := _u32; i < wordCount; i++ {
 		r.Seek(int64(idxBegin+4*i), 0)
 		idx := ReadUint32(r)
-		if idx == 0 && i != 0 {
-			break
-		}
 		r.Seek(int64(idx+dictBegin), 0)
-		freq := ReadUint32(r)
-		r.Seek(5, 1) // 00 00 FE 07 02
+		freq := ReadUint16(r)
+		ReadUint16(r) // unknown
+		r.Seek(5, 1)  // unknown 5 bytes, same in every entry
 		pyLen := ReadUint16(r) / 2
 		py := make([]string, 0, pyLen)
 		for j := _u16; j < pyLen; j++ {
