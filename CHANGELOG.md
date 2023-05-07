@@ -1,3 +1,15 @@
+<a name="v1.1.3"></a>
+
+## [v1.1.3](https://github.com/flowerime/rose/compare/v1.1.2...v1.1.3) (2023-05-07)
+
+### Fix
+
+- 搜狗备份词库读取不完整
+
+### Perf
+
+- 提高注音准确度
+
 <a name="v1.1.2"></a>
 
 ## [v1.1.2](https://github.com/flowerime/rose/compare/v1.1.1...v1.1.2) (2023-04-19)

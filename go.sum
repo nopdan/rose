@@ -1,5 +1,5 @@
-github.com/flowerime/pinyin v0.3.2 h1:gm7HyvCR8iiskTSbUo8PXt36VWNyCNche31FcDx0gwI=
-github.com/flowerime/pinyin v0.3.2/go.mod h1:IVTBUfpMt1hO5VYuQtdqeUTF4YuuNBa6ZRh48ep6hBw=
+github.com/flowerime/pinyin v0.3.3 h1:TWNlpuDkpgRa/TZ8LkOVp0L4dCGhUidMbcFYLixw52k=
+github.com/flowerime/pinyin v0.3.3/go.mod h1:IVTBUfpMt1hO5VYuQtdqeUTF4YuuNBa6ZRh48ep6hBw=
 github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f h1:3BSP1Tbs2djlpprl7wCLuiqMaUh5SJkkzI2gDs+FgLs=
 github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f/go.mod h1:Pcatq5tYkCW2Q6yrR2VRHlbHpZ/R4/7qyL1TCF7vl14=
 github.com/nopdan/ku v0.3.2 h1:zitkdv9keo9C9uNv2rCkdOUUFVatQlOiPSeEPiyDisg=

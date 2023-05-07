@@ -3,7 +3,7 @@ module github.com/flowerime/rose
 go 1.19
 
 require (
-	github.com/flowerime/pinyin v0.3.2
+	github.com/flowerime/pinyin v0.3.3
 	github.com/nopdan/ku v0.3.2
 )
 
