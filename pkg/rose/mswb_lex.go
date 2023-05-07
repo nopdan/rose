@@ -3,7 +3,6 @@ package rose
 import (
 	"bufio"
 	"bytes"
-	"compress/gzip"
 	"fmt"
 	"strconv"
 	"strings"
@@ -11,7 +10,8 @@ import (
 
 	_ "embed"
 
-	util "github.com/flowerime/goutil"
+	"github.com/flowerime/rose/pkg/data"
+	"github.com/nopdan/ku"
 )
 
 type MswbLex struct {
@@ -52,11 +52,11 @@ func (d *MswbLex) Parse() {
 		tmp := make([]byte, 8)
 		r.Read(tmp)
 		tmp = tmp[:codeLen*2]
-		code, _ := util.Decode(tmp, "UTF-16LE")
+		code := DecodeMust(tmp, "UTF-16LE")
 
 		tmp = make([]byte, length-16)
 		r.Read(tmp)
-		word, _ := util.Decode(tmp, "UTF-16LE")
+		word := DecodeMust(tmp, "UTF-16LE")
 		wl = append(wl, &WubiEntry{word, code, 1})
 		// fmt.Println(length, codeLen, code, word, weight)
 		r.Seek(2, 1)
@@ -72,28 +72,28 @@ func (d *MswbLex) GenFrom(wl WordLibrary) []byte {
 	buf.Write([]byte{0xA8, 0, 0, 0})
 	buf.Write(make([]byte, 4)) // hold total size
 	now := time.Now()
-	buf.Write(util.To4Bytes(uint32(now.Unix())))
+	buf.Write(ku.To4Bytes(now.Unix()))
 	buf.Write(make([]byte, 0x40-0x1C))
 	buf.Write(make([]byte, 0xA8-0x40))
 
 	codeWeight := make(map[byte]uint32)
 	for _, v := range wl {
 		w := v.GetWord()
-		word, _ := Encode(w, "UTF-16LE")
+		word := EncodeMust(w, "UTF-16LE")
 		length := 16 + len(word)
-		buf.Write(util.To2Bytes(uint16(length)))
+		buf.Write(ku.To2Bytes(length))
 		weight, ok := d.wwMap[w]
 		if !ok {
 			weight = 60000
 		}
-		buf.Write(util.To2Bytes(uint16(weight)))
+		buf.Write(ku.To2Bytes(weight))
 		c := v.GetCode()
 		codeLen := 4
 		if len(c) < 4 {
 			codeLen = len(c)
 		}
-		buf.Write(util.To2Bytes(uint16(codeLen)))
-		tmp, _ := Encode(c, "UTF-16LE")
+		buf.Write(ku.To2Bytes(codeLen))
+		tmp := EncodeMust(c, "UTF-16LE")
 		code := make([]byte, 4)
 		codeWeight[code[0]]++
 		copy(code, tmp)
@@ -102,20 +102,16 @@ func (d *MswbLex) GenFrom(wl WordLibrary) []byte {
 		buf.Write([]byte{0, 0})
 	}
 	b := buf.Bytes()
-	copy(b[0x14:0x18], util.To4Bytes(uint32(len(b))))
+	copy(b[0x14:0x18], ku.To4Bytes(len(b)))
 	for i := 0; i < 26; i++ {
-		copy(b[0x40+4*i:0x40+4*(i+1)], util.To4Bytes(codeWeight['a'+byte(i)]))
+		copy(b[0x40+4*i:0x40+4*(i+1)], ku.To4Bytes(codeWeight['a'+byte(i)]))
 	}
 	return b
 }
 
-//go:embed assets/word_weight.bin
-var word_weight []byte
-
 func (d *MswbLex) LoadWordWeight() {
-	data := word_weight
-	zrd, _ := gzip.NewReader(bytes.NewReader(data))
-	rd := util.NewReader(zrd)
+	bin := data.WubiLex
+	rd := data.Decompress(bin)
 
 	scan := bufio.NewScanner(rd)
 	for scan.Scan() {

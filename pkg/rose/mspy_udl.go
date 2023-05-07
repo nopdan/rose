@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	util "github.com/flowerime/goutil"
+	"github.com/nopdan/ku"
 )
 
 type MspyUDL struct{ Dict }
@@ -34,7 +34,7 @@ func (d *MspyUDL) Parse() {
 		data := make([]byte, 60)
 		r.Read(data)
 
-		// insert_stamp := util.BytesToInt(data[:4])
+		// insert_stamp := ku.BytesToInt(data[:4])
 		// insert_time := MspyTime(uint32(insert_stamp))
 		// jianpin := data[4:7]
 		wordLen := data[10]
@@ -44,11 +44,11 @@ func (d *MspyUDL) Parse() {
 			continue
 		}
 		wordSli := data[12:p]
-		word, _ := Decode(wordSli, "UTF-16LE")
+		word := DecodeMust(wordSli, "UTF-16LE")
 
 		py := make([]string, 0, wordLen)
 		for j := 0; j < int(wordLen); j++ {
-			idx := util.BytesToInt(data[p+2*j : p+2*(j+1)])
+			idx := ku.BytesToInt(data[p+2*j : p+2*(j+1)])
 			if idx < len(mspy) {
 				py = append(py, mspy[idx])
 			} else {
@@ -79,7 +79,7 @@ func (d *MspyUDL) GenFrom(wl WordLibrary) []byte {
 		copy(b[4:7], d.jianpin(py)) // 3 bytes jianpin
 		copy(b[7:10], []byte{0, 0, 4})
 		w := wl[i].GetWord()
-		word, _ := Encode(w, "UTF-16LE")
+		word := EncodeMust(w, "UTF-16LE")
 		b[10] = byte(len(word) / 2)
 		b[11] = 0x5A
 		copy(b[12:], word)
@@ -96,14 +96,14 @@ func (d *MspyUDL) GenFrom(wl WordLibrary) []byte {
 	size := 1024 - (0x2400+60*len(wl))%1024
 	buf.Write(make([]byte, size))
 	b := buf.Bytes()
-	copy(b[12:16], util.To4Bytes(uint32(count)))
+	copy(b[12:16], ku.To4Bytes(count))
 	return b
 }
 
 func MspyGetIndex(py []string) []byte {
 	ret := make([]byte, 0, len(py)/2)
 	for _, v := range py {
-		ret = append(ret, util.To2Bytes(mspyMap[v])...)
+		ret = append(ret, ku.To2Bytes(mspyMap[v])...)
 	}
 	return ret
 }
@@ -113,7 +113,7 @@ func MspyTime(stamp uint32) time.Time {
 }
 
 func MspyTimeTo(t time.Time) []byte {
-	return util.To4Bytes(uint32(t.Add(-946684800 * time.Second).Unix()))
+	return ku.To4Bytes(t.Add(-946684800 * time.Second).Unix())
 }
 
 func (d *MspyUDL) jianpin(py []string) []byte {

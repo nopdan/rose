@@ -64,7 +64,7 @@ func (d *Wubi) GenFrom(wl WordLibrary) []byte {
 		sb.WriteByte('\r')
 		sb.WriteByte('\n')
 	}
-	ret, _ := Encode(sb.String(), d.Encoding)
+	ret := EncodeMust(sb.String(), d.Encoding)
 	if d.Encoding == "UTF-16LE" {
 		ret = append([]byte{0xff, 0xfe}, ret...)
 	}

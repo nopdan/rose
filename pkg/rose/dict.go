@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	util "github.com/flowerime/goutil"
-	"github.com/flowerime/rose/pkg/zhuyin"
+	"github.com/flowerime/rose/pkg/pinyin"
+	"github.com/nopdan/ku"
 )
 
 type Dict struct {
@@ -31,7 +31,7 @@ func (d *Dict) read(path string) {
 	if d.Suffix != "" {
 		d.data, _ = io.ReadAll(f)
 	} else {
-		d.rd = util.NewReader(f)
+		d.rd = ku.NewReader(f)
 	}
 }
 
@@ -88,7 +88,7 @@ type WubiEntry struct {
 func (e *WubiEntry) GetWord() string     { return e.Word }
 func (e *WubiEntry) GetCode() string     { return e.Code }
 func (e *WubiEntry) GetPos() int         { return e.Pos }
-func (e *WubiEntry) GetPinyin() []string { return zhuyin.Get(e.Word) }
+func (e *WubiEntry) GetPinyin() []string { return pinyin.Match(e.Word) }
 func (e *WubiEntry) GetFreq() int        { return 1 }
 
 func (wl WordLibrary) ToWubiTable() WubiTable {

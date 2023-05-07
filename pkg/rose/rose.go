@@ -1,37 +1,8 @@
 package rose
 
 import (
-	"bytes"
-	"fmt"
 	"strings"
-
-	util "github.com/flowerime/goutil"
 )
-
-const (
-	_u16 = uint16(0)
-	_u32 = uint32(0)
-)
-
-var (
-	ReadUint16 = util.ReadUint16
-	ReadUint32 = util.ReadUint32
-	BytesToInt = util.BytesToInt
-
-	Encode = util.Encode
-	Decode = util.Decode
-)
-
-func DecodeY(b []byte, e string) string {
-	v, _ := Decode(b, e)
-	return v
-}
-
-func PrintInfo(r *bytes.Reader, size uint32, info string) {
-	tmp := make([]byte, size)
-	r.Read(tmp)
-	fmt.Printf("%s%s\n", info, DecodeY(tmp, "UTF-16LE"))
-}
 
 type Format interface {
 	GetDict() *Dict

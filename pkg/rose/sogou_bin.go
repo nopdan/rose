@@ -3,7 +3,7 @@ package rose
 import (
 	"bytes"
 
-	util "github.com/flowerime/goutil"
+	"github.com/nopdan/ku"
 )
 
 type key struct {
@@ -125,8 +125,8 @@ func (s *SogouBin) ParseOld() {
 
 	p2Idx := len(data) - 4*5
 	p3Idx := len(data) - 4*4
-	p2 := BytesToInt(data[p2Idx : p2Idx+4])
-	p3 := BytesToInt(data[p3Idx : p3Idx+4])
+	p2 := ku.BytesToInt(data[p2Idx : p2Idx+4])
+	p3 := ku.BytesToInt(data[p3Idx : p3Idx+4])
 	// fmt.Println(p2, p3)
 
 	ud.init()
@@ -186,7 +186,7 @@ func decryptWordsEx(r *bytes.Reader, offset uint32, p1, p2, p3 int) string {
 		}
 		decWords = append(decWords, byte(dch%0x100), byte(dch>>8))
 	}
-	ret, _ := util.Decode(decWords, "UTF-16LE")
+	ret := DecodeMust(decWords, "UTF-16LE")
 	return ret
 }
 

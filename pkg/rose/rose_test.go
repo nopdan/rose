@@ -1,8 +1,6 @@
 package rose
 
 import (
-	"bytes"
-	"compress/gzip"
 	"os"
 	"path/filepath"
 	"testing"
@@ -44,9 +42,10 @@ func TestScel(t *testing.T) {
 
 func TestSogouBin(t *testing.T) {
 	for _, path := range []string{
-		"test/sogou_bak.bin", // 搜狗词库备份_2021_05_10.bin
+		// "test/sogou_bak.bin", // 搜狗词库备份_2021_05_10.bin
 
-		"test/sogou_bak_new.bin", // new
+		"test/sogou_bak_new.bin",   // new
+		"own/搜狗词库备份_2023_4_21.bin", // new
 	} {
 		dict := Parse(path, "sogou_bin")
 		outPyt(path, dict)
@@ -148,14 +147,4 @@ func TestGen(t *testing.T) {
 	os.WriteFile("gen/baidu.def", Generate(wl, "def"), 0666)
 	os.WriteFile("gen/duoduo.txt", Generate(wl, "dd"), 0666)
 	os.WriteFile("gen/bingling.txt", Generate(wl, "bl"), 0666)
-}
-
-func TestLexInitWordWeight(t *testing.T) {
-	data, _ := os.ReadFile("assets/word_weight.txt")
-	var buffer bytes.Buffer
-	w := gzip.NewWriter(&buffer)
-	w.Write(data)
-	w.Flush()
-	f, _ := os.OpenFile("assets/word_weight.bin", os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
-	buffer.WriteTo(f)
 }

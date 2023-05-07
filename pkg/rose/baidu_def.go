@@ -2,9 +2,10 @@ package rose
 
 import (
 	"bytes"
-	"encoding/binary"
 	"strconv"
 	"strings"
+
+	"github.com/nopdan/ku"
 )
 
 type BaiduDef struct{ Dict }
@@ -36,7 +37,7 @@ func (d *BaiduDef) Parse() {
 		// 读词
 		tmp = make([]byte, int(wordSize)-2) // -2 后就是字节长度，没有考虑4字节的情况
 		r.Read(tmp)
-		word, _ := Decode(tmp, "UTF-16LE")
+		word := DecodeMust(tmp, "UTF-16LE")
 		// def = append(def, defEntry{word, code, order})
 		wl = append(wl, &WubiEntry{word, code, 1})
 
@@ -59,12 +60,12 @@ func (BaiduDef) GenFrom(wl WordLibrary) []byte {
 			if i != 0 { // 不在首选的写入位置信息，好像没什么用？
 				code = v.Code + "=" + strconv.Itoa(i+1)
 			}
-			sliWord, _ := Encode(word, "UTF-16LE") // 转为utf-16le
-			buf.WriteByte(byte(len(code)))         // 写编码长度
-			buf.WriteByte(byte(len(sliWord) + 2))  // 写词字节长+2
-			buf.WriteString(code)                  // 写编码
-			buf.Write(sliWord)                     // 写词
-			buf.Write(make([]byte, 6))             // 写6个0
+			sliWord := EncodeMust(word, "UTF-16LE") // 转为utf-16le
+			buf.WriteByte(byte(len(code)))          // 写编码长度
+			buf.WriteByte(byte(len(sliWord) + 2))   // 写词字节长+2
+			buf.WriteString(code)                   // 写编码
+			buf.Write(sliWord)                      // 写词
+			buf.Write(make([]byte, 6))              // 写6个0
 
 			// 编码长度 + 词字节长 + 6，不包括长度本身占的2个字节
 			lengthMap[code[0]] += len(code) + len(sliWord) + 2 + 6
@@ -78,8 +79,7 @@ func (BaiduDef) GenFrom(wl WordLibrary) []byte {
 	var currNum int
 	for i := 0; i <= 26; i++ {
 		currNum += lengthMap[byte(i+0x60)]
-		currBytes := make([]byte, 4)
-		binary.LittleEndian.PutUint32(currBytes, uint32(currNum))
+		currBytes := ku.To4Bytes(currNum)
 		byteList = append(byteList, currBytes...)
 	}
 	// 替换文件头

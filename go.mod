@@ -2,9 +2,10 @@ module github.com/flowerime/rose
 
 go 1.19
 
-require github.com/flowerime/goutil v0.2.2
-
-// replace github.com/flowerime/goutil => ../goutil
+require (
+	github.com/flowerime/pinyin v0.3.2
+	github.com/nopdan/ku v0.3.2
+)
 
 require (
 	github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f // indirect

@@ -5,8 +5,8 @@ import (
 	"bytes"
 	"strings"
 
-	util "github.com/flowerime/goutil"
-	"github.com/flowerime/rose/pkg/zhuyin"
+	py "github.com/flowerime/rose/pkg/pinyin"
+	"github.com/nopdan/ku"
 )
 
 type JiaJia struct{ Dict }
@@ -27,6 +27,7 @@ func (d *JiaJia) Parse() {
 		if entry[0] == ';' {
 			continue
 		}
+
 		word := make([]rune, 0, 1)
 		pinyin := make([]string, 0, 1)
 
@@ -44,8 +45,10 @@ func (d *JiaJia) Parse() {
 				continue
 			}
 			// 读到汉字
-			code := zhuyin.GetOne(char)
-			pinyin = append(pinyin, code)
+			pys := py.Match(string(char))
+			if len(pys) != 0 {
+				pinyin = append(pinyin, pys[0])
+			}
 			i++
 		}
 		wl = append(wl, &PinyinEntry{string(word), pinyin, 1})
@@ -64,7 +67,7 @@ func (JiaJia) GenFrom(wl WordLibrary) []byte {
 			buf.WriteString(string(words[i]))
 			buf.WriteString(v.GetPinyin()[i])
 		}
-		buf.WriteString(util.LineBreak)
+		buf.WriteString(ku.LineBreak)
 	}
 	return buf.Bytes()
 }

@@ -2,6 +2,8 @@ package rose
 
 import (
 	"bytes"
+
+	"github.com/nopdan/ku"
 )
 
 type ZiguangUwl struct {
@@ -66,7 +68,7 @@ func (d *ZiguangUwl) parse(r *bytes.Reader, wl *[]Entry) {
 		// 拼音长
 		codeLen := head[1]<<4>>4*2 + head[0]/0x80
 		// 频率
-		freq := BytesToInt(head[2:])
+		freq := ku.BytesToInt(head[2:])
 		// fmt.Println(freqSli, freq)
 		curr += uint32(4 + wordLen + codeLen*2)
 
@@ -88,7 +90,7 @@ func (d *ZiguangUwl) parse(r *bytes.Reader, wl *[]Entry) {
 		// 词
 		tmp := make([]byte, wordLen)
 		r.Read(tmp)
-		word, _ := Decode(tmp, d.Encoding)
+		word := DecodeMust(tmp, d.Encoding)
 		// fmt.Println(string(word))
 		*wl = append(*wl, &PinyinEntry{word, code, freq})
 	}

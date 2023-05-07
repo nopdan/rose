@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"strings"
+
+	"github.com/nopdan/ku"
 )
 
 type QqQpyd struct{ Dict }
@@ -56,8 +58,8 @@ func (d *QqQpyd) Parse() {
 		// 读码长、词长、索引
 		addr := make([]byte, 10)
 		r.Read(addr)
-		idx := BytesToInt(addr[6:]) // 后4字节是索引
-		r.Seek(int64(idx), 0)       // 指向索引
+		idx := ku.BytesToInt(addr[6:]) // 后4字节是索引
+		r.Seek(int64(idx), 0)          // 指向索引
 		// 读编码，自带 ' 分隔符
 		tmp = make([]byte, addr[0])
 		r.Read(tmp)
@@ -65,7 +67,7 @@ func (d *QqQpyd) Parse() {
 		// 读词
 		tmp = make([]byte, addr[1])
 		r.Read(tmp)
-		word, _ := Decode(tmp, "UTF-16LE")
+		word := DecodeMust(tmp, "UTF-16LE")
 
 		wl = append(wl, &PinyinEntry{word, strings.Split(code, "'"), 1})
 	}

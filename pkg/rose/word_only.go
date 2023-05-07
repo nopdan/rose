@@ -5,8 +5,8 @@ import (
 	"bytes"
 	"strings"
 
-	util "github.com/flowerime/goutil"
-	"github.com/flowerime/rose/pkg/zhuyin"
+	"github.com/flowerime/rose/pkg/pinyin"
+	"github.com/nopdan/ku"
 )
 
 // 纯词词库
@@ -15,7 +15,7 @@ type WordEntry struct{ Word string }
 func (e *WordEntry) GetWord() string     { return e.Word }
 func (e *WordEntry) GetCode() string     { return strings.Join(e.GetPinyin(), "") }
 func (e *WordEntry) GetPos() int         { return 1 }
-func (e *WordEntry) GetPinyin() []string { return zhuyin.Get(e.Word) }
+func (e *WordEntry) GetPinyin() []string { return pinyin.Match(e.Word) }
 func (e *WordEntry) GetFreq() int        { return 1 }
 
 type WordOnly struct{ Dict }
@@ -39,7 +39,7 @@ func (WordOnly) GenFrom(wl WordLibrary) []byte {
 	var buf bytes.Buffer
 	for _, entry := range wl {
 		buf.WriteString(entry.GetWord())
-		buf.WriteString(util.LineBreak)
+		buf.WriteString(ku.LineBreak)
 	}
 	return buf.Bytes()
 }

@@ -52,11 +52,11 @@ func (d *BaiduBdict) Parse() {
 			// 读编码
 			tmp = make([]byte, pyLen*2)
 			r.Read(tmp)
-			code, _ := Decode(tmp, "UTF-16LE")
+			code := DecodeMust(tmp, "UTF-16LE")
 			// 读词
 			tmp = make([]byte, wordLen*2)
 			r.Read(tmp)
-			word, _ := Decode(tmp, "UTF-16LE")
+			word := DecodeMust(tmp, "UTF-16LE")
 
 			wl = append(wl, &PinyinEntry{word, []string{code}, freq})
 			continue
@@ -87,7 +87,7 @@ func (d *BaiduBdict) Parse() {
 		// 读词
 		tmp = make([]byte, pyLen*2)
 		r.Read(tmp)
-		word, _ := Decode(tmp, "UTF-16LE")
+		word := DecodeMust(tmp, "UTF-16LE")
 		wl = append(wl, &PinyinEntry{word, pinyin, freq})
 	}
 	d.WordLibrary = wl

@@ -38,7 +38,7 @@ func (d *JidianMb) Parse() {
 		// 读词
 		tmp = make([]byte, wordLen)
 		r.Read(tmp)
-		word, _ := Decode(tmp, "UTF-16LE")
+		word := DecodeMust(tmp, "UTF-16LE")
 
 		wl = append(wl, &WubiEntry{word, code, 1})
 	}

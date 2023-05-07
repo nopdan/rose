@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	util "github.com/flowerime/goutil"
+	"github.com/nopdan/ku"
 )
 
 // 通用规则
@@ -105,7 +105,7 @@ func (d *Pinyin) GenFrom(wl WordLibrary) []byte {
 				buf.WriteString(pinyin)
 			}
 		}
-		buf.WriteString(util.LineBreak)
+		buf.WriteString(ku.LineBreak)
 	}
 	return buf.Bytes()
 }

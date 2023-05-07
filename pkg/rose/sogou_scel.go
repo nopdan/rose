@@ -44,7 +44,7 @@ func (d *SogouScel) Parse() {
 		// 拼音 utf-16le
 		tmp := make([]byte, pyLen)
 		r.Read(tmp)
-		py, _ := Decode(tmp, "UTF-16LE")
+		py := DecodeMust(tmp, "UTF-16LE")
 		//
 		pyTable[idx] = string(py)
 	}
@@ -76,7 +76,7 @@ func (d *SogouScel) Parse() {
 			// 读取词
 			tmp := make([]byte, wordSize)
 			r.Read(tmp)
-			word, _ := Decode(tmp, "UTF-16LE")
+			word := DecodeMust(tmp, "UTF-16LE")
 
 			// 末尾的补充信息，作用未知
 			extSize := ReadUint16(r)
@@ -99,7 +99,7 @@ func (d *SogouScel) Parse() {
 		wordLen := ReadUint16(r)
 		tmp := make([]byte, wordLen*2)
 		r.Read(tmp)
-		word, _ := Decode(tmp, "UTF-16LE")
+		word := DecodeMust(tmp, "UTF-16LE")
 		fmt.Println(word)
 	}
 }

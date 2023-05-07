@@ -3,8 +3,6 @@ package rose
 import (
 	"bytes"
 	"fmt"
-
-	util "github.com/flowerime/goutil"
 )
 
 var sg_pinyin = append(mspy, []string{
@@ -66,7 +64,7 @@ func (d *SogouBin) Parse() {
 		wordSize := ReadUint16(r)
 		tmp := make([]byte, wordSize)
 		r.Read(tmp)
-		word, _ := util.Decode(tmp, "UTF-16LE")
+		word := DecodeMust(tmp, "UTF-16LE")
 
 		wl = append(wl, &PinyinEntry{word, py, int(freq)})
 		// repeat code

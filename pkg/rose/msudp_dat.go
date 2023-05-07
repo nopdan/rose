@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	util "github.com/flowerime/goutil"
+	"github.com/nopdan/ku"
 )
 
 type MsUDP struct{ Dict }
@@ -60,8 +60,8 @@ func (d *MsUDP) Parse() {
 			word = append(word, tmp...)
 			goto WORD
 		}
-		c, _ := Decode(code, "UTF-16LE")
-		w, _ := Decode(word, "UTF-16LE")
+		c := DecodeMust(code, "UTF-16LE")
+		w := DecodeMust(word, "UTF-16LE")
 		// fmt.Println(c, w)
 		wl = append(wl, &WubiEntry{w, c, int(pos)})
 	}
@@ -71,14 +71,14 @@ func (d *MsUDP) Parse() {
 func (MsUDP) GenFrom(wl WordLibrary) []byte {
 	var buf bytes.Buffer
 	now := time.Now()
-	export_stamp := util.To4Bytes(uint32(now.Unix()))
+	export_stamp := ku.To4Bytes(now.Unix())
 	insert_stamp := MspyTimeTo(now)
 	buf.Write([]byte{0x6D, 0x73, 0x63, 0x68, 0x78, 0x75, 0x64, 0x70,
 		0x02, 0x00, 0x60, 0x00, 0x01, 0x00, 0x00, 0x00})
-	buf.Write(util.To4Bytes(0x40))
-	buf.Write(util.To4Bytes(uint32(0x40 + 4*len(wl))))
+	buf.Write(ku.To4Bytes(0x40))
+	buf.Write(ku.To4Bytes(0x40 + 4*len(wl)))
 	buf.Write(make([]byte, 4)) // 待定 文件总长
-	buf.Write(util.To4Bytes(uint32(len(wl))))
+	buf.Write(ku.To4Bytes(len(wl)))
 	buf.Write(export_stamp)
 	buf.Write(make([]byte, 28))
 	buf.Write(make([]byte, 4))
@@ -87,19 +87,19 @@ func (MsUDP) GenFrom(wl WordLibrary) []byte {
 	codes := make([][]byte, 0, len(wl))
 	sum := 0
 	for i := range wl {
-		word, _ := util.Encode(wl[i].GetWord(), "UTF-16LE")
-		code, _ := util.Encode(wl[i].GetCode(), "UTF-16LE")
+		word := EncodeMust(wl[i].GetWord(), "UTF-16LE")
+		code := EncodeMust(wl[i].GetCode(), "UTF-16LE")
 		words = append(words, word)
 		codes = append(codes, code)
 		if i != len(wl)-1 {
 			sum += len(word) + len(code) + 20
-			buf.Write(util.To4Bytes(uint32(sum)))
+			buf.Write(ku.To4Bytes(sum))
 		}
 	}
 	for i := range wl {
 		buf.Write([]byte{0x10, 0x00, 0x10, 0x00})
 		// fmt.Println(words[i], len(words[i]), codes[i], len(codes[i]))
-		buf.Write(util.To2Bytes(uint16(len(codes[i]) + 18)))
+		buf.Write(ku.To2Bytes(len(codes[i]) + 18))
 		pos := wl[i].GetPos()
 		if pos < 1 {
 			pos = 1
@@ -114,6 +114,6 @@ func (MsUDP) GenFrom(wl WordLibrary) []byte {
 		buf.Write([]byte{0, 0})
 	}
 	b := buf.Bytes()
-	copy(b[0x18:0x1c], util.To4Bytes(uint32(len(b))))
+	copy(b[0x18:0x1c], ku.To4Bytes(len(b)))
 	return b
 }
