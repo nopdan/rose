@@ -10,8 +10,8 @@ import (
 
 	_ "embed"
 
-	"github.com/flowerime/rose/pkg/data"
 	"github.com/nopdan/ku"
+	"github.com/nopdan/rose/pkg/data"
 )
 
 type MswbLex struct {

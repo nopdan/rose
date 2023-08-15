@@ -4,12 +4,12 @@
 
 ### 蔷薇词库转换
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/flowerime/rose)](https://github.com/flowerime/rose/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/flowerime/rose)](https://github.com/flowerime/rose/network/members)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/flowerime/rose)](https://github.com/flowerime/rose/releases)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/flowerime/rose/build.yml)](https://github.com/flowerime/rose/actions/workflows/build.yml)
-![GitHub repo size](https://img.shields.io/github/repo-size/flowerime/rose)
-![GitHub](https://img.shields.io/github/license/flowerime/rose)
+[![GitHub Repo stars](https://img.shields.io/github/stars/nopdan/rose)](https://github.com/nopdan/rose/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/nopdan/rose)](https://github.com/nopdan/rose/network/members)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/nopdan/rose)](https://github.com/nopdan/rose/releases)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nopdan/rose/build.yml)](https://github.com/nopdan/rose/actions/workflows/build.yml)
+![GitHub repo size](https://img.shields.io/github/repo-size/nopdan/rose)
+![GitHub](https://img.shields.io/github/license/nopdan/rose)
 
 关于词库格式的详细解析可以到我的[博客](https://nopdan.com/)查看。
 

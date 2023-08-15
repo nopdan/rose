@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	_u16 = uint16(0)
-	_u32 = uint32(0)
+	_u16 uint16 = 0
+	_u32 uint32 = 0
 )
 
 var (

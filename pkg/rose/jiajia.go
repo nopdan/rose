@@ -5,8 +5,8 @@ import (
 	"bytes"
 	"strings"
 
-	py "github.com/flowerime/rose/pkg/pinyin"
 	"github.com/nopdan/ku"
+	py "github.com/nopdan/rose/pkg/pinyin"
 )
 
 type JiaJia struct{ Dict }

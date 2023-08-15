@@ -7,8 +7,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/flowerime/rose/pkg/pinyin"
 	"github.com/nopdan/ku"
+	"github.com/nopdan/rose/pkg/pinyin"
 )
 
 type Dict struct {

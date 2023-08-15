@@ -5,8 +5,8 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/flowerime/rose/pkg/pinyin"
 	"github.com/nopdan/ku"
+	"github.com/nopdan/rose/pkg/pinyin"
 )
 
 // 纯词词库

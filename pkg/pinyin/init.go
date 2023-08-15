@@ -1,8 +1,8 @@
 package pinyin
 
 import (
-	"github.com/flowerime/pinyin"
-	"github.com/flowerime/rose/pkg/data"
+	"github.com/nopdan/pinyin"
+	"github.com/nopdan/rose/pkg/data"
 )
 
 var py = pinyin.New()

@@ -2,7 +2,7 @@ style: github
 template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
-  repository_url: https://github.com/flowerime/rose
+  repository_url: https://github.com/nopdan/rose
 options:
   commits:
     # filters:
