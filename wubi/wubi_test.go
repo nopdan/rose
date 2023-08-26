@@ -66,6 +66,12 @@ func TestDuoDB(t *testing.T) {
 	do(f, path)
 }
 
+func TestDDdmg(t *testing.T) {
+	path := "./sample/daniu.dmg"
+	f := NewDDdmg()
+	do(f, path)
+}
+
 func TestMarshal(t *testing.T) {
 	// 哲哲豆词库 1w 多条
 	path := "./sample/duoduo.txt"

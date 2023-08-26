@@ -66,6 +66,8 @@ func New(format string) Format {
 	// 多多生成器
 	case "duodb":
 		return NewDuoDB()
+	case "dddmg", "dmg":
+		return NewDuoduo()
 	case "duoduo", "dd":
 		return NewDuoduo()
 	// 冰凌

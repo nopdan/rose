@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Printf("多多输入法.duodb 转纯文本\n作者：单单 q37389732\n\n")
+	fmt.Printf("多多.dmg 转纯文本\n作者：单单 q37389732\n\n")
 	var input string
 	if len(os.Args) != 2 {
 		fmt.Println("输入词库路径：")
@@ -42,8 +42,8 @@ type Entry struct {
 }
 
 func Unmarshal(r *bytes.Reader) []*Entry {
-	d := make([]*Entry, 0, r.Size()>>8)
-	r.Seek(0x4086C, 0)
+	di := make([]*Entry, 0, r.Size()>>8)
+	r.Seek(0x4089C, 0)
 	offsetList := make([]uint32, 0, 12)
 	for {
 		offset := ReadUint32(r)
@@ -54,12 +54,17 @@ func Unmarshal(r *bytes.Reader) []*Entry {
 	}
 	for _, offset := range offsetList {
 		r.Seek(int64(offset), 0)
-		r.Seek(4, 1)
+		rank := ReadIntN(r, 4)
+		_ = rank
 		codeLen := ReadIntN(r, 1)
 		code := string(ReadN(r, codeLen))
-		wordSize := ReadIntN(r, 2)
+		wordSize := ReadIntN(r, 1)
 		word := string(ReadN(r, wordSize))
-		d = append(d, &Entry{word, code})
+
+		di = append(di, &Entry{
+			Word: word,
+			Code: code,
+		})
 	}
-	return d
+	return di
 }

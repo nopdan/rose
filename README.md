@@ -72,6 +72,8 @@
 | 微软五笔           | mswb_lex  | lex  | `.lex`                 |            |
 | 极点               | jidian_mb | jdmb | `.mb`                  | 不支持输出 |
 | fcitx4             | fcitx4_mb | f4mb | `.mb`                  | 不支持输出 |
+| 多多 v3            | dddmg     | dmg  | `.dmg`                 | 不支持输出 |
+| 多多 v4            | duodb     |      | `.duodb`               | 不支持输出 |
 | 多多               | duoduo    | dd   | 词`\t`编码             |            |
 | 冰凌               | bingling  | bl   | 编码`\t`词             | UTF-16LE   |
 | 极点               | jidian    | jd   | 编码`\t`词 1` `词 2... |            |
