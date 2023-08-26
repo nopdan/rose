@@ -1,9 +1,11 @@
 github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f h1:3BSP1Tbs2djlpprl7wCLuiqMaUh5SJkkzI2gDs+FgLs=
 github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f/go.mod h1:Pcatq5tYkCW2Q6yrR2VRHlbHpZ/R4/7qyL1TCF7vl14=
-github.com/nopdan/ku v0.3.4 h1:XKJji11FYIqrYlCOamhBuS28tPsadIEydLkqO1t2NRE=
-github.com/nopdan/ku v0.3.4/go.mod h1:0dizDuNKK7DMUYFBFS80+A1OWREchVvM/pNaQ6U4FP0=
+github.com/nopdan/ku v0.3.5 h1:PqE0HesoaZO7NOuVH3Ou+G7lxwvunzc9PpiaCBeykeA=
+github.com/nopdan/ku v0.3.5/go.mod h1:0dizDuNKK7DMUYFBFS80+A1OWREchVvM/pNaQ6U4FP0=
 github.com/nopdan/pinyin v0.3.4 h1:mdnCR7/PLqHFphq5focYn2OmCKf9O9RvvpTvyjqDuIU=
 github.com/nopdan/pinyin v0.3.4/go.mod h1:ocItCFlzfsgO3FVq4C1bDX1O0qDbMogu5eY+aXW4REk=
+golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 h1:m64FZMko/V45gv0bNmrNYoDEq8U5YUhetc9cBWKS1TQ=
+golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63/go.mod h1:0v4NqG35kSWCMzLaMeX+IQrlSnVE/bqGSyC2cz/9Le8=
 golang.org/x/net v0.14.0 h1:BONx9s002vGdD9umnlX1Po8vOZmrgH34qlHcD1MfK14=
 golang.org/x/net v0.14.0/go.mod h1:PpSgVXXLK0OxS0F31C1/tv6XNguvCrnXIDrFMspZIUI=
 golang.org/x/text v0.12.0 h1:k+n5B8goJNdU7hSvEtMUz3d1Q6D/XW4COJSJR6fN0mc=

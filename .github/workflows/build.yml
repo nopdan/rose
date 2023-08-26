@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev
-      - rose
 
 jobs:
   build:
@@ -19,7 +17,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v3
         with:
-          go-version: '>=1.19.0'
+          go-version: '>=1.21.0'
           check-latest: true
 
       - name: Setup go cache
@@ -54,7 +52,6 @@ jobs:
       - run: |
           mv README.md bin/
           mv CHANGELOG.md bin/
-          mv logo.png bin/
 
       # 上传到 Artifact
       - name: Upload windows

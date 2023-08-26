@@ -14,13 +14,8 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 .vscode*
-build/bin/
-old/
-
-pkg/*/gen/
-pkg/*/out/
-pkg/*/own/
-
-pkg/*/black_list.txt
 
 *.zip
+build/
+test/
+test.txt
