@@ -17,7 +17,7 @@ jobs:
       - name: Setup go
         uses: actions/setup-go@v3
         with:
-          go-version: '>=1.21.0'
+          go-version: ">=1.21.0"
           check-latest: true
 
       - name: Setup go cache
@@ -50,8 +50,14 @@ jobs:
           args: -fq
 
       - run: |
-          mv README.md bin/
-          mv CHANGELOG.md bin/
+          cp wubi/data bin/data
+          cp UnicodeCJK-WuBi/CJK.txt bin/data/
+          cp pinyin-data/pinyin.txt bin/data/
+          cp pinyin-data/duoyin.txt bin/data/
+          cp pinyin-data/correct.txt bin/data/
+
+          cp README.md bin/
+          cp CHANGELOG.md bin/
 
       # 上传到 Artifact
       - name: Upload windows

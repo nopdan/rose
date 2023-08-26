@@ -2,7 +2,6 @@ package encoder
 
 import (
 	"github.com/nopdan/pinyin"
-	"github.com/nopdan/rose/encoder/data"
 )
 
 type Pinyin struct {
@@ -11,9 +10,9 @@ type Pinyin struct {
 
 func NewPinyin() *Pinyin {
 	py := pinyin.New()
-	py.AddReader(data.Duoyin)
-	py.AddReader(data.Pinyin)
-	py.AddReader(data.Correct)
+	py.AddFile("./data/duoyin.txt")
+	py.AddFile("./data/pinyin.txt")
+	py.AddFile("./data/correct.txt")
 	return &Pinyin{py: py}
 }
 

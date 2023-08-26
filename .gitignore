@@ -17,5 +17,6 @@
 
 *.zip
 build/
+encoder/data/
 test/
 test.txt

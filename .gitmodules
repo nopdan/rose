@@ -1,3 +1,6 @@
 [submodule "pinyin-data"]
 	path = pinyin-data
 	url = https://github.com/nopdan/pinyin-data
+[submodule "UnicodeCJK-WuBi"]
+	path = UnicodeCJK-WuBi
+	url = https://github.com/CNMan/UnicodeCJK-WuBi

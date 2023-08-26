@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/nopdan/rose/wubi"
 )
 
 func main() {
@@ -23,9 +25,10 @@ func main() {
 	}
 	r := bytes.NewReader(data)
 
-	wl := Unmarshal(r)
+	f := wubi.NewDuoDB()
+	di := f.Unmarshal(r)
 	var buf bytes.Buffer
-	for _, v := range wl {
+	for _, v := range di {
 		buf.WriteString(v.Word)
 		buf.WriteByte('\t')
 		buf.WriteString(v.Code)
@@ -34,32 +37,4 @@ func main() {
 	ext := filepath.Ext(input)
 	name := strings.TrimSuffix(input, ext) + ".txt"
 	os.WriteFile(name, buf.Bytes(), 0644)
-}
-
-type Entry struct {
-	Word string
-	Code string
-}
-
-func Unmarshal(r *bytes.Reader) []*Entry {
-	d := make([]*Entry, 0, r.Size()>>8)
-	r.Seek(0x4086C, 0)
-	offsetList := make([]uint32, 0, 12)
-	for {
-		offset := ReadUint32(r)
-		if offset == 0 {
-			break
-		}
-		offsetList = append(offsetList, offset)
-	}
-	for _, offset := range offsetList {
-		r.Seek(int64(offset), 0)
-		r.Seek(4, 1)
-		codeLen := ReadIntN(r, 1)
-		code := string(ReadN(r, codeLen))
-		wordSize := ReadIntN(r, 2)
-		word := string(ReadN(r, wordSize))
-		d = append(d, &Entry{word, code})
-	}
-	return d
 }

@@ -1,35 +1,82 @@
 package encoder
 
-import "strings"
+import (
+	"bufio"
+	"strings"
 
-func New(schema string) Encoder {
+	"github.com/nopdan/rose/util"
+)
+
+type Wubi struct {
+	Char   map[rune]string
+	IsAABC bool
+}
+
+func NewWubi(schema string, isAABC bool) *Wubi {
+	r, err := util.Read("./data/CJK.txt")
+	if err != nil {
+		panic(err)
+	}
+	w := &Wubi{
+		Char:   make(map[rune]string),
+		IsAABC: isAABC,
+	}
+	idx := 0
 	switch schema {
 	case "wubi86":
+		idx = 2
 	case "wubi98":
-	case "wubi08":
-	case "phrase":
-		return Phrase{}
-	case "pinyin":
-		return NewPinyin()
+		idx = 3
+	case "wubi06":
+		idx = 4
+	default:
+		return nil
 	}
-	return nil
-}
-
-type Encoder interface {
-	Encode(string) []string // 编码一个词，可能有多个编码
-}
-
-type Phrase struct {
-	enc Encoder
-}
-
-func NewPhrase() *Phrase {
-	enc := NewPinyin()
-	return &Phrase{enc: enc}
-}
-
-func (p Phrase) Encode(word string) []string {
-	return []string{
-		strings.Join(p.enc.Encode(word), ""),
+	scan := bufio.NewScanner(r)
+	for scan.Scan() {
+		fields := strings.Split(scan.Text(), ",")
+		if idx > len(fields)-1 {
+			continue
+		}
+		char := []rune(fields[1])[0]
+		w.Char[char] = fields[idx]
 	}
+	return w
+}
+
+// 生成唯一编码
+func (w *Wubi) Encode(word string) string {
+	wordRunes := []rune(word)
+	wordLen := len(wordRunes)
+	var code string
+	if wordLen == 1 {
+		code = w.Char[wordRunes[0]]
+	} else if wordLen == 2 {
+		a := w.Char[wordRunes[0]]
+		b := w.Char[wordRunes[1]]
+		code = cut(a, 2) + cut(b, 2)
+	} else if wordLen == 3 {
+		a := w.Char[wordRunes[0]]
+		b := w.Char[wordRunes[1]]
+		c := w.Char[wordRunes[2]]
+		if w.IsAABC {
+			code = cut(a, 2) + cut(b, 1) + cut(c, 1)
+		} else {
+			code = cut(a, 1) + cut(b, 1) + cut(c, 2)
+		}
+	} else if wordLen >= 4 {
+		a := w.Char[wordRunes[0]]
+		b := w.Char[wordRunes[1]]
+		c := w.Char[wordRunes[2]]
+		z := w.Char[wordRunes[wordLen-1]]
+		code = cut(a, 1) + cut(b, 1) + cut(c, 1) + cut(z, 1)
+	}
+	return code
+}
+
+func cut(code string, length int) string {
+	if len(code) < length {
+		return ""
+	}
+	return string(code[:length])
 }

@@ -10,7 +10,6 @@ import (
 
 	_ "embed"
 
-	"github.com/nopdan/rose/encoder/data"
 	"github.com/nopdan/rose/util"
 )
 
@@ -112,7 +111,8 @@ func (d *MswbLex) Marshal(di []*Entry, hasRank bool) []byte {
 }
 
 func (d *MswbLex) LoadWordWeight() {
-	scan := bufio.NewScanner(data.Wubilex)
+	r, _ := util.Read("./data/mswb_lex.txt")
+	scan := bufio.NewScanner(r)
 	for scan.Scan() {
 		text := scan.Text()
 		tmp := strings.Split(text, "\t")

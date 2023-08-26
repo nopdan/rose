@@ -78,7 +78,7 @@ func NewRime() *Custom {
 func (f *Custom) Unmarshal(r *bytes.Reader) []*Entry {
 	di := make([]*Entry, 0, r.Size()>>8)
 
-	enc := encoder.New("pinyin")
+	enc := encoder.NewPinyin()
 	scan := bufio.NewScanner(r)
 	for scan.Scan() {
 		e := strings.Split(scan.Text(), string(f.Sep))

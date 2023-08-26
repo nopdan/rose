@@ -6,17 +6,15 @@ import (
 	"github.com/nopdan/rose/wubi"
 )
 
-func Encode(di []*wubi.Entry, schema string) []*wubi.Entry {
-	enc := encoder.New(schema)
+func (c *Config) Encode(di []*wubi.Entry) []*wubi.Entry {
+	enc := encoder.New(c.Schema, c.AABC)
 	new := make([]*wubi.Entry, 0, len(di))
 	for _, v := range di {
-		codes := enc.Encode(v.Word)
-		for _, c := range codes {
-			new = append(new, &wubi.Entry{
-				Word: v.Word,
-				Code: c,
-			})
-		}
+		code := enc.Encode(v.Word)
+		new = append(new, &wubi.Entry{
+			Word: v.Word,
+			Code: code,
+		})
 	}
 	return new
 }
@@ -24,19 +22,16 @@ func Encode(di []*wubi.Entry, schema string) []*wubi.Entry {
 // 拼音转为五笔词库
 //
 // 形码方案，wubi86/wubi98/wubi08/phrase
-func ToWubi(di []*pinyin.Entry, schema string) []*wubi.Entry {
-	enc := encoder.New(schema)
+func (c *Config) ToWubi(di []*pinyin.Entry) []*wubi.Entry {
+	enc := encoder.New(c.Schema, c.AABC)
 	new := make([]*wubi.Entry, 0, len(di))
 	for _, e := range di {
-		codes := enc.Encode(e.Word)
-		for _, c := range codes {
-			new = append(new, &wubi.Entry{
-				Word: e.Word,
-				Code: c,
-			})
-		}
+		code := enc.Encode(e.Word)
+		new = append(new, &wubi.Entry{
+			Word: e.Word,
+			Code: code,
+		})
 	}
-	new = wubi.GenRank(new)
 	return new
 }
 

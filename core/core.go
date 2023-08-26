@@ -25,6 +25,7 @@ type Config struct {
 	OutFormat string // 输出格式
 	OutName   string // 保存文件名
 	Schema    string // 形码方案
+	AABC      bool   // 三字词规则
 }
 
 func (c *Config) Marshal() {
@@ -65,11 +66,11 @@ func (c *Config) Marshal() {
 			if c.Schema == "original" || c.Schema == "" {
 				hasRank = f.HasRank()
 			} else {
-				di = Encode(di, c.Schema)
+				di = c.Encode(di)
 			}
 		} else { // 拼音转五笔
 			src := pinyin.New(c.InFormat).Unmarshal(r)
-			di = ToWubi(src, c.Schema)
+			di = c.ToWubi(src)
 		}
 		data = wubi.New(c.OutFormat).Marshal(di, hasRank)
 	// 纯词组
