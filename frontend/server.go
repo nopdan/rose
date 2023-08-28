@@ -26,7 +26,7 @@ type Config struct {
 //go:embed dist
 var dist embed.FS
 
-func Serve() {
+func Serve(port int) {
 	dist, _ := fs.Sub(dist, "dist")
 	http.Handle("/", http.FileServer(http.FS(dist)))
 
@@ -85,9 +85,10 @@ func Serve() {
 		mbData = uploadHandler(&w, r, "/upload/mb")
 	})
 
-	log.Println("Listening on http://localhost:7800")
-	openBrowser("http://localhost:7800")
-	http.ListenAndServe(":7800", nil)
+	sport := fmt.Sprint(port)
+	log.Println("Listening on http://localhost:" + sport)
+	openBrowser("http://localhost:" + sport)
+	http.ListenAndServe(":"+sport, nil)
 }
 
 func uploadHandler(w *http.ResponseWriter, r *http.Request, path string) []byte {

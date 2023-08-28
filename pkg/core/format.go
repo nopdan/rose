@@ -1,10 +1,11 @@
 package core
 
 import (
-	"fmt"
+	"os"
 
 	"github.com/nopdan/rose/pkg/pinyin"
 	"github.com/nopdan/rose/pkg/wubi"
+	"github.com/olekukonko/tablewriter"
 )
 
 type Format struct {
@@ -36,11 +37,14 @@ func init() {
 }
 
 func PrintFormatList() {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"ID", "格式", "可导出"})
 	for _, f := range FormatList {
-		if !f.CanMarshal {
-			fmt.Printf("不")
+		canMarshal := ""
+		if f.CanMarshal {
+			canMarshal = "是"
 		}
-		fmt.Printf("可导出")
-		fmt.Printf(" %s \t %s\n", f.ID, f.Name)
+		table.Append([]string{f.ID, f.Name, canMarshal})
 	}
+	table.Render()
 }

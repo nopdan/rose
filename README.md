@@ -21,7 +21,7 @@
 2. 转换大厂输入法的词库（如搜狗细胞词库，百度分类词库），导入小厂输入法使用。
 3. 其他词库转五笔——需要选择不同五笔方案或自定义。
 4. 其他词库转拼音——需要实现自动注音。
-5. 过滤。根据词长，词频，是否含英文等条件过滤。
+5. [TODO]过滤。根据词长，词频，是否含英文等条件过滤。
 
 不支持的：
 
@@ -41,9 +41,17 @@
 
 ## 使用
 
-`.\rose.exe input input_format:output_format output`
+```sh
+Root Command:
+    Usage: rose [输入文件] [输入格式]:[输出格式] [保存文件名]
+    Example: rose sogou.scel scel:rime rime.dict.yaml
 
-> 例：`.\rose.exe .\sogou.scel scel:rime rime.dict.yaml`
+Sub Commands:
+      list      列出所有支持的格式
+      server    启动服务  -p:[port] 指定端口(默认7800)
+  -h, help      帮助
+  -v, version   版本
+```
 
 ## 拼音词库格式
 

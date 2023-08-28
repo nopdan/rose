@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
 	"os"
+	"runtime"
+	"strconv"
 	"strings"
 
 	server "github.com/nopdan/rose/frontend"
@@ -11,85 +12,69 @@ import (
 )
 
 func Cmd() {
+	// 双击打开默认启动服务
 	switch len(os.Args) {
 	case 1:
-		server.Serve()
+		server.Serve(7800)
 		return
-	case 2:
-		switch os.Args[1] {
-		case "-v", "version":
-			fmt.Println("蔷薇词库转换v1.1.3\nhttps://github.com/nopdan/rose/pkg")
-			return
-		case "-h", "help":
-			fmt.Printf("Usage: .\\rose.exe [input] [input_format]:[output_format] [output]\n")
-			fmt.Printf("Example: .\\rose.exe .\\sogou.scel scel:rime rime.dict.yaml\n")
-			return
-		case "serve":
-			server.Serve()
-		case "ask", "-i":
-			ask()
-		case "-l", "list":
-			core.PrintFormatList()
-			return
+	}
+	switch os.Args[1] {
+	case "list":
+		core.PrintFormatList()
+	case "help", "-h":
+		help()
+	case "version", "-v":
+		fmt.Printf("Go Version: %s %s/%s\n", runtime.Version(), runtime.GOOS, runtime.GOARCH)
+		fmt.Printf("Rose Version: v1.2.0\n")
+		fmt.Printf("Author: nopdan <me@nopdan.com>\n")
+	case "server":
+		port := 7800
+		if len(os.Args) > 2 {
+			p := os.Args[2]
+			if strings.HasPrefix(p, "-p:") {
+				p = p[3:]
+				tmp, err := strconv.Atoi(p)
+				if err != nil {
+					port = tmp
+				}
+			}
 		}
+		server.Serve(port)
+	default:
+		root()
 	}
+}
 
-	if len(os.Args) >= 3 {
-		goto NORMAL
+func help() {
+	fmt.Println("Root Command:")
+	fmt.Printf("    Usage: rose [输入文件] [输入格式]:[输出格式] [保存文件名]\n")
+	fmt.Printf("    Example: rose sogou.scel scel:rime rime.dict.yaml\n")
+	fmt.Println()
+	fmt.Println("Sub Commands:")
+	fmt.Println("      list      列出所有支持的格式")
+	fmt.Println("      server    启动服务  -p:[port] 指定端口(默认7800)")
+	fmt.Println("  -h, help      帮助")
+	fmt.Println("  -v, version   版本")
+}
+
+func root() {
+	if len(os.Args) <= 2 {
+		fmt.Println("缺少必要参数")
+		return
 	}
-	wrong()
-	return
-
-NORMAL:
 	c := &core.Config{}
-
 	c.IName = os.Args[1]
 	fm := strings.Split(os.Args[2], ":")
 	if len(fm) == 2 {
 		c.IFormat = fm[0]
 		c.OFormat = fm[1]
+	} else {
+		fmt.Println("输入输出格式参数解析错误")
+		return
 	}
-	if len(os.Args) > 3 {
+	if len(os.Args) == 4 {
 		c.OName = os.Args[3]
 	}
-	// fmt.Println(input, output, input_format, output_format)
-
 	d := c.Marshal()
 	c.Save(d)
-}
-
-func wrong() {
-	fmt.Println("输入参数有误")
-}
-
-// 交互式
-func ask() {
-	askOne := func(hint string) string {
-		fmt.Printf("%s\n> ", hint)
-		reader := bufio.NewReader(os.Stdin)
-		var value string
-		value, _ = reader.ReadString('\n')
-		value = strings.ReplaceAll(value, "\r", "")
-		value = strings.ReplaceAll(value, "\n", "")
-		last := value[len(value)-1]
-		if len(value) > 3 {
-			if last == '"' && value[0] == '"' {
-				value = value[1 : len(value)-1]
-			} else if len(value) > 4 && last == '\'' && value[:3] == "& '" {
-				value = value[3 : len(value)-1]
-			}
-		}
-
-		fmt.Println()
-		return value
-	}
-	c := &core.Config{}
-
-	c.IName = askOne("输入词库：")
-	c.IFormat = askOne("词库格式：")
-	c.OName = askOne("输出词库：")
-	c.OFormat = askOne("词库格式：")
-	c.Marshal()
-
-	// fmt.Scanln()
 }
