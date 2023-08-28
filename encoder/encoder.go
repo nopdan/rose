@@ -32,7 +32,12 @@ func New(schema string, isAABC bool) Encoder {
 		if len(fields) < 2 {
 			continue
 		}
-		char := []rune(fields[0])[0]
+		word := []rune(fields[0])
+		// 跳过词组
+		if len(word) != 1 {
+			continue
+		}
+		char := word[0]
 		w.Char[char] = fields[1]
 	}
 	return w

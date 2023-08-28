@@ -2,6 +2,7 @@ package pinyin
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -98,4 +99,14 @@ func TestMarshal(t *testing.T) {
 	os.WriteFile("test/to_baidu.txt", New("bd").Marshal(di), 0666)
 	os.WriteFile("test/to_google.txt", New("gg").Marshal(di), 0666)
 	os.WriteFile("test/to_rime.txt", New("rime").Marshal(di), 0666)
+}
+
+func TestFormatList(t *testing.T) {
+	for _, v := range FormatList {
+		if !v.GetCanMarshal() {
+			fmt.Printf("不")
+		}
+		fmt.Printf("可导出")
+		fmt.Printf(" %s \t %s\n", v.GetID(), v.GetName())
+	}
 }

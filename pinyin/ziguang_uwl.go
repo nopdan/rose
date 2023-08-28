@@ -13,9 +13,12 @@ type ZiguangUwl struct {
 	ymList   []string
 }
 
+func init() {
+	FormatList = append(FormatList, NewZiguangUwl())
+}
 func NewZiguangUwl() *ZiguangUwl {
 	f := new(ZiguangUwl)
-	f.Name = "紫光词库.uwl"
+	f.Name = "紫光华宇拼音.uwl"
 	f.ID = "uwl"
 	f.smList = []string{
 		"", "b", "c", "ch", "d", "f", "g", "h", "j", "k", "l", "m", "n",

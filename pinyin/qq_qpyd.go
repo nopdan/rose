@@ -12,9 +12,12 @@ import (
 
 type QqQpyd struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewQqQpyd())
+}
 func NewQqQpyd() *QqQpyd {
 	f := new(QqQpyd)
-	f.Name = "QQ 拼音.qpyd"
+	f.Name = "QQ拼音v6以下.qpyd"
 	f.ID = "qpyd"
 	return f
 }

@@ -18,11 +18,15 @@ type MswbLex struct {
 	wwMap map[string]int
 }
 
+func init() {
+	FormatList = append(FormatList, NewMswbLex())
+}
 func NewMswbLex() *MswbLex {
 	f := new(MswbLex)
 	f.Name = "微软五笔.lex"
 	f.ID = "lex"
-	f.Rank = false
+	f.CanMarshal = true
+	f.HasRank = false
 	f.wwMap = make(map[string]int)
 	f.LoadWordWeight()
 	return f

@@ -9,10 +9,19 @@ import (
 
 type SogouScel struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewSogouScel(), NewQqQcel())
+}
 func NewSogouScel() *SogouScel {
 	f := new(SogouScel)
-	f.Name = "搜狗拼音.scel"
+	f.Name = "搜狗细胞词库.scel"
 	f.ID = "scel"
+	return f
+}
+func NewQqQcel() *SogouScel {
+	f := NewSogouScel()
+	f.Name = "QQ拼音v6以上.qcel"
+	f.ID = "qcel"
 	return f
 }
 

@@ -23,8 +23,9 @@ type Custom struct {
 // t: tab, s: space; w: word, c: code, r: rank
 //
 // 多多 t|w|c，冰凌 t|c|w
-func NewCustom(rule string, e string) *Custom {
+func newCustom(rule string, e string) *Custom {
 	f := new(Custom)
+	f.CanMarshal = true
 	f.encoding = e
 	s := strings.Split(rule, "|")
 	switch s[0] {
@@ -39,15 +40,18 @@ func NewCustom(rule string, e string) *Custom {
 	return f
 }
 
+func init() {
+	FormatList = append(FormatList, NewBingling(), NewDuoduo())
+}
 func NewDuoduo() *Custom {
-	f := NewCustom("t|w|c", "UTF-16LE")
-	f.Name = "多多.txt"
+	f := newCustom("t|w|c", "UTF-16LE")
+	f.Name = "多多"
 	f.ID = "duoduo"
 	return f
 }
 func NewBingling() *Custom {
-	f := NewCustom("t|c|w", "UTF-8")
-	f.Name = "冰凌.txt"
+	f := newCustom("t|c|w", "UTF-8")
+	f.Name = "冰凌"
 	f.ID = "bingling"
 	return f
 }
@@ -76,7 +80,7 @@ func (f *Custom) Unmarshal(r *bytes.Reader) []*Entry {
 		di = append(di, &Entry{word, code, rank})
 	}
 	if slices.Contains(f.rule, "r") {
-		f.Rank = true
+		f.HasRank = true
 	}
 	return di
 }

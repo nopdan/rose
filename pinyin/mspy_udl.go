@@ -15,10 +15,14 @@ type MspyUDL struct {
 	pyMap  map[string]uint16
 }
 
+func init() {
+	FormatList = append(FormatList, NewMspyUDL())
+}
 func NewMspyUDL() *MspyUDL {
 	f := new(MspyUDL)
 	f.Name = "微软拼音自学习词汇.dat"
-	f.ID = "mspyudl"
+	f.ID = "udl"
+	f.CanMarshal = true
 
 	f.pyList = []string{
 		"a",

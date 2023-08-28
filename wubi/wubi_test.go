@@ -2,6 +2,7 @@ package wubi
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"slices"
@@ -17,7 +18,7 @@ func do(f Format, name string) {
 	}
 	r := bytes.NewReader(b)
 	di := f.Unmarshal(r)
-	f = NewCustom("t|w|c|r", "utf-8")
+	f = newCustom("t|w|c|r", "utf-8")
 	data := f.Marshal(di, false)
 	// get filename without ext
 	s := "test/" + strings.TrimSuffix(filepath.Base(name), filepath.Ext(name)) + ".txt"
@@ -87,4 +88,14 @@ func TestMarshal(t *testing.T) {
 	os.WriteFile("test/to_baidu_def.def", New("def").Marshal(di, false), 0666)
 	os.WriteFile("test/to_msudp.dat", New("udp").Marshal(di, false), 0666)
 	os.WriteFile("test/to_lex.lex", New("lex").Marshal(di, false), 0666)
+}
+
+func TestFormatList(t *testing.T) {
+	for _, v := range FormatList {
+		if !v.GetCanMarshal() {
+			fmt.Printf("不")
+		}
+		fmt.Printf("可导出")
+		fmt.Printf(" %s \t %s\n", v.GetID(), v.GetName())
+	}
 }

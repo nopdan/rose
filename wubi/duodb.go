@@ -6,11 +6,13 @@ import (
 
 type DuoDB struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewDuoDB())
+}
 func NewDuoDB() *DuoDB {
 	f := new(DuoDB)
-	f.Name = "多多.duodb"
+	f.Name = "多多v4.duodb"
 	f.ID = "duodb"
-	f.Rank = false
 	return f
 }
 

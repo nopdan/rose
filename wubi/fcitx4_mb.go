@@ -10,7 +10,6 @@ func NewFcitx4Mb() *Fcitx4Mb {
 	f := new(Fcitx4Mb)
 	f.Name = "fcitx4.mb"
 	f.ID = "fcitx4"
-	f.Rank = false
 	return f
 }
 

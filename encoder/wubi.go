@@ -23,11 +23,11 @@ func NewWubi(schema string, isAABC bool) *Wubi {
 	}
 	idx := 0
 	switch schema {
-	case "wubi86":
+	case "wubi86", "86":
 		idx = 2
-	case "wubi98":
+	case "wubi98", "98":
 		idx = 3
-	case "wubi06":
+	case "wubi06", "06":
 		idx = 4
 	default:
 		return nil

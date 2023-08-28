@@ -19,8 +19,9 @@ type Custom struct {
 	Rule []string
 }
 
-func NewCustom(rule string) *Custom {
+func newCustom(rule string) *Custom {
 	f := new(Custom)
+	f.CanMarshal = true
 	s := strings.Split(rule, "|")
 	matchSep := func(s string) byte {
 		switch s {
@@ -40,37 +41,40 @@ func NewCustom(rule string) *Custom {
 	return f
 }
 
+func init() {
+	FormatList = append(FormatList, NewSogou(), NewQQ(), NewBaidu(), NewGoogle(), NewRime())
+}
 func NewSogou() *Custom {
-	f := NewCustom("s|'|p|w")
-	f.Name = "搜狗拼音.txt"
+	f := newCustom("s|'|p|w")
+	f.Name = "搜狗拼音"
 	f.ID = "sogou"
 	return f
 }
 
 func NewQQ() *Custom {
-	f := NewCustom("s|'|c|w|f")
-	f.Name = "QQ 拼音.txt"
+	f := newCustom("s|'|c|w|f")
+	f.Name = "QQ拼音"
 	f.ID = "qq"
 	return f
 }
 
 func NewBaidu() *Custom {
-	f := NewCustom("t|'|w|c|f")
-	f.Name = "百度拼音.txt"
+	f := newCustom("t|'|w|c|f")
+	f.Name = "百度拼音"
 	f.ID = "baidu"
 	return f
 }
 
 func NewGoogle() *Custom {
-	f := NewCustom("t|s|w|f|c")
-	f.Name = "谷歌拼音.txt"
+	f := newCustom("t|s|w|f|c")
+	f.Name = "谷歌拼音"
 	f.ID = "google"
 	return f
 }
 
 func NewRime() *Custom {
-	f := NewCustom("t|s|w|c|f")
-	f.Name = "rime 拼音.txt"
+	f := newCustom("t|s|w|c|f")
+	f.Name = "Rime拼音"
 	f.ID = "rime"
 	return f
 }

@@ -12,9 +12,12 @@ type BaiduBdict struct {
 	ymList []string
 }
 
+func init() {
+	FormatList = append(FormatList, NewBaiduBdict(), NewBaiduBcd())
+}
 func NewBaiduBdict() *BaiduBdict {
 	f := new(BaiduBdict)
-	f.Name = "百度分类词库.bdict(.bcd)"
+	f.Name = "百度分类词库.bdict"
 	f.ID = "bdict"
 	f.smList = []string{
 		"c", "d", "b", "f", "g", "h", "ch", "j", "k", "l", "m", "n",
@@ -25,6 +28,13 @@ func NewBaiduBdict() *BaiduBdict {
 		"uai", "uan", "ai", "an", "ao", "ei", "en", "er", "ua", "ie", "in", "iu",
 		"ou", "ia", "ue", "ui", "un", "uo", "a", "e", "i", "o", "u", "v",
 	}
+	return f
+}
+
+func NewBaiduBcd() *BaiduBdict {
+	f := NewBaiduBdict()
+	f.Name = "百度手机分类词库.bcd"
+	f.ID = "bcd"
 	return f
 }
 

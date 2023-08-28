@@ -11,11 +11,14 @@ import (
 
 type BaiduDef struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewBaiduDef())
+}
 func NewBaiduDef() *BaiduDef {
 	f := new(BaiduDef)
-	f.Name = "百度自定义方案.def"
-	f.ID = "baidu_def"
-	f.Rank = false
+	f.Name = "百度手机自定义方案.def"
+	f.ID = "def"
+	f.CanMarshal = true
 	return f
 }
 

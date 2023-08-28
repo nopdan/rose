@@ -10,10 +10,14 @@ import (
 
 type JiaJia struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewJiaJia())
+}
 func NewJiaJia() *JiaJia {
 	f := new(JiaJia)
-	f.Name = "拼音加加.txt"
+	f.Name = "拼音加加"
 	f.ID = "jiajia"
+	f.CanMarshal = true
 	return f
 }
 

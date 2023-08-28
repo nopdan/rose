@@ -11,11 +11,15 @@ import (
 
 type MsUDP struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewMsUDP())
+}
 func NewMsUDP() *MsUDP {
 	f := new(MsUDP)
 	f.Name = "微软用户自定义短语.dat"
-	f.ID = "msudp"
-	f.Rank = true
+	f.ID = "udp"
+	f.CanMarshal = true
+	f.HasRank = true
 	return f
 }
 

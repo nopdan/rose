@@ -8,11 +8,13 @@ import (
 
 type JidianMb struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewJidianMb())
+}
 func NewJidianMb() *JidianMb {
 	f := new(JidianMb)
 	f.Name = "极点码表.mb"
-	f.ID = "jidian_mb"
-	f.Rank = false
+	f.ID = "jdmb"
 	return f
 }
 

@@ -6,10 +6,14 @@ import (
 
 func TestMain(t *testing.T) {
 	c := &Config{
-		Name:      "sample/words.txt",
-		InFormat:  "words",
-		OutFormat: "rime",
-		OutName:   "test/to_rime.txt",
+		IName:   "sample/words.txt",
+		IFormat: "words",
+		OFormat: "rime",
+		OName:   "test/to_rime.txt",
 	}
 	c.Marshal()
+}
+
+func TestFormatList(t *testing.T) {
+	PrintFormatList()
 }

@@ -9,11 +9,15 @@ import (
 
 type Jidian struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewJidian())
+}
 func NewJidian() *Jidian {
 	f := new(Jidian)
-	f.Name = "极点码表.txt"
+	f.Name = "极点码表"
 	f.ID = "jidian"
-	f.Rank = true
+	f.CanMarshal = true
+	f.HasRank = true
 	return f
 }
 

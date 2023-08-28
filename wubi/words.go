@@ -11,11 +11,18 @@ type Words struct {
 	*Custom
 }
 
+func init() {
+	FormatList = append(FormatList, NewWords())
+}
 func NewWords() *Words {
-	return &Words{Custom: NewCustom("t|w", "UTF-8")}
+	f := newCustom("t|w", "UTF-8")
+	f.Name = "纯词组"
+	f.ID = "words"
+	f.CanMarshal = true
+	return &Words{Custom: f}
 }
 
-func (f *Words) GetType() int {
+func (f *Words) GetKind() int {
 	return WORDS
 }
 

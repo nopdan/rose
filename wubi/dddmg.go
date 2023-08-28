@@ -6,11 +6,13 @@ import (
 
 type DDdmg struct{ Template }
 
+func init() {
+	FormatList = append(FormatList, NewDDdmg())
+}
 func NewDDdmg() *DDdmg {
 	f := new(DDdmg)
-	f.Name = "多多v3.x.dmg"
-	f.ID = "dddmg"
-	f.Rank = false
+	f.Name = "多多v3.dmg"
+	f.ID = "dmg"
 	return f
 }
 

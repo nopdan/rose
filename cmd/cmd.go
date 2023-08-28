@@ -7,12 +7,13 @@ import (
 	"strings"
 
 	"github.com/nopdan/rose/core"
+	"github.com/nopdan/rose/server"
 )
 
 func Cmd() {
 	switch len(os.Args) {
 	case 1:
-		ask()
+		server.Serve()
 		return
 	case 2:
 		switch os.Args[1] {
@@ -22,6 +23,13 @@ func Cmd() {
 		case "-h", "help":
 			fmt.Printf("Usage: .\\rose.exe [input] [input_format]:[output_format] [output]\n")
 			fmt.Printf("Example: .\\rose.exe .\\sogou.scel scel:rime rime.dict.yaml\n")
+			return
+		case "serve":
+			server.Serve()
+		case "ask", "-i":
+			ask()
+		case "-l", "list":
+			core.PrintFormatList()
 			return
 		}
 	}
@@ -35,17 +43,19 @@ func Cmd() {
 NORMAL:
 	c := &core.Config{}
 
-	c.Name = os.Args[1]
+	c.IName = os.Args[1]
 	fm := strings.Split(os.Args[2], ":")
 	if len(fm) == 2 {
-		c.InFormat = fm[0]
-		c.OutFormat = fm[1]
+		c.IFormat = fm[0]
+		c.OFormat = fm[1]
 	}
 	if len(os.Args) > 3 {
-		c.OutName = os.Args[3]
+		c.OName = os.Args[3]
 	}
 	// fmt.Println(input, output, input_format, output_format)
-	c.Marshal()
+
+	d := c.Marshal()
+	c.Save(d)
 }
 
 func wrong() {
@@ -75,10 +85,10 @@ func ask() {
 	}
 	c := &core.Config{}
 
-	c.Name = askOne("输入词库：")
-	c.InFormat = askOne("词库格式：")
-	c.OutName = askOne("输出词库：")
-	c.OutFormat = askOne("词库格式：")
+	c.IName = askOne("输入词库：")
+	c.IFormat = askOne("词库格式：")
+	c.OName = askOne("输出词库：")
+	c.OFormat = askOne("词库格式：")
 	c.Marshal()
 
 	// fmt.Scanln()
