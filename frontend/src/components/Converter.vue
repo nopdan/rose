@@ -15,7 +15,7 @@
         <n-upload
           v-model:action="uploadUrl"
           :max="1"
-          v-model:file-list="fileList"
+          v-model:file-list="dictList"
         >
           <n-upload-dragger>
             <div style="margin-bottom: 10px">
@@ -31,7 +31,7 @@
         <n-select
           v-model:value="model.inputFormat"
           placeholder="Select"
-          :options="generalOptions()"
+          :options="generalOptions"
         />
       </n-form-item>
     </n-card>
@@ -102,7 +102,8 @@
           class="button"
           type="primary"
           @click="handleClick"
-          v-model:disabled="disableButton"
+          v-model:disabled="disable"
+          :loading="loading"
         >
           转换并保存
         </n-button>
@@ -117,14 +118,14 @@ import { ArchiveOutline as ArchiveIcon } from "@vicons/ionicons5";
 import axios from "axios";
 import type { UploadFileInfo } from "naive-ui";
 import { useDialog } from "naive-ui";
-const debugMode = false;
-const host = debugMode ? "http://localhost:8080" : "";
-const uploadUrl = host + "/upload";
-const uploadMbUrl = uploadUrl + "/mb";
 
-const displayCustom = computed(() => {
-  return model.value.kind === "wubi" && model.value.schema === "custom";
-});
+// 判断是否是开发环境
+const host =
+  import.meta.env.MODE === "development" ? "http://localhost:7800" : "";
+let uploadUrl = host + "/upload";
+let uploadMbUrl = uploadUrl + "/mb";
+
+// 表单
 const formRef = ref(null);
 const model = ref({
   name: "",
@@ -135,58 +136,67 @@ const model = ref({
   outputFormat: "sogou",
 });
 
-let data: { name: any; id: any; canMarshal: any; kind: any }[];
+// 获取格式列表
+type Data = { name: any; id: any; canMarshal: any; kind: any }[];
+let data: Data;
 data = await fetch(host + "/list").then((res) => res.json());
 
-const generalOptions = () => {
-  let opt: any[] = [];
-  data.forEach((item) => {
-    opt.push({
-      label: item.name,
-      value: item.id,
-    });
-  });
-  return opt;
-};
+const generalOptions = data.map((item) => ({
+  label: item.name,
+  value: item.id,
+}));
+const generalOptionsSet = new Set(generalOptions.map((item) => item.value));
+console.log(generalOptions);
 
-console.log(generalOptions());
+const pinyinFormatOptions = data
+  .filter((item) => item.kind === 1 && item.canMarshal)
+  .map((item) => ({ label: item.name, value: item.id }));
 
-const pinyinFormatOptions = () => {
-  let opt: any[] = [];
-  data.forEach((item) => {
-    if (item.kind === 1 && item.canMarshal) {
-      opt.push({
-        label: item.name,
-        value: item.id,
-      });
-    }
-  });
-  return opt;
-};
-
-const wubiFormatOptions = () => {
-  let opt: any[] = [];
-  data.forEach((item) => {
-    if (item.kind === 2 && item.canMarshal) {
-      opt.push({
-        label: item.name,
-        value: item.id,
-      });
-    }
-  });
-  return opt;
-};
+const wubiFormatOptions = data
+  .filter((item) => item.kind === 2 && item.canMarshal)
+  .map((item) => ({ label: item.name, value: item.id }));
 
 const outputFormatOptions = computed(() => {
-  if (model.value.kind === "pinyin") {
-    return pinyinFormatOptions();
-  } else if (model.value.kind === "wubi") {
-    return wubiFormatOptions();
-  } else {
-    return [{ label: "纯词组", value: "words" }];
+  switch (model.value.kind) {
+    case "pinyin":
+      return pinyinFormatOptions;
+    case "wubi":
+      return wubiFormatOptions;
+    default:
+      return [{ label: "纯词组", value: "words" }];
   }
 });
 
+// 词库文件
+const dictList = ref<UploadFileInfo[]>([]);
+// 是否包含已经完成的文件
+const dictHasFinished = computed(() => {
+  return dictList.value.length === 1 && dictList.value[0].status === "finished";
+});
+// 监听文件列表，赋值表单 name
+watch(
+  () => dictList.value,
+  () => {
+    if (dictList.value.length === 1) {
+      const fi = dictList.value[0];
+      if (fi.status === "finished") {
+        model.value.name = fi.name;
+        // 根据后缀猜测格式
+        const dotIndex = fi.name.lastIndexOf(".");
+        if (dotIndex !== -1) {
+          const suffix = fi.name.substring(dotIndex + 1);
+          if (generalOptionsSet.has(suffix)) {
+            model.value.inputFormat = suffix;
+          }
+        }
+      }
+    } else {
+      model.value.name = "";
+    }
+  }
+);
+
+// 方案类型
 watch(
   () => model.value.kind,
   () => {
@@ -199,66 +209,59 @@ watch(
     }
   }
 );
-
-const fileList = ref<UploadFileInfo[]>([]);
+// 自定义码表
+const displayCustom = computed(() => {
+  return model.value.kind === "wubi" && model.value.schema === "custom";
+});
 const mbList = ref<UploadFileInfo[]>([]);
-const disableButton = computed(() => {
-  if (fileList.value.length === 0) {
-    return true;
-  }
-  if (
-    model.value.kind === "wubi" &&
-    model.value.schema === "custom" &&
-    mbList.value.length === 0
-  ) {
-    return true;
-  }
-  return false;
+const mbHasFinished = computed(() => {
+  return mbList.value.length === 1 && mbList.value[0].status === "finished";
 });
 
-watch(
-  () => fileList.value.length,
-  () => {
-    if (fileList.value.length === 1) {
-      const fi = fileList.value[0];
-      model.value.name = fi.name;
-      // 根据后缀猜测格式
-      const l = fi.name.split(".");
-      console.log(l);
-      let suffix = "";
-      if (l.length >= 2) {
-        suffix = l[l.length - 1];
-      }
-      console.log(suffix);
-      generalOptions().forEach((item) => {
-        if (item.value === suffix) {
-          model.value.inputFormat = suffix;
-        }
-      });
-    } else {
-      model.value.name = "";
-    }
-  }
-);
+const disableButton = ref(false);
+const disable = computed(() => {
+  return (
+    disableButton.value || // loading
+    !dictHasFinished.value || // 没有选择词库文件
+    (displayCustom.value && !mbHasFinished.value) // 没有选择自定义码表
+  );
+});
 
+// 转换
+const loading = ref(false);
 const dialog = useDialog();
 function handleClick() {
   console.log(model.value);
-  axios.post(host + "/api", JSON.stringify(model.value)).then((res) => {
-    console.log(res);
-    if (res.data !== "error") {
-      dialog.success({
-        title: "Success",
-        content: "保存到：" + res.data,
-        positiveText: "确定",
-      });
-    } else {
-      dialog.error({
-        title: "Error",
-        content: "导出失败!",
-        positiveText: "确定",
-      });
-    }
+  loading.value = true;
+  disableButton.value = true;
+  axios
+    .post(host + "/api", JSON.stringify(model.value))
+    .then((res) => {
+      console.log(res);
+      if (res.data !== "error") {
+        dialog.success({
+          title: "Success",
+          content: "保存到：" + res.data,
+          positiveText: "确定",
+        });
+      } else {
+        convertError();
+      }
+    })
+    .catch(() => {
+      convertError();
+    })
+    .finally(() => {
+      loading.value = false;
+      disableButton.value = false;
+    });
+}
+
+function convertError() {
+  dialog.error({
+    title: "Error",
+    content: "导出失败!",
+    positiveText: "确定",
   });
 }
 

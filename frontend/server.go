@@ -85,9 +85,9 @@ func Serve() {
 		mbData = uploadHandler(&w, r, "/upload/mb")
 	})
 
-	log.Println("Listening on http://localhost:8080")
-	openBrowser("http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
+	log.Println("Listening on http://localhost:7800")
+	openBrowser("http://localhost:7800")
+	http.ListenAndServe(":7800", nil)
 }
 
 func uploadHandler(w *http.ResponseWriter, r *http.Request, path string) []byte {
