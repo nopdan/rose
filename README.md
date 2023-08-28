@@ -53,42 +53,43 @@ Sub Commands:
   -v, version   版本
 ```
 
-## 拼音词库格式
+## 支持格式
 
-| 词库                         | 代号        | 简写  | 格式                         | 备注       |
-| ---------------------------- | ----------- | ----- | ---------------------------- | ---------- |
-| 搜狗细胞词库、qq6.0 以上词库 | sogou_scel  | scel  | `.scel`\|`.qcel`             | 不支持输出 |
-| 搜狗拼音备份词库             | sogou_bin   | sgbin | `.bin`                       | 不支持输出 |
-| qq6.0 以下词库               | qq_qpyd     | qpyd  | `.qpyd`                      | 不支持输出 |
-| 百度分类词库                 | baidu_bdict | bdict | `.bdict`\|`.bcd`             | 不支持输出 |
-| 紫光（华宇）                 | ziguang_uwl | uwl   | `.uwl`                       | 不支持输出 |
-| 微软用户自定义短语           | mspy_dat    | udp   | `.dat`                       |            |
-| 微软拼音自学习词汇           | mspy_udl    | udl   | `.dat`                       |            |
-| 搜狗拼音                     | sogou       | sg    | 拼音('分隔)` `词             |            |
-| qq 拼音                      | qq          |       | 拼音('分隔)` `词` `词频      |            |
-| 百度拼音                     | baidu       | bd    | 词`\t`拼音('分隔)`\t`词频    |            |
-| 谷歌拼音                     | google      | gg    | 词`\t`词频`\t`拼音(空格分隔) |            |
-| rime                         | rime        |       | 词`\t`拼音(空格分隔)`\t`词频 |            |
-| 拼音加加                     | jiajia      | jj    | 字音字音字音...              |            |
+| ID       | 格式                   | 可导出 |
+| -------- | ---------------------- | ------ |
+| bdict    | 百度分类词库.bdict     |        |
+| bcd      | 百度手机分类词库.bcd   |        |
+| sogou    | 搜狗拼音               | 是     |
+| qq       | QQ拼音                 | 是     |
+| baidu    | 百度拼音               | 是     |
+| google   | 谷歌拼音               | 是     |
+| rime     | Rime拼音               | 是     |
+| jiajia   | 拼音加加               | 是     |
+| udl      | 微软拼音自学习词汇.dat | 是     |
+| qpyd     | QQ拼音v6以下.qpyd      |        |
+| sgbak    | 搜狗拼音备份.bin       |        |
+| scel     | 搜狗细胞词库.scel      |        |
+| qcel     | QQ拼音v6以上.qcel      |        |
+| uwl      | 紫光华宇拼音.uwl       |        |
+| def      | 百度手机自定义方案.def | 是     |
+| bingling | 冰凌                   | 是     |
+| duoduo   | 多多                   | 是     |
+| dmg      | 多多v3.dmg             |        |
+| duodb    | 多多v4.duodb           |        |
+| jidian   | 极点码表               | 是     |
+| jdmb     | 极点码表.mb            |        |
+| udp      | 微软用户自定义短语.dat | 是     |
+| lex      | 微软五笔.lex           | 是     |
+| words    | 纯词组                 | 是     |
 
-## 字词码表格式
-
-| 词库               | 代号      | 简写 | 格式                   | 备注       |
-| ------------------ | --------- | ---- | ---------------------- | ---------- |
-| 百度手机自定义方案 | baidu_def | def  | `.def`                 |            |
-| 微软用户自定义短语 | msudp_dat | udp  | `.dat`                 |            |
-| 微软五笔           | mswb_lex  | lex  | `.lex`                 |            |
-| 极点               | jidian_mb | jdmb | `.mb`                  | 不支持输出 |
-| fcitx4             | fcitx4_mb | f4mb | `.mb`                  | 不支持输出 |
-| 多多 v3            | dddmg     | dmg  | `.dmg`                 | 不支持输出 |
-| 多多 v4            | duodb     |      | `.duodb`               | 不支持输出 |
-| 多多               | duoduo    | dd   | 词`\t`编码             |            |
-| 冰凌               | bingling  | bl   | 编码`\t`词             | UTF-16LE   |
-| 极点               | jidian    | jd   | 编码`\t`词 1` `词 2... |            |
 
 ## 编译
 
 ```powershell
+git clone https://github.com/nopdan/rose.git
+cd rose
+git submodule update --init
+
 cd build
 .\build.ps1
 ```
