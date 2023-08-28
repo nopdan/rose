@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type SogouBak struct {

@@ -11,7 +11,7 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/nopdan/rose/core"
+	"github.com/nopdan/rose/pkg/core"
 )
 
 type Config struct {

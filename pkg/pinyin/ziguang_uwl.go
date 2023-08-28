@@ -3,7 +3,7 @@ package pinyin
 import (
 	"bytes"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type ZiguangUwl struct {

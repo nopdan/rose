@@ -3,8 +3,8 @@ package core
 import (
 	"fmt"
 
-	"github.com/nopdan/rose/pinyin"
-	"github.com/nopdan/rose/wubi"
+	"github.com/nopdan/rose/pkg/pinyin"
+	"github.com/nopdan/rose/pkg/wubi"
 )
 
 type Format struct {

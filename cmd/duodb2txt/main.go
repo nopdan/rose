@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nopdan/rose/wubi"
+	"github.com/nopdan/rose/pkg/wubi"
 )
 
 func main() {

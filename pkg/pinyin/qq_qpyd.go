@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type QqQpyd struct{ Template }

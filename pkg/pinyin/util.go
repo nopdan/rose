@@ -3,7 +3,7 @@ package pinyin
 import (
 	"io"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 	"golang.org/x/exp/constraints"
 )
 

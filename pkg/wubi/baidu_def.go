@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type BaiduDef struct{ Template }

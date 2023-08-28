@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/nopdan/rose/pinyin"
-	"github.com/nopdan/rose/wubi"
+	"github.com/nopdan/rose/pkg/pinyin"
+	"github.com/nopdan/rose/pkg/wubi"
 )
 
 func matchFormat(format string) *Format {

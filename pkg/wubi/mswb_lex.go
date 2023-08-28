@@ -10,7 +10,7 @@ import (
 
 	_ "embed"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type MswbLex struct {

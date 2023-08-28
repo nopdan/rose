@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type key struct {

@@ -6,7 +6,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type MspyUDL struct {

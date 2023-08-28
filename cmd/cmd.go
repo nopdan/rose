@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/nopdan/rose/core"
-	"github.com/nopdan/rose/server"
+	server "github.com/nopdan/rose/frontend"
+	"github.com/nopdan/rose/pkg/core"
 )
 
 func Cmd() {
@@ -18,7 +18,7 @@ func Cmd() {
 	case 2:
 		switch os.Args[1] {
 		case "-v", "version":
-			fmt.Println("蔷薇词库转换v1.1.3\nhttps://github.com/nopdan/rose")
+			fmt.Println("蔷薇词库转换v1.1.3\nhttps://github.com/nopdan/rose/pkg")
 			return
 		case "-h", "help":
 			fmt.Printf("Usage: .\\rose.exe [input] [input_format]:[output_format] [output]\n")

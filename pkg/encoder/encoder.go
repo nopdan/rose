@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"strings"
 
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type Encoder interface {

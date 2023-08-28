@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"strings"
 
-	"github.com/nopdan/rose/encoder"
+	"github.com/nopdan/rose/pkg/encoder"
 )
 
 type JiaJia struct{ Template }

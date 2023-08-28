@@ -1,9 +1,9 @@
 package core
 
 import (
-	"github.com/nopdan/rose/encoder"
-	"github.com/nopdan/rose/pinyin"
-	"github.com/nopdan/rose/wubi"
+	"github.com/nopdan/rose/pkg/encoder"
+	"github.com/nopdan/rose/pkg/pinyin"
+	"github.com/nopdan/rose/pkg/wubi"
 )
 
 func (c *Config) Encode(di []*wubi.Entry) []*wubi.Entry {

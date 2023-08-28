@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nopdan/rose/encoder"
-	"github.com/nopdan/rose/util"
+	"github.com/nopdan/rose/pkg/encoder"
+	"github.com/nopdan/rose/pkg/util"
 )
 
 type Custom struct {
