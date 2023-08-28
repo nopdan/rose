@@ -1,3 +1,22 @@
+<a name="v1.2.0"></a>
+
+## [v1.2.0](https://github.com/nopdan/rose/compare/v1.1.3...v1.2.0) (2023-08-29)
+
+### Ci
+
+- 分别构建 commit 和 release
+
+### Feat
+
+- 添加前端
+- 自动编码五笔方案
+- 支持多多生成器 v3 dmg 格式
+- 支持多多生成器 v4 duodb 格式
+
+### Perf
+
+- 优化命令行
+
 <a name="v1.1.3"></a>
 
 ## [v1.1.3](https://github.com/nopdan/rose/compare/v1.1.2...v1.1.3) (2023-05-07)
