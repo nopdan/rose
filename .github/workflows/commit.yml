@@ -1,0 +1,81 @@
+name: Commit CI
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 拉取代码
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # 装 nodejs
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      # 装 pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.3.0
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # 安装 go
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ">=1.21.0"
+          check-latest: true
+
+      - name: Setup go cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+            ~/Library/Caches/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          pnpm i
+          pnpm build
+          cd ..
+
+      # 编译
+      - name: Build
+        run: |
+          go mod tidy
+          go env -w GOARCH=amd64
+          echo "编译 windows 版本"
+          go env -w GOOS=windows
+          go build -o ./bin/rose.exe
+
+      # 上传到 Artifact
+      - name: Upload windows
+        uses: actions/upload-artifact@v3
+        with:
+          name: rose
+          path: ./bin/

@@ -1,0 +1,113 @@
+name: Release CI
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 拉取代码
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      # 装 nodejs
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+
+      # 装 pnpm
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.3.0
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # 安装 go
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ">=1.21.0"
+          check-latest: true
+
+      - name: Setup go cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+            ~/Library/Caches/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          pnpm i
+          pnpm build
+          cd ..
+
+      # 编译
+      - name: Build
+        run: |
+          go mod tidy
+          go env -w GOARCH=amd64
+          echo "编译 Linux"
+          go build -ldflags="-s -w" -o ./bin/rose-linux
+
+          echo "编译 Windows"
+          go env -w GOOS=windows
+          go build -ldflags="-s -w" -o ./bin/rose-windows.exe
+
+          echo "编译 Macos x86_64"
+          go env -w GOOS=darwin
+          go build -ldflags="-s -w" -o ./bin/rose-darwin-amd64
+
+          echo "编译 Macos arm64"
+          go env -w GOARCH=arm64
+          go build -ldflags="-s -w" -o ./bin/rose-darwin-arm64
+
+      # 使用 upx 压缩可执行文件
+      - name: Run UPX
+        uses: crazy-max/ghaction-upx@v2
+        with:
+          version: latest
+          files: |
+            ./bin/*
+          args: -fq
+
+      - run: |
+          cp pkg/wubi/data bin/data -r
+          cp UnicodeCJK-WuBi/CJK.txt bin/data/
+          cp pinyin-data/pinyin.txt bin/data/
+          cp pinyin-data/duoyin.txt bin/data/
+          cp pinyin-data/correct.txt bin/data/
+
+          cp README.md bin/
+          cp CHANGELOG.md bin/
+
+      # 上传到 Artifact
+      - name: Upload windows
+        uses: actions/upload-artifact@v3
+        with:
+          name: rose
+          path: ./bin/

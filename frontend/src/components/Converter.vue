@@ -60,9 +60,9 @@
       >
         <n-radio-group v-model:value="model.schema" name="mbgroup">
           <n-radio value="original"> 原始 </n-radio>
-          <n-radio value="phrase"> 拼音 </n-radio>
-          <n-radio value="86"> 86 五笔 </n-radio>
-          <n-radio value="98"> 98 五笔 </n-radio>
+          <n-radio value="phrase"> 拼音短语 </n-radio>
+          <n-radio value="86"> 86五笔 </n-radio>
+          <n-radio value="98"> 98五笔 </n-radio>
           <n-radio value="06"> 新世纪 </n-radio>
           <n-radio value="custom"> 自定义 </n-radio>
         </n-radio-group>

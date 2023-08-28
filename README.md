@@ -5,7 +5,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/nopdan/rose)](https://github.com/nopdan/rose/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/nopdan/rose)](https://github.com/nopdan/rose/network/members)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nopdan/rose)](https://github.com/nopdan/rose/releases)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nopdan/rose/build.yml)](https://github.com/nopdan/rose/actions/workflows/build.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nopdan/rose/commit.yml)](https://github.com/nopdan/rose/actions/workflows/commit.yml)
 ![GitHub repo size](https://img.shields.io/github/repo-size/nopdan/rose)
 ![GitHub](https://img.shields.io/github/license/nopdan/rose)
 
@@ -77,3 +77,10 @@
 | 多多               | duoduo    | dd   | 词`\t`编码             |            |
 | 冰凌               | bingling  | bl   | 编码`\t`词             | UTF-16LE   |
 | 极点               | jidian    | jd   | 编码`\t`词 1` `词 2... |            |
+
+## 编译
+
+```powershell
+cd build
+.\build.ps1
+```
