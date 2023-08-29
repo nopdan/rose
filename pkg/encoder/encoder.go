@@ -13,9 +13,9 @@ type Encoder interface {
 
 func New(schema string, isAABC bool) Encoder {
 	if schema == "phrase" {
-		return NewPhrase()
+		return newPhrase()
 	}
-	if w := NewWubi(schema, isAABC); w != nil {
+	if w := newWubi(schema, isAABC); w != nil {
 		return w
 	}
 	w := &Wubi{
@@ -47,7 +47,7 @@ type Phrase struct {
 	enc *Pinyin
 }
 
-func NewPhrase() *Phrase {
+func newPhrase() *Phrase {
 	enc := NewPinyin()
 	return &Phrase{enc: enc}
 }

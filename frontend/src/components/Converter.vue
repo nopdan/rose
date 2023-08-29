@@ -247,10 +247,11 @@ function handleClick() {
       } else {
         convertError();
       }
+      
     })
-    .catch(() => {
-      convertError();
-    })
+    // .catch(() => {
+    //   convertError();
+    // })
     .finally(() => {
       loading.value = false;
       disableButton.value = false;

@@ -8,7 +8,7 @@ import (
 const WORDS = 3
 
 type Words struct {
-	*Custom
+	Template
 }
 
 func init() {
@@ -19,24 +19,26 @@ func NewWords() *Words {
 	f.Name = "纯词组"
 	f.ID = "words"
 	f.CanMarshal = true
-	return &Words{Custom: f}
+	return &Words{}
 }
 
 func (f *Words) GetKind() int {
 	return WORDS
 }
-
 func (f *Words) Unmarshal(r *bytes.Reader) []*Entry {
-	di := make([]*Entry, 0, r.Size()>>8)
+	return nil
+}
 
+// 特殊
+func (f *Words) UnmarshalStr(r *bytes.Reader) []string {
+	di := make([]string, 0, r.Size()>>8)
 	scan := bufio.NewScanner(r)
 	for scan.Scan() {
-		di = append(di, &Entry{scan.Text(), "", 0})
+		di = append(di, scan.Text())
 	}
 	return di
 }
 
-// 特殊
 func (f *Words) MarshalStr(di []string) []byte {
 	var buf bytes.Buffer
 	for _, v := range di {

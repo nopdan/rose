@@ -12,7 +12,7 @@ type Wubi struct {
 	IsAABC bool
 }
 
-func NewWubi(schema string, isAABC bool) *Wubi {
+func newWubi(schema string, isAABC bool) *Wubi {
 	r, err := util.Read("./data/CJK.txt")
 	if err != nil {
 		panic(err)
