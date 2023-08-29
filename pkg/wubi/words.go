@@ -15,11 +15,11 @@ func init() {
 	FormatList = append(FormatList, NewWords())
 }
 func NewWords() *Words {
-	f := newCustom("t|w", "UTF-8")
+	f := new(Words)
 	f.Name = "纯词组"
 	f.ID = "words"
 	f.CanMarshal = true
-	return &Words{}
+	return f
 }
 
 func (f *Words) GetKind() int {
