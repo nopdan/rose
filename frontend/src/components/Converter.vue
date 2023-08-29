@@ -185,7 +185,11 @@ watch(
         const dotIndex = fi.name.lastIndexOf(".");
         if (dotIndex !== -1) {
           const suffix = fi.name.substring(dotIndex + 1);
-          if (generalOptionsSet.has(suffix)) {
+          if (suffix === "dict") {
+            model.value.inputFormat = "kfpybak";
+          } else if (suffix === "bin") {
+            model.value.inputFormat = "sgbak";
+          } else if (generalOptionsSet.has(suffix)) {
             model.value.inputFormat = suffix;
           }
         }
@@ -247,7 +251,6 @@ function handleClick() {
       } else {
         convertError();
       }
-      
     })
     // .catch(() => {
     //   convertError();

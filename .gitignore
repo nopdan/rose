@@ -17,7 +17,8 @@
 
 *.zip
 build/
-encoder/data/
+pkg/encoder/data/
+pkg/pinyin/data/
 test/
 test.txt
 

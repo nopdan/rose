@@ -4,8 +4,8 @@ github.com/mattn/go-runewidth v0.0.9 h1:Lm995f3rfxdpd6TSmuVCHVb/QhupuXlYr8sCI/Qd
 github.com/mattn/go-runewidth v0.0.9/go.mod h1:H031xJmbD/WCDINGzjvQ9THkh0rPKHF+m2gUSrubnMI=
 github.com/nopdan/ku v0.3.5 h1:PqE0HesoaZO7NOuVH3Ou+G7lxwvunzc9PpiaCBeykeA=
 github.com/nopdan/ku v0.3.5/go.mod h1:0dizDuNKK7DMUYFBFS80+A1OWREchVvM/pNaQ6U4FP0=
-github.com/nopdan/pinyin v0.3.4 h1:mdnCR7/PLqHFphq5focYn2OmCKf9O9RvvpTvyjqDuIU=
-github.com/nopdan/pinyin v0.3.4/go.mod h1:ocItCFlzfsgO3FVq4C1bDX1O0qDbMogu5eY+aXW4REk=
+github.com/nopdan/pinyin v0.3.5 h1:N/96ZmlHcBSbL8184H2vBAyFTv4LSJiwRSGrfCDtzsk=
+github.com/nopdan/pinyin v0.3.5/go.mod h1:ocItCFlzfsgO3FVq4C1bDX1O0qDbMogu5eY+aXW4REk=
 github.com/olekukonko/tablewriter v0.0.5 h1:P2Ga83D34wi1o9J6Wh1mRuqd4mF/x/lgBS7N7AbDhec=
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
 golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 h1:m64FZMko/V45gv0bNmrNYoDEq8U5YUhetc9cBWKS1TQ=

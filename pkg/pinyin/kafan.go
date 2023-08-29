@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/nopdan/rose/pkg/util"
+	"github.com/nopdan/rose/pkg/encoder"
 )
 
 type Kafan struct {
@@ -13,10 +13,14 @@ type Kafan struct {
 	pyList []string
 }
 
+func init() {
+	FormatList = append(FormatList, NewKafan())
+}
+
 func NewKafan() *Kafan {
 	f := new(Kafan)
-	f.Name = "卡饭拼音备份.bin"
-	f.ID = "kfpybin"
+	f.Name = "卡饭拼音备份.dict"
+	f.ID = "kfpybak"
 
 	f.pyList = []string{
 		"", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
@@ -438,8 +442,8 @@ func NewKafan() *Kafan {
 	return f
 }
 
-func (k *Kafan) Unmarshal(r *bytes.Reader) []*Entry {
-	wl := make([]*Entry, 0, 0xff)
+func (f *Kafan) Unmarshal(r *bytes.Reader) []*Entry {
+	di := make([]*Entry, 0, 0xff)
 	for r.Len() > 8 {
 		check := make([]byte, 8)
 		r.Read(check)
@@ -448,182 +452,75 @@ func (k *Kafan) Unmarshal(r *bytes.Reader) []*Entry {
 			break
 		}
 	}
-
-	// 跳过 kf_pinyin 之前的内容
-	for {
-		tmp := make([]byte, 2)
-		r.Read(tmp)
-		if string(tmp) == "kf" {
-			r.Seek(0x10-2, io.SeekCurrent)
-			break
-		}
-	}
-
 	for r.Len() > 0x28 {
+		tmp := ReadN(r, 4)
+		// kf_pinyin
+		if bytes.Equal(tmp, []byte{0x6B, 0x66, 0x5F, 0x70}) {
+			r.Seek(12, io.SeekCurrent)
+			continue
+		}
+		if BytesToInt(tmp) == 0 {
+			continue
+		}
+		r.Seek(-4, io.SeekCurrent)
 		pinyin := make([]string, 0, 2)
+		var word string
 		for {
-			tmp := make([]byte, 8)
-			_, err := r.Read(tmp)
-			if err != nil {
+			// 每40个字节为一个音
+			tmp := ReadN[int](r, 0x28) // 40
+			if bytes.Equal(tmp[:8], []byte{4, 0, 0, 0, 3, 0, 1, 0}) {
+				r.Seek(8, io.SeekCurrent) // 未知
+				wordBytes := make([]byte, 0, 4)
+				for {
+					b := ReadN[int](r, 4)
+					wordBytes = append(wordBytes, b...)
+					if b[3] == 0 {
+						break
+					}
+				}
+				// 去除末尾的 0
+				for i := len(wordBytes) - 1; i >= 0 && wordBytes[i] == 0; i-- {
+					wordBytes = wordBytes[:i]
+				}
+				word = string(wordBytes)
 				break
 			}
-			util.PrintHex(tmp)
 			idx := BytesToInt(tmp[:4])
-
-			if idx == 0 {
-				idx2 := BytesToInt(tmp[4:])
-				if idx2 != 0 && idx2 < 512 {
-					r.Seek(-4, io.SeekCurrent)
-				}
-				continue
-			}
-
-			if bytes.Equal(tmp, []byte{0x04, 0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00}) {
-				fmt.Println("break")
-				r.Seek(0x30-12, io.SeekCurrent)
-				break
-			}
-
-			if BytesToInt(tmp[4:]) != 0 {
-				continue
-			}
-
-			if idx < 512 {
-				pinyin = append(pinyin, k.Lookup(idx))
-				fmt.Println(idx, k.Lookup(idx))
-			}
-
-			// tmp := make([]byte, 0x28)
-			// if idx > 512 || idx == 0 {
-			// 	r.Seek(4-0x28, io.SeekCurrent)
-			// 	continue
-			// }
-
-			// if tmp[32] != 0 {
-			// 	r.Seek(8, io.SeekCurrent)
-			// }
-
-			// if !bytes.Equal(tmp[4:8], []byte{0x00, 0x00, 0x00, 0x00}) {
-			// 	fmt.Println("continue")
-			// 	continue
-			// }
+			pinyin = append(pinyin, f.lookup(idx))
 		}
-		freq := ReadUint32(r)
-		wordBytes := make([]byte, 0, 4)
-		for {
-			tmp := make([]byte, 4)
-			r.Read(tmp)
-			wordBytes = append(wordBytes, tmp...)
-			if tmp[3] == 0 {
-				break
-			}
+		if py := f.filter(word, pinyin); len(py) > 0 {
+			di = append(di, &Entry{
+				Word:   word,
+				Pinyin: py,
+				Freq:   1,
+			})
 		}
-		wl = append(wl, &Entry{
-			Word:   string(wordBytes),
-			Pinyin: pinyin,
-			Freq:   int(freq),
-		})
-		fmt.Println(Entry{Pinyin: pinyin, Freq: int(freq), Word: string(wordBytes)})
 	}
-
-	return wl
+	return di
 }
 
-func (k *Kafan) NewUnmarshal(r *bytes.Reader) []Entry {
-	wl := make([]Entry, 0, 0xff)
-	for r.Len() > 8 {
-		check := make([]byte, 8)
-		r.Read(check)
-		if string(check) == "ProtoDic" {
-			r.Seek(8, io.SeekCurrent)
-			break
-		}
+func (k *Kafan) filter(word string, pinyin []string) []string {
+	wordRunes := []rune(word)
+	// 过滤单字
+	if len(wordRunes) <= 1 {
+		return nil
 	}
-	return wl
+	if len(wordRunes) == len(pinyin) {
+		return pinyin
+	}
+	if len(wordRunes) < len(pinyin) {
+		return pinyin[len(pinyin)-len(wordRunes):]
+	}
+	if len(wordRunes) > len(pinyin) {
+		enc := encoder.NewPinyin()
+		pre := string(wordRunes[:len(wordRunes)-len(pinyin)])
+		res := append(enc.Encode(pre), pinyin...)
+		return res
+	}
+	return nil
 }
 
-func (k *Kafan) Test(r *bytes.Reader) {
-	for r.Len() > 8 {
-		check := make([]byte, 8)
-		r.Read(check)
-		if string(check) == "ProtoDic" {
-			r.Seek(8, io.SeekCurrent)
-			break
-		}
-	}
-	for r.Len() > 8 {
-		k.readPinyin(r)
-	}
-}
-
-func (k *Kafan) readPinyin(r *bytes.Reader) []string {
-	pinyin := make([]string, 0, 2)
-	for {
-		tmp := make([]byte, 8)
-		_, err := r.Read(tmp)
-		if err != nil {
-			break
-		}
-		// PrintHex(tmp)
-		idx := BytesToInt(tmp[:4])
-
-		if idx == 0 {
-			idx2 := BytesToInt(tmp[4:])
-			if idx2 != 0 && idx2 < 512 {
-				r.Seek(-4, io.SeekCurrent)
-			}
-			continue
-		}
-
-		if bytes.Equal(tmp, []byte{0x04, 0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00}) {
-			// fmt.Println("break")
-			r.Seek(-8, io.SeekCurrent)
-			break
-		}
-
-		if BytesToInt(tmp[4:]) != 0 {
-			continue
-		}
-
-		if idx < 512 {
-			pinyin = append(pinyin, k.Lookup(idx))
-		}
-	}
-
-	for {
-		tmp := make([]byte, 8)
-		r.Read(tmp)
-		if BytesToInt(tmp[4:]) == 0 {
-			r.Seek(-8, io.SeekCurrent)
-			break
-		}
-		if BytesToInt(tmp[:4]) == 0 {
-			r.Seek(-4, io.SeekCurrent)
-			continue
-		}
-
-		if bytes.Equal(tmp, []byte{0x04, 0x00, 0x00, 0x00, 0x03, 0x00, 0x01, 0x00}) {
-			r.Seek(0x30-8, io.SeekCurrent)
-			wordBytes := make([]byte, 0, 4)
-			for {
-				tmp := make([]byte, 4)
-				r.Read(tmp)
-				wordBytes = append(wordBytes, tmp...)
-				if tmp[3] == 0 {
-					break
-				}
-			}
-			fmt.Println(string(wordBytes))
-		}
-
-	}
-
-	fmt.Println(pinyin)
-	fmt.Println()
-	return pinyin
-}
-
-func (k *Kafan) Lookup(idx int) string {
+func (k *Kafan) lookup(idx int) string {
 	if len(k.pyList) <= idx {
 		fmt.Println("index out of range: ", idx, ">", len(k.pyList)-1)
 		return ""

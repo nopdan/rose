@@ -24,6 +24,15 @@ func do(f Format, name string) {
 	os.WriteFile(s, data, 0666)
 }
 
+func TestKafan(t *testing.T) {
+	k := NewKafan()
+	b, _ := os.ReadFile("./sample/拼音词库备份2023-08-29.dict")
+	di := k.Unmarshal(bytes.NewReader(b))
+	for _, e := range di {
+		fmt.Println(e)
+	}
+}
+
 func TestScel(t *testing.T) {
 	f := NewSogouScel()
 	for _, path := range []string{
