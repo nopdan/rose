@@ -18,7 +18,7 @@ func init() {
 func NewSogouBak() *SogouBak {
 	f := new(SogouBak)
 	f.Name = "搜狗拼音备份.bin"
-	f.ID = "sgbak"
+	f.ID = "sogou_bak,sgbak,bin"
 	pyList := NewMspyUDL().pyList
 	pyList = append(pyList, []string{
 		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",

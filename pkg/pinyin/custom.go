@@ -47,7 +47,7 @@ func init() {
 func NewSogou() *Custom {
 	f := newCustom("s|'|p|w")
 	f.Name = "搜狗拼音"
-	f.ID = "sogou"
+	f.ID = "sogou,sg"
 	return f
 }
 
@@ -61,14 +61,14 @@ func NewQQ() *Custom {
 func NewBaidu() *Custom {
 	f := newCustom("t|'|w|c|f")
 	f.Name = "百度拼音"
-	f.ID = "baidu"
+	f.ID = "baidu,bd"
 	return f
 }
 
 func NewGoogle() *Custom {
 	f := newCustom("t|s|w|f|c")
 	f.Name = "谷歌拼音"
-	f.ID = "google"
+	f.ID = "google,gg"
 	return f
 }
 

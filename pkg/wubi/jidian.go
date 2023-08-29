@@ -15,7 +15,7 @@ func init() {
 func NewJidian() *Jidian {
 	f := new(Jidian)
 	f.Name = "极点码表"
-	f.ID = "jidian"
+	f.ID = "jidian,jd"
 	f.CanMarshal = true
 	f.HasRank = true
 	return f

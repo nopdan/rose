@@ -21,7 +21,7 @@ func init() {
 func NewMspyUDL() *MspyUDL {
 	f := new(MspyUDL)
 	f.Name = "微软拼音自学习词汇.dat"
-	f.ID = "udl"
+	f.ID = "mspy_udl,udl"
 	f.CanMarshal = true
 
 	f.pyList = []string{

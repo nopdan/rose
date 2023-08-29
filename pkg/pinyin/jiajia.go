@@ -16,7 +16,7 @@ func init() {
 func NewJiaJia() *JiaJia {
 	f := new(JiaJia)
 	f.Name = "拼音加加"
-	f.ID = "jiajia"
+	f.ID = "pyjj,jj"
 	f.CanMarshal = true
 	return f
 }

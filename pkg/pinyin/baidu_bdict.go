@@ -18,7 +18,7 @@ func init() {
 func NewBaiduBdict() *BaiduBdict {
 	f := new(BaiduBdict)
 	f.Name = "百度分类词库.bdict"
-	f.ID = "bdict"
+	f.ID = "baidu_bdict,bdict"
 	f.smList = []string{
 		"c", "d", "b", "f", "g", "h", "ch", "j", "k", "l", "m", "n",
 		"", "p", "q", "r", "s", "t", "sh", "zh", "w", "x", "y", "z",
@@ -34,7 +34,7 @@ func NewBaiduBdict() *BaiduBdict {
 func NewBaiduBcd() *BaiduBdict {
 	f := NewBaiduBdict()
 	f.Name = "百度手机分类词库.bcd"
-	f.ID = "bcd"
+	f.ID = "baidu_bcd,bcd"
 	return f
 }
 

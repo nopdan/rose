@@ -12,7 +12,7 @@ func init() {
 func NewDDdmg() *DDdmg {
 	f := new(DDdmg)
 	f.Name = "多多v3.dmg"
-	f.ID = "dmg"
+	f.ID = "duoduo_dmg,dmg"
 	return f
 }
 

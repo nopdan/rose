@@ -46,13 +46,13 @@ func init() {
 func NewDuoduo() *Custom {
 	f := newCustom("t|w|c", "UTF-16LE")
 	f.Name = "多多"
-	f.ID = "duoduo"
+	f.ID = "duoduo,dd"
 	return f
 }
 func NewBingling() *Custom {
 	f := newCustom("t|c|w", "UTF-8")
 	f.Name = "冰凌"
-	f.ID = "bingling"
+	f.ID = "bingling,bl"
 	return f
 }
 

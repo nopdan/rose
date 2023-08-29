@@ -19,7 +19,7 @@ func init() {
 func NewZiguangUwl() *ZiguangUwl {
 	f := new(ZiguangUwl)
 	f.Name = "紫光华宇拼音.uwl"
-	f.ID = "uwl"
+	f.ID = "ziguang_uwl,uwl"
 	f.smList = []string{
 		"", "b", "c", "ch", "d", "f", "g", "h", "j", "k", "l", "m", "n",
 		"p", "q", "r", "s", "sh", "t", "w", "x", "y", "z", "zh",

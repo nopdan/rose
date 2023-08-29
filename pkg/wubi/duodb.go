@@ -12,7 +12,7 @@ func init() {
 func NewDuoDB() *DuoDB {
 	f := new(DuoDB)
 	f.Name = "多多v4.duodb"
-	f.ID = "duodb"
+	f.ID = "duoduo_duodb,duodb"
 	return f
 }
 

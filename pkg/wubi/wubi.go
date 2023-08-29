@@ -2,6 +2,8 @@ package wubi
 
 import (
 	"bytes"
+	"slices"
+	"strings"
 )
 
 type Entry struct {
@@ -50,7 +52,7 @@ func GenRank(di []*Entry) []*Entry {
 
 func New(format string) Format {
 	for _, v := range FormatList {
-		if v.GetID() == format {
+		if slices.Contains(strings.Split(v.GetID(), ","), format) {
 			return v
 		}
 	}

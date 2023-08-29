@@ -24,7 +24,7 @@ func init() {
 func NewMswbLex() *MswbLex {
 	f := new(MswbLex)
 	f.Name = "微软五笔.lex"
-	f.ID = "lex"
+	f.ID = "mswb_lex,lex"
 	f.CanMarshal = true
 	f.HasRank = false
 	f.wwMap = make(map[string]int)

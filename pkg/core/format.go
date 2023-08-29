@@ -1,7 +1,9 @@
 package core
 
 import (
+	"cmp"
 	"os"
+	"slices"
 
 	"github.com/nopdan/rose/pkg/pinyin"
 	"github.com/nopdan/rose/pkg/wubi"
@@ -34,6 +36,9 @@ func init() {
 			Kind:       f.GetKind(),
 		})
 	}
+	slices.SortStableFunc(FormatList, func(a, b *Format) int {
+		return cmp.Compare(a.ID, b.ID)
+	})
 }
 
 func PrintFormatList() {

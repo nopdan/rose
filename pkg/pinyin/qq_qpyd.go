@@ -18,7 +18,7 @@ func init() {
 func NewQqQpyd() *QqQpyd {
 	f := new(QqQpyd)
 	f.Name = "QQ拼音v6以下.qpyd"
-	f.ID = "qpyd"
+	f.ID = "qq_qpyd,qpyd"
 	return f
 }
 

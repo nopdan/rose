@@ -20,7 +20,7 @@ func init() {
 func NewKafan() *Kafan {
 	f := new(Kafan)
 	f.Name = "卡饭拼音备份.dict"
-	f.ID = "kfpybak"
+	f.ID = "kfpybak,dict"
 
 	f.pyList = []string{
 		"", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",

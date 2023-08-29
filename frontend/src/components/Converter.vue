@@ -129,7 +129,7 @@ let uploadMbUrl = uploadUrl + "/mb";
 const formRef = ref(null);
 const model = ref({
   name: "",
-  inputFormat: "sgbak",
+  inputFormat: "sogou_bak",
   kind: "pinyin",
   schema: "original",
   rule: "AABC",
@@ -141,20 +141,23 @@ type Data = { name: any; id: any; canMarshal: any; kind: any }[];
 let data: Data;
 data = await fetch(host + "/list").then((res) => res.json());
 
+function getFirstID(id: string) {
+  return id.split(",")[0];
+}
+
 const generalOptions = data.map((item) => ({
   label: item.name,
-  value: item.id,
+  value: getFirstID(item.id),
 }));
-const generalOptionsSet = new Set(generalOptions.map((item) => item.value));
 console.log(generalOptions);
 
 const pinyinFormatOptions = data
   .filter((item) => item.kind === 1 && item.canMarshal)
-  .map((item) => ({ label: item.name, value: item.id }));
+  .map((item) => ({ label: item.name, value: getFirstID(item.id) }));
 
 const wubiFormatOptions = data
   .filter((item) => item.kind === 2 && item.canMarshal)
-  .map((item) => ({ label: item.name, value: item.id }));
+  .map((item) => ({ label: item.name, value: getFirstID(item.id) }));
 
 const outputFormatOptions = computed(() => {
   switch (model.value.kind) {
@@ -185,12 +188,12 @@ watch(
         const dotIndex = fi.name.lastIndexOf(".");
         if (dotIndex !== -1) {
           const suffix = fi.name.substring(dotIndex + 1);
-          if (suffix === "dict") {
-            model.value.inputFormat = "kfpybak";
-          } else if (suffix === "bin") {
-            model.value.inputFormat = "sgbak";
-          } else if (generalOptionsSet.has(suffix)) {
-            model.value.inputFormat = suffix;
+          const foundItem = data.find((item) =>
+            item.id.split(",").includes(suffix)
+          );
+          if (foundItem) {
+            const ids = foundItem.id.split(",");
+            model.value.inputFormat = ids[0];
           }
         }
       }
@@ -207,7 +210,7 @@ watch(
     if (model.value.kind === "pinyin") {
       model.value.outputFormat = "sogou";
     } else if (model.value.kind === "wubi") {
-      model.value.outputFormat = "def";
+      model.value.outputFormat = "baidu_def";
     } else {
       model.value.outputFormat = "words";
     }

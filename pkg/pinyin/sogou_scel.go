@@ -15,13 +15,13 @@ func init() {
 func NewSogouScel() *SogouScel {
 	f := new(SogouScel)
 	f.Name = "搜狗细胞词库.scel"
-	f.ID = "scel"
+	f.ID = "sogou_scel,scel"
 	return f
 }
 func NewQqQcel() *SogouScel {
 	f := NewSogouScel()
 	f.Name = "QQ拼音v6以上.qcel"
-	f.ID = "qcel"
+	f.ID = "qq_qcel,qcel"
 	return f
 }
 

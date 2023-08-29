@@ -2,6 +2,8 @@ package pinyin
 
 import (
 	"bytes"
+	"slices"
+	"strings"
 )
 
 type Entry struct {
@@ -40,7 +42,7 @@ var FormatList = make([]Format, 0, 20)
 
 func New(format string) Format {
 	for _, v := range FormatList {
-		if v.GetID() == format {
+		if slices.Contains(strings.Split(v.GetID(), ","), format) {
 			return v
 		}
 	}

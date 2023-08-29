@@ -17,7 +17,7 @@ func init() {
 func NewMsUDP() *MsUDP {
 	f := new(MsUDP)
 	f.Name = "微软用户自定义短语.dat"
-	f.ID = "udp"
+	f.ID = "ms_udp,udp,dat"
 	f.CanMarshal = true
 	f.HasRank = true
 	return f

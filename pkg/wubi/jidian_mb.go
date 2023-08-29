@@ -14,7 +14,7 @@ func init() {
 func NewJidianMb() *JidianMb {
 	f := new(JidianMb)
 	f.Name = "极点码表.mb"
-	f.ID = "jdmb"
+	f.ID = "jidian_mb,jdmb,mb"
 	return f
 }
 

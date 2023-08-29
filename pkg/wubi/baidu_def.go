@@ -17,7 +17,7 @@ func init() {
 func NewBaiduDef() *BaiduDef {
 	f := new(BaiduDef)
 	f.Name = "百度手机自定义方案.def"
-	f.ID = "def"
+	f.ID = "baidu_def,def"
 	f.CanMarshal = true
 	return f
 }
