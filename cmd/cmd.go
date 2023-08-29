@@ -32,7 +32,7 @@ func Cmd() {
 		help()
 	case "version", "-v":
 		fmt.Printf("Go Version: %s %s/%s\n", runtime.Version(), runtime.GOOS, runtime.GOARCH)
-		fmt.Printf("Rose Version: v1.3.0\n")
+		fmt.Printf("Rose Version: v1.3.1\n")
 		fmt.Printf("Author: nopdan <me@nopdan.com>\n")
 	case "server":
 		port := 7800

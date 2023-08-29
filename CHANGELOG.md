@@ -1,4 +1,12 @@
-<a name="v1.3.0"></a>
+## [v1.3.1](https://github.com/nopdan/rose/compare/v1.3.0...v1.3.1) (2023-08-29)
+
+### Ci
+
+- 独立发布 data 文件夹
+
+### Fix
+
+- 匹配格式错误
 
 ## [v1.3.0](https://github.com/nopdan/rose/compare/v1.2.1...v1.3.0) (2023-08-29)
 
@@ -11,8 +19,6 @@
 
 - 添加格式简写
 
-<a name="v1.2.1"></a>
-
 ## [v1.2.1](https://github.com/nopdan/rose/compare/v1.2.0...v1.2.1) (2023-08-29)
 
 ### Fix
@@ -22,8 +28,6 @@
 ### Perf
 
 - 错误提示
-
-<a name="v1.2.0"></a>
 
 ## [v1.2.0](https://github.com/nopdan/rose/compare/v1.1.3...v1.2.0) (2023-08-29)
 
@@ -42,8 +46,6 @@
 
 - 优化命令行
 
-<a name="v1.1.3"></a>
-
 ## [v1.1.3](https://github.com/nopdan/rose/compare/v1.1.2...v1.1.3) (2023-05-07)
 
 ### Fix
@@ -53,8 +55,6 @@
 ### Perf
 
 - 提高注音准确度
-
-<a name="v1.1.2"></a>
 
 ## [v1.1.2](https://github.com/nopdan/rose/compare/v1.1.1...v1.1.2) (2023-04-19)
 
@@ -71,8 +71,6 @@
 
 - 转换失败直接退出
 
-<a name="v1.1.1"></a>
-
 ## [v1.1.1](https://github.com/nopdan/rose/compare/v1.1.0...v1.1.1) (2023-04-18)
 
 ### Feat
@@ -85,8 +83,6 @@
 
 - 添加一些简写
 
-<a name="v1.1.0"></a>
-
 ## [v1.1.0](https://github.com/nopdan/rose/compare/v1.0.1...v1.1.0) (2023-04-15)
 
 ### Style
@@ -97,16 +93,12 @@
 
 - 添加更多测试词库
 
-<a name="v1.0.1"></a>
-
 ## [v1.0.1](https://github.com/nopdan/rose/compare/v1.0...v1.0.1) (2023-04-15)
 
 ### Feat
 
 - 添加交互式命令行
 - 添加 `-v` 和 `-h` 命令
-
-<a name="v1.0"></a>
 
 ## [v1.0](https://github.com/nopdan/rose/compare/v0.7.3...v1.0) (2023-04-13)
 
@@ -125,8 +117,6 @@
 - 删掉了大量功能，只保留词库转换
 - 删掉了 GUI
 
-<a name="v0.7.3"></a>
-
 ## [v0.7.3](https://github.com/nopdan/rose/compare/v0.7.2...v0.7.3) (2023-03-14)
 
 ### Perf
@@ -134,15 +124,11 @@
 - 支持小胖输入法二进制格式
 - 极点排序
 
-<a name="v0.7.2"></a>
-
 ## [v0.7.2](https://github.com/nopdan/rose/compare/v0.7.1...v0.7.2) (2023-02-04)
 
 ### Feat
 
 - 生成候选位置
-
-<a name="v0.7.1"></a>
 
 ## [v0.7.1](https://github.com/nopdan/rose/compare/v0.7...v0.7.1) (2023-02-02)
 
@@ -150,15 +136,11 @@
 
 - 双拼映射表 ve 韵母
 
-<a name="v0.7"></a>
-
 ## [v0.7](https://github.com/nopdan/rose/compare/v0.6...v0.7) (2022-09-17)
 
 ### Feat
 
 - 微软自定义短语输出 & 五笔 lex 解析
-
-<a name="v0.6"></a>
 
 ## [v0.6](https://github.com/nopdan/rose/compare/v0.5...v0.6) (2022-09-16)
 
@@ -166,8 +148,6 @@
 
 - 全拼词库转为双拼定长码表
 - 新的编码规则
-
-<a name="v0.5"></a>
 
 ## [v0.5](https://github.com/nopdan/rose/compare/v0.0.2...v0.5) (2022-09-12)
 
@@ -188,8 +168,6 @@
 - 改接口，添加 checker
 - 调整项目结构
 
-<a name="v0.0.2"></a>
-
 ## [v0.0.2](https://github.com/nopdan/rose/compare/v0.0.1...v0.0.2) (2022-06-01)
 
 ### Feat
@@ -199,8 +177,6 @@
 ### Refactor
 
 - 规范命名，重组结构
-
-<a name="v0.0.1"></a>
 
 ## v0.0.1 (2022-05-31)
 
