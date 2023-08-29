@@ -1,3 +1,16 @@
+<a name="v1.3.0"></a>
+
+## [v1.3.0](https://github.com/nopdan/rose/compare/v1.2.1...v1.3.0) (2023-08-29)
+
+### Feat
+
+- 卡饭五笔备份.dict
+- 卡饭拼音备份.dict
+
+### Perf
+
+- 添加格式简写
+
 <a name="v1.2.1"></a>
 
 ## [v1.2.1](https://github.com/nopdan/rose/compare/v1.2.0...v1.2.1) (2023-08-29)
