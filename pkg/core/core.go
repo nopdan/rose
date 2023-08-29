@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/nopdan/rose/pkg/pinyin"
@@ -13,7 +14,7 @@ import (
 
 func matchFormat(format string) *Format {
 	for _, f := range FormatList {
-		if f.ID == format {
+		if slices.Contains(strings.Split(f.ID, ","), format) {
 			return f
 		}
 	}
