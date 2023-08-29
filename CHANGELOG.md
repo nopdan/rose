@@ -1,3 +1,15 @@
+<a name="v1.2.1"></a>
+
+## [v1.2.1](https://github.com/nopdan/rose/compare/v1.2.0...v1.2.1) (2023-08-29)
+
+### Fix
+
+- 自定义码表
+
+### Perf
+
+- 错误提示
+
 <a name="v1.2.0"></a>
 
 ## [v1.2.0](https://github.com/nopdan/rose/compare/v1.1.3...v1.2.0) (2023-08-29)
