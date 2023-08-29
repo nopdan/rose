@@ -10,7 +10,7 @@ import (
 //
 // 形码方案，wubi86/wubi98/wubi08/phrase
 func (c *Config) ToWubi(di []string, hasRank bool) []byte {
-	enc := encoder.New(c.Schema, c.AABC)
+	enc := encoder.New(c.Schema, c.MbData, c.AABC)
 	new := make([]*wubi.Entry, 0, len(di))
 	for _, word := range di {
 		code := enc.Encode(word)
