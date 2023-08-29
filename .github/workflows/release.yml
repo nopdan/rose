@@ -96,12 +96,6 @@ jobs:
           args: -fq
 
       - run: |
-          cp pkg/wubi/data bin/data -r
-          cp UnicodeCJK-WuBi/CJK.txt bin/data/
-          cp pinyin-data/pinyin.txt bin/data/
-          cp pinyin-data/duoyin.txt bin/data/
-          cp pinyin-data/correct.txt bin/data/
-
           cp README.md bin/
           cp CHANGELOG.md bin/
 

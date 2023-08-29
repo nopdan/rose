@@ -12,6 +12,13 @@ import (
 )
 
 func Cmd() {
+	_, err := os.Stat("data")
+	if os.IsNotExist(err) {
+		fmt.Println("data 文件夹不存在")
+		fmt.Println("请前往 https://github.com/nopdan/rose/releases 下载")
+		fmt.Scanln()
+		os.Exit(1)
+	}
 	// 双击打开默认启动服务
 	switch len(os.Args) {
 	case 1:

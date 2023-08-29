@@ -41,6 +41,8 @@
 
 ## 使用
 
+**下载 data.zip 并解压，确保 data 文件夹与 rose 程序位于同一目录下。**
+
 ```sh
 Root Command:
     Usage: rose [输入文件] [输入格式]:[输出格式] [保存文件名]
