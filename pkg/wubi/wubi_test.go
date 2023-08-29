@@ -25,6 +25,15 @@ func do(f Format, name string) {
 	os.WriteFile(s, data, 0666)
 }
 
+func TestKafan(t *testing.T) {
+	f := NewKafan()
+	b, _ := os.ReadFile("./sample/五笔词库备份2023-08-29.dict")
+	di := f.Unmarshal(bytes.NewReader(b))
+	for _, e := range di {
+		fmt.Println(e)
+	}
+}
+
 func TestMsudp(t *testing.T) {
 	f := NewMsUDP()
 	for _, path := range []string{
