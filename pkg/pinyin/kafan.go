@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/nopdan/rose/pkg/encoder"
 )
@@ -443,51 +444,56 @@ func NewKafan() *Kafan {
 }
 
 func (f *Kafan) Unmarshal(r *bytes.Reader) []*Entry {
-	di := make([]*Entry, 0, 0xff)
-	for r.Len() > 8 {
-		check := make([]byte, 8)
-		r.Read(check)
-		if string(check) == "ProtoDic" {
-			r.Seek(8, io.SeekCurrent)
-			break
-		}
+
+	r.Seek(0x48, io.SeekStart)
+	head := string(ReadN(r, 0x10))
+	// 版本不匹配
+	if !strings.HasPrefix(head, "ProtoDict1") {
+		fmt.Println("卡饭拼音备份.dict格式错误")
+		return nil
 	}
+
+	di := make([]*Entry, 0, 0xff)
+	// 读取一个词
 	for r.Len() > 0x28 {
-		tmp := ReadN(r, 4)
-		// kf_pinyin
-		if bytes.Equal(tmp, []byte{0x6B, 0x66, 0x5F, 0x70}) {
-			r.Seek(12, io.SeekCurrent)
-			continue
+		// 词库中间可能夹杂这个
+		dictType := string(ReadN(r, 0x10))
+		if !strings.HasPrefix(dictType, "kf_pinyin") {
+			r.Seek(-0x10, io.SeekCurrent)
 		}
-		if BytesToInt(tmp) == 0 {
-			continue
-		}
-		r.Seek(-4, io.SeekCurrent)
+
+		// 开始读取拼音
 		pinyin := make([]string, 0, 2)
-		var word string
 		for {
 			// 每40个字节为一个音
 			tmp := ReadN[int](r, 0x28) // 40
+			// 判断前8个字节决定是否结束
 			if bytes.Equal(tmp[:8], []byte{4, 0, 0, 0, 3, 0, 1, 0}) {
-				r.Seek(8, io.SeekCurrent) // 未知
-				wordBytes := make([]byte, 0, 4)
-				for {
-					b := ReadN[int](r, 4)
-					wordBytes = append(wordBytes, b...)
-					if b[3] == 0 {
-						break
-					}
-				}
-				// 去除末尾的 0
-				for i := len(wordBytes) - 1; i >= 0 && wordBytes[i] == 0; i-- {
-					wordBytes = wordBytes[:i]
-				}
-				word = string(wordBytes)
 				break
 			}
 			idx := BytesToInt(tmp[:4])
-			pinyin = append(pinyin, f.lookup(idx))
+			pinyin = append(pinyin, f.lookup(idx, r))
 		}
+
+		// 跳过未知的8字节
+		r.Seek(8, io.SeekCurrent)
+		// 下面读取词，词是按照8字节对齐的
+		wordBytes := make([]byte, 0, 8)
+		for {
+			// 每次读8字节
+			b := ReadN[int](r, 8)
+			wordBytes = append(wordBytes, b...)
+			// 如果最后一个字节是0则结束
+			if b[7] == 0 {
+				break
+			}
+		}
+		// 去除末尾的 0
+		for i := len(wordBytes) - 1; i >= 0 && wordBytes[i] == 0; i-- {
+			wordBytes = wordBytes[:i]
+		}
+		word := string(wordBytes)
+
 		if py := f.filter(word, pinyin); len(py) > 0 {
 			di = append(di, &Entry{
 				Word:   word,
@@ -520,9 +526,9 @@ func (k *Kafan) filter(word string, pinyin []string) []string {
 	return nil
 }
 
-func (k *Kafan) lookup(idx int) string {
+func (k *Kafan) lookup(idx int, r *bytes.Reader) string {
 	if len(k.pyList) <= idx {
-		fmt.Println("index out of range: ", idx, ">", len(k.pyList)-1)
+		fmt.Printf("index out of range: %d > %d, offset: 0x%x\n", idx, len(k.pyList)-1, r.Size()-int64(r.Len()))
 		return ""
 	}
 	return k.pyList[idx]
