@@ -24,7 +24,7 @@ func NewKafan() *Kafan {
 	f.ID = "kfpybak,dict"
 
 	f.pyList = []string{
-		"", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+		" ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
 		"q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
 		"a",
 		"ai",
@@ -445,61 +445,99 @@ func NewKafan() *Kafan {
 
 func (f *Kafan) Unmarshal(r *bytes.Reader) []*Entry {
 
+	// 0x48 or 0x68
 	r.Seek(0x48, io.SeekStart)
 	head := string(ReadN(r, 0x10))
 	// 版本不匹配
 	if !strings.HasPrefix(head, "ProtoDict1") {
-		fmt.Println("卡饭拼音备份.dict格式错误")
-		return nil
+		// 有的词库是在 0x68
+		r.Seek(0x68, io.SeekStart)
+		head = string(ReadN(r, 0x10))
+		if !strings.HasPrefix(head, "ProtoDict1") {
+			fmt.Println("卡饭拼音备份.dict格式错误")
+			return nil
+		}
 	}
 
 	di := make([]*Entry, 0, 0xff)
 	// 读取一个词
 	for r.Len() > 0x28 {
 		// 词库中间可能夹杂这个
-		dictType := string(ReadN(r, 0x10))
-		if !strings.HasPrefix(dictType, "kf_pinyin") {
+		dictType := ReadN(r, 0x10)
+		if !bytes.HasPrefix(dictType, []byte("kf_pinyin")) {
 			r.Seek(-0x10, io.SeekCurrent)
 		}
 
-		// 开始读取拼音
-		pinyin := make([]string, 0, 2)
+		// 读取编码占用的字节
+		codeBytes := make([]byte, 0, 0x28)
 		for {
-			// 每40个字节为一个音
-			tmp := ReadN[int](r, 0x28) // 40
-			// 判断前8个字节决定是否结束
-			if bytes.Equal(tmp[:8], []byte{4, 0, 0, 0, 3, 0, 1, 0}) {
+			// 每次读取 8 个字节
+			tmp := ReadN[int](r, 8)
+			// 判断结束
+			if bytes.Equal(tmp, []byte{4, 0, 0, 0, 3, 0, 1, 0}) {
+				r.Seek(0x20, io.SeekCurrent)
+				break
+			} else if bytes.Equal(tmp, []byte{0, 0, 0, 0, 3, 0, 1, 0}) {
+				r.Seek(0x18, io.SeekCurrent)
 				break
 			}
-			idx := BytesToInt(tmp[:4])
-			pinyin = append(pinyin, f.lookup(idx, r))
+			codeBytes = append(codeBytes, tmp...)
 		}
 
-		// 跳过未知的8字节
-		r.Seek(8, io.SeekCurrent)
-		// 下面读取词，词是按照8字节对齐的
-		wordBytes := make([]byte, 0, 8)
-		for {
-			// 每次读8字节
-			b := ReadN[int](r, 8)
-			wordBytes = append(wordBytes, b...)
-			// 如果最后一个字节是0则结束
-			if b[7] == 0 {
-				break
+		// 转换为拼音
+		pinyin := make([]string, 0, 2)
+		// 每 0x28 个字节为一个音
+		for i := len(codeBytes) % 0x28; i < len(codeBytes); i += 0x28 {
+			idx := BytesToInt(codeBytes[i : i+4])
+			py := f.lookup(idx, r)
+			if py == "" {
+				fmt.Printf("codeBytes: %v\n", codeBytes)
+			} else if py != " " {
+				pinyin = append(pinyin, py)
 			}
 		}
-		// 去除末尾的 0
-		for i := len(wordBytes) - 1; i >= 0 && wordBytes[i] == 0; i-- {
-			wordBytes = wordBytes[:i]
+
+		// 跳过未知的4字节
+		mark := ReadIntN(r, 4)
+		if mark != 1 {
+			r.Seek(8, io.SeekCurrent)
+		}
+		size := ReadIntN(r, 4)
+		// 22	3	8
+		// 2A	4
+		// 32	5
+		// 3A	6	8
+		// 42	7	8
+		// 4A	8	8
+		// 52	9	16
+		// 6A	12	16
+		if size%0x10 == 2 {
+			size = (size/0x10)*2 - 1
+		} else if size%0x10 == 0xA {
+			size = (size / 0x10) * 2
+		} else {
+			fmt.Printf("读取词组错误, size: 0x%x, offset: 0x%x\n", size, int(r.Size())-r.Len())
+			return nil
+		}
+
+		// 下面读取词，词是按照8字节对齐的
+		wordBytes := ReadN(r, size)
+		if len(wordBytes)%8 != 0 {
+			r.Seek(int64(8-len(wordBytes)%8), io.SeekCurrent)
 		}
 		word := string(wordBytes)
-
+		// di = append(di, &Entry{
+		// 	Word:   word,
+		// 	Pinyin: pinyin,
+		// 	Freq:   1,
+		// })
 		if py := f.filter(word, pinyin); len(py) > 0 {
 			di = append(di, &Entry{
 				Word:   word,
 				Pinyin: py,
 				Freq:   1,
 			})
+			fmt.Printf("词组: %s, 拼音: %v\n", word, py)
 		}
 	}
 	return di
@@ -528,7 +566,7 @@ func (k *Kafan) filter(word string, pinyin []string) []string {
 
 func (k *Kafan) lookup(idx int, r *bytes.Reader) string {
 	if len(k.pyList) <= idx {
-		fmt.Printf("index out of range: %d > %d, offset: 0x%x\n", idx, len(k.pyList)-1, r.Size()-int64(r.Len()))
+		fmt.Printf("index out of range: %d > %d, offset: 0x%x\n", idx, len(k.pyList)-1, int(r.Size())-r.Len())
 		return ""
 	}
 	return k.pyList[idx]
