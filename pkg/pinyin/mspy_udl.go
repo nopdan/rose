@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"slices"
 	"time"
+	"unicode"
 
 	"github.com/nopdan/rose/pkg/util"
 )
@@ -488,6 +489,15 @@ func (f *MspyUDL) Unmarshal(r *bytes.Reader) []*Entry {
 }
 
 func (f *MspyUDL) Marshal(di []*Entry) []byte {
+	di = slices.DeleteFunc(di, func(v *Entry) bool {
+		for _, r := range v.Word {
+			if !unicode.Is(unicode.Han, r) {
+				return true
+			}
+		}
+		return false
+	})
+
 	var buf bytes.Buffer
 	buf.Grow(0x2400 + 60*len(di))
 
