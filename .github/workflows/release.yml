@@ -86,15 +86,6 @@ jobs:
           go env -w GOARCH=arm64
           go build -ldflags="-s -w" -o ./bin/rose-darwin-arm64
 
-      # 使用 upx 压缩可执行文件
-      - name: Run UPX
-        uses: crazy-max/ghaction-upx@v2
-        with:
-          version: latest
-          files: |
-            ./bin/*
-          args: -fq
-
       - run: |
           cp README.md bin/
           cp CHANGELOG.md bin/
