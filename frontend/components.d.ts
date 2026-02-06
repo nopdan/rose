@@ -7,18 +7,10 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Converter: typeof import('./src/components/Converter.vue')['default']
-    NButton: typeof import('naive-ui')['NButton']
-    NCard: typeof import('naive-ui')['NCard']
-    NDialogProvider: typeof import('naive-ui')['NDialogProvider']
-    NForm: typeof import('naive-ui')['NForm']
-    NFormItem: typeof import('naive-ui')['NFormItem']
-    NIcon: typeof import('naive-ui')['NIcon']
-    NRadio: typeof import('naive-ui')['NRadio']
-    NRadioGroup: typeof import('naive-ui')['NRadioGroup']
-    NSelect: typeof import('naive-ui')['NSelect']
-    NText: typeof import('naive-ui')['NText']
-    NUpload: typeof import('naive-ui')['NUpload']
-    NUploadDragger: typeof import('naive-ui')['NUploadDragger']
+    CustomFormatDialog: typeof import('./src/components/CustomFormatDialog.vue')['default']
+    EncoderConfig: typeof import('./src/components/EncoderConfig.vue')['default']
+    FileUpload: typeof import('./src/components/FileUpload.vue')['default']
+    FilterConfig: typeof import('./src/components/FilterConfig.vue')['default']
+    FormatSelect: typeof import('./src/components/FormatSelect.vue')['default']
   }
 }

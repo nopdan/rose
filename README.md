@@ -96,3 +96,8 @@ git submodule update --init
 cd build
 .\build.ps1
 ```
+
+## 架构与实现说明
+
+- 架构说明：见 [docs/architecture.md](docs/architecture.md)
+- 格式实现情况：见 [docs/format-status.md](docs/format-status.md)
