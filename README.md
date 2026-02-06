@@ -211,4 +211,4 @@ RegisterFormat(my_format.New())
 
 ## License
 
-[MIT](LICENSE)
+[GPL v3](LICENSE)
