@@ -69,7 +69,7 @@ jobs:
 
       # 上传到 Artifact
       - name: Upload windows
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: rose
           path: ./bin/
