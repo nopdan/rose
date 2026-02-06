@@ -16,7 +16,7 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		printUsage()
+		serveWeb()
 		return
 	}
 
