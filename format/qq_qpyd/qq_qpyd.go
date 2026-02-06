@@ -5,7 +5,6 @@ import (
 	"encoding/binary"
 	"io"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/nopdan/rose/model"
@@ -110,11 +109,19 @@ func (f *Qpyd) Import(src model.Source) ([]*model.Entry, error) {
 	return entries, nil
 }
 
-// toTime converts an 8-byte Windows Filetime to time.Time.
+// toTime converts an 8-byte Windows FILETIME (100ns since 1601-01-01) to time.Time.
 func toTime(t []byte) time.Time {
-	ft := &syscall.Filetime{
-		LowDateTime:  binary.LittleEndian.Uint32(t[:4]),
-		HighDateTime: binary.LittleEndian.Uint32(t[4:]),
+	if len(t) < 8 {
+		return time.Unix(0, 0)
 	}
-	return time.Unix(0, ft.Nanoseconds())
+	ft := int64(binary.LittleEndian.Uint64(t))
+	if ft == 0 {
+		return time.Unix(0, 0)
+	}
+	// FILETIME epoch (1601-01-01) to Unix epoch (1970-01-01) in 100ns ticks.
+	const unixEpochInFiletime = int64(116444736000000000)
+	unixTicks := ft - unixEpochInFiletime
+	secs := unixTicks / 10000000
+	nanos := (unixTicks % 10000000) * 100
+	return time.Unix(secs, nanos)
 }
