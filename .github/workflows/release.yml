@@ -11,41 +11,19 @@ jobs:
     steps:
       # 拉取代码
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           submodules: true
 
-      # 装 nodejs
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: latest
-
-      # 装 pnpm
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2.3.0
-        with:
-          version: 8
-          run_install: false
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: |
-          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+      # 装 bun.js
+      - name: Install bun.js
+        uses: oven-sh/setup-bun@v2
 
       # 安装 go
       - name: Setup go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v6
         with:
-          go-version: ">=1.21.0"
+          go-version: ">=1.24.0"
           check-latest: true
 
       - name: Setup go cache
@@ -62,8 +40,8 @@ jobs:
       - name: Build frontend
         run: |
           cd frontend
-          pnpm i
-          pnpm build
+          bun install
+          bun run build
           cd ..
 
       # 编译
