@@ -81,7 +81,6 @@ func Serve(port int) {
 	http.HandleFunc("/api/formats", handleFormats)
 	http.HandleFunc("/api/upload", handleUpload)
 	http.HandleFunc("/api/convert", handleConvert)
-	http.HandleFunc("/api/download/", handleDownload)
 
 	sport := fmt.Sprint(port)
 	log.Println("Listening on http://localhost:" + sport)
@@ -178,9 +177,9 @@ func handleConvert(w http.ResponseWriter, r *http.Request) {
 
 	// 生成输出路径
 	outputFilename := buildOutputFilename(stored.Filename, outputFormat)
-	outputDir := filepath.Join(os.TempDir(), "rose_outputs")
+	outputDir := "output"
 	_ = os.MkdirAll(outputDir, 0o755)
-	outputPath := filepath.Join(outputDir, fmt.Sprintf("f_%d_%s", fileCounter+1, outputFilename))
+	outputPath := uniquePath(filepath.Join(outputDir, outputFilename))
 
 	result, err := conv.Convert(&converter.Job{
 		Input: &converter.InputSpec{
@@ -202,34 +201,14 @@ func handleConvert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// 保存输出文件引用
-	output := saveOutputFile(outputFilename, outputPath)
-
 	writeJSON(w, map[string]any{
-		"filename":   outputFilename,
-		"downloadId": output.ID,
+		"outputPath": outputPath,
 		"stats": map[string]int{
 			"inputEntries":  result.Stats.InputEntries,
 			"outputEntries": result.Stats.OutputEntries,
 			"filteredOut":   result.Stats.FilteredOut,
 		},
 	})
-}
-
-// handleDownload 下载已存储的文件
-func handleDownload(w http.ResponseWriter, r *http.Request) {
-	setupCORS(&w)
-	if r.Method == "OPTIONS" {
-		return
-	}
-	fileID := strings.TrimPrefix(r.URL.Path, "/api/download/")
-	stored := findStoredFile(fileID)
-	if stored == nil {
-		http.Error(w, "文件不存在", http.StatusNotFound)
-		return
-	}
-	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", stored.Filename))
-	http.ServeFile(w, r, stored.Path)
 }
 
 // --- 辅助函数 ---
@@ -259,18 +238,19 @@ func getFormatList() []FormatInfo {
 	return items
 }
 
-// saveOutputFile 保存输出文件引用
-func saveOutputFile(filename, path string) *StoredFile {
-	fileCounter++
-	fileID := fmt.Sprintf("f_%d", fileCounter)
-	fi, _ := os.Stat(path)
-	var size int64
-	if fi != nil {
-		size = fi.Size()
+// uniquePath 在文件名重复时添加 (2)、(3)… 后缀
+func uniquePath(p string) string {
+	if _, err := os.Stat(p); os.IsNotExist(err) {
+		return p
 	}
-	stored := &StoredFile{ID: fileID, Filename: filename, Path: path, Size: size}
-	storedFiles[fileID] = stored
-	return stored
+	ext := filepath.Ext(p)
+	base := strings.TrimSuffix(p, ext)
+	for i := 2; ; i++ {
+		candidate := fmt.Sprintf("%s(%d)%s", base, i, ext)
+		if _, err := os.Stat(candidate); os.IsNotExist(err) {
+			return candidate
+		}
+	}
 }
 
 func buildEncoder(cfg *EncoderConfig) encoder.Encoder {

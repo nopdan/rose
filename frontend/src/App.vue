@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import {
   NConfigProvider, NMessageProvider, NCard, NButton,
-  NText, NAlert, NTag, NCollapse, NCollapseItem
+  NText, NAlert, NTag, NModal
 } from 'naive-ui'
 import FileUpload from './components/FileUpload.vue'
 import FormatSelect from './components/FormatSelect.vue'
@@ -10,7 +10,7 @@ import CustomFormatDialog from './components/CustomFormatDialog.vue'
 import EncoderConfigVue from './components/EncoderConfig.vue'
 import FilterConfigVue from './components/FilterConfig.vue'
 import {
-  useFormats, convertFile, downloadById, matchFormatByExt,
+  useFormats, convertFile, matchFormatByExt,
   type UploadResult, type EncoderConfig, type FilterConfig,
   type ConvertResult, type CustomFormatConfig
 } from './api'
@@ -33,6 +33,11 @@ const showCustomDialog = ref(false)
 const customDialogTarget = ref<'input' | 'output'>('input')
 const inputCustomConfig = ref<CustomFormatConfig | null>(null)
 const outputCustomConfig = ref<CustomFormatConfig | null>(null)
+
+// 弹窗状态
+const showFilterDialog = ref(false)
+const showResultDialog = ref(false)
+const filterRef = ref<InstanceType<typeof FilterConfigVue> | null>(null)
 
 // 转换状态
 const converting = ref(false)
@@ -93,6 +98,7 @@ async function doConvert() {
       filter: filterConfig.value,
     })
     convertResult.value = result
+    showResultDialog.value = true
   } catch (e: any) {
     errorMsg.value = e.message || '转换失败'
   } finally {
@@ -100,9 +106,8 @@ async function doConvert() {
   }
 }
 
-function doDownload() {
-  if (!convertResult.value) return
-  downloadById(convertResult.value.downloadId)
+function resetFilter() {
+  filterRef.value?.reset()
 }
 </script>
 
@@ -153,12 +158,12 @@ function doDownload() {
             @update:config="encoderConfig = $event"
           />
 
-          <!-- 第4步：过滤选项 -->
-          <n-collapse style="margin-top: 12px; margin-bottom: 16px">
-            <n-collapse-item title="过滤选项（可选）" name="filter">
-              <FilterConfigVue @update:config="filterConfig = $event" />
-            </n-collapse-item>
-          </n-collapse>
+          <!-- 第4步：过滤选项（弹窗触发按钮） -->
+          <div style="text-align: center; margin: 16px 0">
+            <n-button @click="showFilterDialog = true" quaternary type="info">
+              过滤选项（可选）
+            </n-button>
+          </div>
 
           <!-- 转换按钮 -->
           <div style="text-align: center; margin: 20px 0">
@@ -178,29 +183,53 @@ function doDownload() {
           <n-alert v-if="errorMsg" type="error" style="margin-bottom: 16px">
             {{ errorMsg }}
           </n-alert>
+        </div>
 
-          <!-- 转换结果 -->
-          <n-card v-if="convertResult" title="转换结果" size="small">
+        <!-- 过滤选项弹窗 -->
+        <n-modal v-model:show="showFilterDialog" preset="card" title="过滤选项" style="max-width: 520px">
+          <FilterConfigVue ref="filterRef" @update:config="filterConfig = $event" />
+          <template #footer>
+            <div style="display: flex; justify-content: flex-end; gap: 8px">
+              <n-button @click="resetFilter">重置</n-button>
+              <n-button type="primary" @click="showFilterDialog = false">确定</n-button>
+            </div>
+          </template>
+        </n-modal>
+
+        <!-- 转换结果弹窗 -->
+        <n-modal v-model:show="showResultDialog" preset="card" title="转换结果" style="max-width: 480px">
+          <template v-if="convertResult">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px">
               <n-tag type="success" size="medium">转换成功</n-tag>
-              <span>{{ convertResult.filename }}</span>
             </div>
-            <div style="display: flex; gap: 16px; margin-bottom: 16px">
-              <n-text>输入词条: <strong>{{ convertResult.stats.inputEntries }}</strong></n-text>
-              <n-text>输出词条: <strong>{{ convertResult.stats.outputEntries }}</strong></n-text>
-              <n-text v-if="convertResult.stats.filteredOut > 0" depth="3">
-                过滤: {{ convertResult.stats.filteredOut }}
-              </n-text>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <n-text>输出文件: <strong>{{ convertResult.outputPath }}</strong></n-text>
+              <div style="display: flex; gap: 16px">
+                <n-text>输入词条: <strong>{{ convertResult.stats.inputEntries }}</strong></n-text>
+                <n-text>输出词条: <strong>{{ convertResult.stats.outputEntries }}</strong></n-text>
+                <n-text v-if="convertResult.stats.filteredOut > 0" depth="3">
+                  过滤: {{ convertResult.stats.filteredOut }}
+                </n-text>
+              </div>
             </div>
-            <n-button type="primary" @click="doDownload">保存文件</n-button>
-          </n-card>
-        </div>
+          </template>
+          <template #footer>
+            <div style="display: flex; justify-content: flex-end">
+              <n-button type="primary" @click="showResultDialog = false">确定</n-button>
+            </div>
+          </template>
+        </n-modal>
 
         <!-- 自定义格式弹窗 -->
         <CustomFormatDialog
           v-model:show="showCustomDialog"
           @confirmed="onCustomConfirmed"
         />
+
+        <!-- 页脚 -->
+        <div class="app-footer">
+          <a href="https://github.com/nopdan/rose" target="_blank" rel="noopener">GitHub: nopdan/rose</a>
+        </div>
       </div>
     </n-message-provider>
   </n-config-provider>
@@ -223,7 +252,8 @@ html, body, #app {
 
 .app-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   padding: 32px 16px;
   min-height: 100vh;
 }
@@ -239,5 +269,21 @@ html, body, #app {
   font-size: 28px;
   font-weight: 600;
   color: #333;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 24px 0 16px;
+  font-size: 13px;
+}
+
+.app-footer a {
+  color: #999;
+  text-decoration: none;
+}
+
+.app-footer a:hover {
+  color: #666;
+  text-decoration: underline;
 }
 </style>

@@ -23,6 +23,17 @@ const form = reactive<FilterConfig>({
   customRules: [],
 });
 
+function reset() {
+  form.minLength = 0;
+  form.maxLength = 0;
+  form.minFrequency = 0;
+  form.filterEnglish = false;
+  form.filterNumber = false;
+  form.customRules = [];
+}
+
+defineExpose({ reset });
+
 watch(
   form,
   () => {

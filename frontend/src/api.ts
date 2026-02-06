@@ -62,8 +62,7 @@ export interface ConvertRequest {
 }
 
 export interface ConvertResult {
-  filename: string
-  downloadId: string
+  outputPath: string
   stats: {
     inputEntries: number
     outputEntries: number
@@ -102,12 +101,6 @@ export async function convertFile(req: ConvertRequest): Promise<ConvertResult> {
 }
 
 // === 工具函数 ===
-
-export function downloadById(downloadId: string) {
-  const a = document.createElement('a')
-  a.href = `${API_BASE}/api/download/${downloadId}`
-  a.click()
-}
 
 export function formatKindLabel(kind: number): string {
   switch (kind) {
