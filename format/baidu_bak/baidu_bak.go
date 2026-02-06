@@ -83,17 +83,15 @@ func (f *BaiduBak) Import(src model.Source) ([]*model.Entry, error) {
 			continue
 		}
 		line := utf16.Decode(lineBytes)
+		f.Infof("%s\n", line)
 		switch line {
 		case "<cnword>":
-			f.Infof("正在解析中文词条...\n")
 			currentType = T_cnword
 			continue
 		case "<enword>":
-			f.Infof("正在解析英文词条...\n")
 			currentType = T_enword
 			continue
 		case "<sysusrword>":
-			f.Infof("正在解析系统用户词条...\n")
 			currentType = T_sysusrword
 			continue
 		}
