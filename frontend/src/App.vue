@@ -16,7 +16,7 @@ import {
 } from './api'
 
 // 格式列表
-const { formats, reload: reloadFormats } = useFormats()
+const { formats } = useFormats()
 
 // 步骤状态
 const uploadResult = ref<UploadResult | null>(null)
