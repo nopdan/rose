@@ -121,21 +121,7 @@ func NewMultiCode(codes ...string) *MultiCode {
 }
 
 func (m *MultiCode) String() string {
-	if len(m.codes) == 0 {
-		return ""
-	}
-	if len(m.codes) == 1 {
-		return m.codes[0]
-	}
-	// 使用常见的分隔符连接
-	var result strings.Builder
-	for i, code := range m.codes {
-		if i > 0 {
-			result.WriteByte('\'')
-		}
-		result.WriteString(code)
-	}
-	return result.String()
+	return strings.Join(m.codes, "")
 }
 
 func (m *MultiCode) Strings() []string {
