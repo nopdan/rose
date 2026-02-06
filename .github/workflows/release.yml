@@ -66,7 +66,6 @@ jobs:
 
       - run: |
           cp README.md bin/
-          cp CHANGELOG.md bin/
 
       # 上传到 Artifact
       - name: Upload windows
