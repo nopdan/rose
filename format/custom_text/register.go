@@ -96,16 +96,16 @@ func NewDuoduoWubi() *CustomText {
 	)
 }
 
-func NewBaiduWubi() *CustomText {
+func NewBaiduShouji() *CustomText {
 	return NewCustom(
-		"baidu_wubi",
-		"百度五笔",
+		"baidu_shouji",
+		"百度手机码表",
 		model.FormatTypeWubi,
-		utf8,
+		utf16,
 		[]FieldConfig{
-			{Type: FieldTypeWord},
-			{Type: FieldTypeLiteral, Literal: ","},
 			{Type: FieldTypeCode},
+			{Type: FieldTypeTab},
+			{Type: FieldTypeWord},
 		},
 		true,
 		"",

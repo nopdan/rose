@@ -82,15 +82,20 @@ rose -h   # 帮助
 | ID | 名称 | 扩展名 | 导出 |
 |---|---|---|:---:|
 | `baidu_def` | 百度手机自定义方案 | .def | ✓ |
-| `msudp` | 微软用户自定义短语 | .dat | ✓ |
 | `mswb_lex` | 微软五笔词典 | .lex | ✓ |
 | `jidian_mb` | 极点码表.mb | .mb | |
 | `fcitx4_mb` | Fcitx4 码表 | .mb | |
 | `kafan_wubi_bak` | 卡饭五笔备份 | .dict | |
 | `jidian` | 极点码表 | .txt | ✓ |
 | `duoduo` | 多多生成器 | .txt | ✓ |
-| `baidu_wubi` | 百度五笔 | .txt | ✓ |
+| `baidu_shouji` | 百度手机 | .txt | ✓ |
+
+### 自定义短语
+
+| ID | 名称 | 扩展名 | 导出 |
+|---|---|---|:---:|
 | `user_phrase` | 用户自定义短语 | .txt | ✓ |
+| `msudp` | 微软用户自定义短语 | .dat | ✓ |
 
 ### 纯词组
 

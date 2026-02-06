@@ -54,7 +54,7 @@ func TestCustomText_DuoduoToQQ(t *testing.T) {
 		t.Fatal("no entries imported")
 	}
 
-	exporter := NewBaiduWubi()
+	exporter := NewBaiduShouji()
 	var buf bytes.Buffer
 	if err := exporter.Export(entries, &buf); err != nil {
 		t.Fatalf("export failed: %v", err)

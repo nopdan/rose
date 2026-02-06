@@ -53,7 +53,7 @@ func init() {
 	// 纯文本五笔
 	RegisterFormat(jidian.New())
 	RegisterFormat(custom_text.NewDuoduoWubi())
-	RegisterFormat(custom_text.NewBaiduWubi())
+	RegisterFormat(custom_text.NewBaiduShouji())
 	RegisterFormat(custom_text.NewUserPhrase())
 
 	// 纯词组
