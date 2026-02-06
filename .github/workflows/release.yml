@@ -5,6 +5,9 @@ on:
     tags:
       - "v[0-9]+.*"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -43,33 +46,41 @@ jobs:
           bun install
           bun run build
           cd ..
-
-      # 编译
+          
       - name: Build
         run: |
           go mod tidy
-          go env -w GOARCH=amd64
-          echo "编译 Linux"
-          go build -ldflags="-s -w" -o ./bin/rose-linux
+          mkdir -p ./dist
 
-          echo "编译 Windows"
-          go env -w GOOS=windows
-          go build -ldflags="-s -w" -o ./bin/rose-windows.exe
+          echo "编译 Windows amd64"
+          GOOS=windows GOARCH=amd64 go build -ldflags="-s -w"
+          zip -j ./dist/rose_windows-x64.zip rose.exe
+          rm -f rose.exe
 
-          echo "编译 Macos x86_64"
-          go env -w GOOS=darwin
-          go build -ldflags="-s -w" -o ./bin/rose-darwin-amd64
+          echo "编译 Linux amd64"
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w"
+          tar -czf ./dist/rose_linux-x64.tar.gz rose
+          rm -f rose
+
+          echo "编译 Macos amd64"
+          GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w"
+          tar -czf ./dist/rose_darwin-x64.tar.gz rose
+          rm -f rose
 
           echo "编译 Macos arm64"
-          go env -w GOARCH=arm64
-          go build -ldflags="-s -w" -o ./bin/rose-darwin-arm64
-
-      - run: |
-          cp README.md bin/
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w"
+          tar -czf ./dist/rose_darwin-arm64.tar.gz rose
+          rm -f rose
 
       # 上传到 Artifact
-      - name: Upload windows
+      - name: Upload artifacts
         uses: actions/upload-artifact@v6
         with:
           name: rose
-          path: ./bin/
+          path: ./dist/
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: ./dist/*
