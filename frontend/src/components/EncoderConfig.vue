@@ -1,83 +1,105 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch } from "vue";
 import {
-  NCard, NSelect, NSwitch, NFormItem, NUpload, NButton,
-  NTag, NText, NIcon
-} from 'naive-ui'
-import { CloudUploadOutline } from '@vicons/ionicons5'
-import { uploadFile, type EncoderConfig, type FormatInfo } from '../api'
+  NCard,
+  NSelect,
+  NSwitch,
+  NFormItem,
+  NUpload,
+  NButton,
+  NTag,
+  NText,
+  NIcon,
+} from "naive-ui";
+import { CloudUploadOutline } from "@vicons/ionicons5";
+import { uploadFile, type EncoderConfig, type FormatInfo } from "../api";
 
 const props = defineProps<{
-  outputFormat: FormatInfo | null
-}>()
+  outputFormat: FormatInfo | null;
+}>();
 
 const emit = defineEmits<{
-  'update:config': [config: EncoderConfig | null]
-}>()
+  "update:config": [config: EncoderConfig | null];
+}>();
 
-const wubiSchema = ref('86')
-const useAABC = ref(true)
-const codeTableFileId = ref('')
-const codeTableFilename = ref('')
+const wubiSchema = ref("86");
+const useAABC = ref(true);
+const codeTableFileId = ref("");
+const codeTableFilename = ref("");
 
 const schemaOptions = [
-  { label: '不修改', value: 'none' },
-  { label: '86五笔', value: '86' },
-  { label: '98五笔', value: '98' },
-  { label: '新世纪', value: '06' },
-  { label: '自定义码表', value: 'custom' },
-]
+  { label: "不修改", value: "none" },
+  { label: "86五笔", value: "86" },
+  { label: "98五笔", value: "98" },
+  { label: "新世纪", value: "06" },
+  { label: "自定义码表", value: "custom" },
+];
 
 const needEncoder = computed(() => {
-  if (!props.outputFormat) return false
-  return props.outputFormat.kind === 2 // 五笔需要 encoder
-})
+  if (!props.outputFormat) return false;
+  return props.outputFormat.kind === 2; // 五笔需要 encoder
+});
 
 // 是否显示编码器配置面板
-const showPanel = computed(() => needEncoder.value)
+const showPanel = computed(() => needEncoder.value);
 
 // 是否选择了"不修改"
-const isNone = computed(() => wubiSchema.value === 'none')
+const isNone = computed(() => wubiSchema.value === "none");
 
-watch([wubiSchema, useAABC, codeTableFileId, () => props.outputFormat], () => {
-  emitConfig()
-}, { immediate: true })
+watch(
+  [wubiSchema, useAABC, codeTableFileId, () => props.outputFormat],
+  () => {
+    emitConfig();
+  },
+  { immediate: true },
+);
 
 function emitConfig() {
   if (!props.outputFormat) {
-    emit('update:config', null)
-    return
+    emit("update:config", null);
+    return;
   }
   // 拼音格式不需要编码器配置
   if (props.outputFormat.kind === 1) {
-    emit('update:config', { type: 'pinyin', schema: '', codeTableFileId: '', useAABC: false })
-    return
+    emit("update:config", {
+      type: "pinyin",
+      schema: "",
+      codeTableFileId: "",
+      useAABC: false,
+    });
+    return;
   }
   // 五笔格式
   if (props.outputFormat.kind === 2) {
     if (isNone.value) {
-      emit('update:config', { type: 'none', schema: '', codeTableFileId: '', useAABC: false })
-      return
+      emit("update:config", {
+        type: "none",
+        schema: "",
+        codeTableFileId: "",
+        useAABC: false,
+      });
+      return;
     }
-    emit('update:config', {
-      type: 'wubi',
-      schema: wubiSchema.value === 'custom' ? 'custom' : wubiSchema.value,
-      codeTableFileId: wubiSchema.value === 'custom' ? codeTableFileId.value : '',
+    emit("update:config", {
+      type: "wubi",
+      schema: wubiSchema.value === "custom" ? "custom" : wubiSchema.value,
+      codeTableFileId:
+        wubiSchema.value === "custom" ? codeTableFileId.value : "",
       useAABC: useAABC.value,
-    })
-    return
+    });
+    return;
   }
-  emit('update:config', null)
+  emit("update:config", null);
 }
 
 async function handleCodeTableUpload({ file }: any) {
-  if (!file.file) return
+  if (!file.file) return;
   try {
-    const result = await uploadFile(file.file)
-    codeTableFileId.value = result.id
-    codeTableFilename.value = result.filename
+    const result = await uploadFile(file.file);
+    codeTableFileId.value = result.id;
+    codeTableFilename.value = result.filename;
   } catch (e: any) {
-    console.error('码表上传失败', e)
+    console.error("码表上传失败", e);
   }
 }
 </script>

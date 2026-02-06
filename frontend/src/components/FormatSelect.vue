@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { NSelect, NTag } from 'naive-ui'
-import type { FormatInfo } from '../api'
-import { formatKindLabel } from '../api'
+import { computed } from "vue";
+import { NSelect, NTag } from "naive-ui";
+import type { FormatInfo } from "../api";
+import { formatKindLabel } from "../api";
 
 const props = defineProps<{
-  formats: FormatInfo[]
-  modelValue: string
-  label: string
-  mode: 'import' | 'export'
-}>()
+  formats: FormatInfo[];
+  modelValue: string;
+  label: string;
+  mode: "import" | "export";
+}>();
 
 const emit = defineEmits<{
-  'update:modelValue': [value: string]
-  'customSelect': []
-}>()
+  "update:modelValue": [value: string];
+  customSelect: [];
+}>();
 
-const CUSTOM_ID = '__custom__'
+const CUSTOM_ID = "__custom__";
 
 const options = computed(() => {
   const list = props.formats
-    .filter(f => props.mode === 'import' ? f.canImport : f.canExport)
-    .map(f => ({
+    .filter((f) => (props.mode === "import" ? f.canImport : f.canExport))
+    .map((f) => ({
       label: `${f.name} (${f.id})`,
       value: f.id,
       kind: f.kind,
-    }))
+    }));
   list.push({
-    label: '自定义格式...',
+    label: "自定义格式...",
     value: CUSTOM_ID,
     kind: 0,
-  })
-  return list
-})
+  });
+  return list;
+});
 
 function handleUpdate(value: string) {
   if (value === CUSTOM_ID) {
-    emit('customSelect')
-    return
+    emit("customSelect");
+    return;
   }
-  emit('update:modelValue', value)
+  emit("update:modelValue", value);
 }
 
 const selectedFormat = computed(() =>
-  props.formats.find(f => f.id === props.modelValue)
-)
+  props.formats.find((f) => f.id === props.modelValue),
+);
 </script>
 
 <template>

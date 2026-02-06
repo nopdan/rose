@@ -1,35 +1,42 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { NUpload, NUploadDragger, NIcon, NText, NTag, type UploadFileInfo } from 'naive-ui'
-import { CloudUploadOutline } from '@vicons/ionicons5'
-import { uploadFile, type UploadResult } from '../api'
+import { ref } from "vue";
+import {
+  NUpload,
+  NUploadDragger,
+  NIcon,
+  NText,
+  NTag,
+  type UploadFileInfo,
+} from "naive-ui";
+import { CloudUploadOutline } from "@vicons/ionicons5";
+import { uploadFile, type UploadResult } from "../api";
 
 const emit = defineEmits<{
-  uploaded: [result: UploadResult]
-}>()
+  uploaded: [result: UploadResult];
+}>();
 
-const fileInfo = ref<UploadResult | null>(null)
-const uploading = ref(false)
-const errorMsg = ref('')
+const fileInfo = ref<UploadResult | null>(null);
+const uploading = ref(false);
+const errorMsg = ref("");
 
 function formatSize(bytes: number): string {
-  if (bytes < 1024) return bytes + ' B'
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
-  return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
 async function handleUpload({ file }: { file: UploadFileInfo }) {
-  if (!file.file) return
-  uploading.value = true
-  errorMsg.value = ''
+  if (!file.file) return;
+  uploading.value = true;
+  errorMsg.value = "";
   try {
-    const result = await uploadFile(file.file)
-    fileInfo.value = result
-    emit('uploaded', result)
+    const result = await uploadFile(file.file);
+    fileInfo.value = result;
+    emit("uploaded", result);
   } catch (e: any) {
-    errorMsg.value = e.message || '上传失败'
+    errorMsg.value = e.message || "上传失败";
   } finally {
-    uploading.value = false
+    uploading.value = false;
   }
 }
 </script>

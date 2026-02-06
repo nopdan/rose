@@ -1,115 +1,154 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive } from "vue";
 import {
-  NModal, NForm, NFormItem, NInput, NSelect, NSwitch,
-  NButton, NSpace, NText
-} from 'naive-ui'
-import type { CustomFormatConfig, CustomFieldConfig } from '../api'
+  NModal,
+  NForm,
+  NFormItem,
+  NInput,
+  NSelect,
+  NSwitch,
+  NButton,
+  NSpace,
+  NText,
+} from "naive-ui";
+import type { CustomFormatConfig, CustomFieldConfig } from "../api";
 
 const props = defineProps<{
-  show: boolean
-}>()
+  show: boolean;
+}>();
 
 const emit = defineEmits<{
-  'update:show': [value: boolean]
-  'confirmed': [config: CustomFormatConfig]
-}>()
+  "update:show": [value: boolean];
+  confirmed: [config: CustomFormatConfig];
+}>();
 
 const form = reactive({
-  kind: 'pinyin',
-  encoding: 'UTF-8',
+  kind: "pinyin",
+  encoding: "UTF-8",
   fields: [
-    { type: 'word', pinyinSeparator: '', pinyinPrefix: '', pinyinSuffix: '', literal: '' },
-    { type: 'tab', pinyinSeparator: '', pinyinPrefix: '', pinyinSuffix: '', literal: '' },
-    { type: 'pinyin', pinyinSeparator: "'", pinyinPrefix: '', pinyinSuffix: '', literal: '' },
+    {
+      type: "word",
+      pinyinSeparator: "",
+      pinyinPrefix: "",
+      pinyinSuffix: "",
+      literal: "",
+    },
+    {
+      type: "tab",
+      pinyinSeparator: "",
+      pinyinPrefix: "",
+      pinyinSuffix: "",
+      literal: "",
+    },
+    {
+      type: "pinyin",
+      pinyinSeparator: "'",
+      pinyinPrefix: "",
+      pinyinSuffix: "",
+      literal: "",
+    },
   ] as CustomFieldConfig[],
   sortByCode: false,
-  commentPrefix: '#',
-})
+  commentPrefix: "#",
+});
 
-const errorMsg = ref('')
+const errorMsg = ref("");
 
 const kindOptions = [
-  { label: '拼音', value: 'pinyin' },
-  { label: '五笔', value: 'wubi' },
-  { label: '词组', value: 'words' },
-]
+  { label: "拼音", value: "pinyin" },
+  { label: "五笔", value: "wubi" },
+  { label: "词组", value: "words" },
+];
 
 const encodingOptions = [
-  { label: 'UTF-8', value: 'UTF-8' },
-  { label: 'UTF-16LE', value: 'UTF-16LE' },
-  { label: 'GB18030', value: 'GB18030' },
-  { label: 'GBK', value: 'GBK' },
-]
+  { label: "UTF-8", value: "UTF-8" },
+  { label: "UTF-16LE", value: "UTF-16LE" },
+  { label: "GB18030", value: "GB18030" },
+  { label: "GBK", value: "GBK" },
+];
 
 const fieldTypeOptions = [
-  { label: '词条 (word)', value: 'word' },
-  { label: '拼音 (pinyin)', value: 'pinyin' },
-  { label: '编码 (code)', value: 'code' },
-  { label: '词频 (frequency)', value: 'frequency' },
-  { label: '排序 (rank)', value: 'rank' },
-  { label: '制表符 (tab)', value: 'tab' },
-  { label: '空格 (space)', value: 'space' },
-  { label: '字面量 (literal)', value: 'literal' },
-]
+  { label: "词条 (word)", value: "word" },
+  { label: "拼音 (pinyin)", value: "pinyin" },
+  { label: "编码 (code)", value: "code" },
+  { label: "词频 (frequency)", value: "frequency" },
+  { label: "排序 (rank)", value: "rank" },
+  { label: "制表符 (tab)", value: "tab" },
+  { label: "空格 (space)", value: "space" },
+  { label: "字面量 (literal)", value: "literal" },
+];
 
 function addField() {
   form.fields.push({
-    type: 'tab',
-    pinyinSeparator: '',
-    pinyinPrefix: '',
-    pinyinSuffix: '',
-    literal: '',
-  })
+    type: "tab",
+    pinyinSeparator: "",
+    pinyinPrefix: "",
+    pinyinSuffix: "",
+    literal: "",
+  });
 }
 
 function removeField(index: number) {
-  form.fields.splice(index, 1)
+  form.fields.splice(index, 1);
 }
 
 function moveField(index: number, direction: -1 | 1) {
-  const target = index + direction
-  if (target < 0 || target >= form.fields.length) return
-  const temp = form.fields[index]
-  form.fields[index] = form.fields[target]
-  form.fields[target] = temp
+  const target = index + direction;
+  if (target < 0 || target >= form.fields.length) return;
+  const temp = form.fields[index];
+  form.fields[index] = form.fields[target];
+  form.fields[target] = temp;
 }
 
 function submit() {
   if (form.fields.length === 0) {
-    errorMsg.value = '请至少添加一个字段'
-    return
+    errorMsg.value = "请至少添加一个字段";
+    return;
   }
-  errorMsg.value = ''
+  errorMsg.value = "";
   const config: CustomFormatConfig = {
     kind: form.kind,
     encoding: form.encoding,
-    fields: form.fields.map(f => ({ ...f })),
+    fields: form.fields.map((f) => ({ ...f })),
     sortByCode: form.sortByCode,
     commentPrefix: form.commentPrefix,
-  }
-  emit('confirmed', config)
-  emit('update:show', false)
+  };
+  emit("confirmed", config);
+  emit("update:show", false);
 }
 
 function getPreviewLine(): string {
-  const parts: string[] = []
+  const parts: string[] = [];
   for (const f of form.fields) {
     switch (f.type) {
-      case 'word': parts.push('你好'); break
-      case 'pinyin':
-        const sep = f.pinyinSeparator || ''
-        parts.push(f.pinyinPrefix + 'ni' + sep + 'hao' + f.pinyinSuffix)
-        break
-      case 'code': parts.push('abcd'); break
-      case 'frequency': parts.push('100'); break
-      case 'rank': parts.push('1'); break
-      case 'tab': parts.push('\t'); break
-      case 'space': parts.push(' '); break
-      case 'literal': parts.push(f.literal); break
+      case "word":
+        parts.push("你好");
+        break;
+      case "pinyin":
+        const sep = f.pinyinSeparator || "";
+        parts.push(f.pinyinPrefix + "ni" + sep + "hao" + f.pinyinSuffix);
+        break;
+      case "code":
+        parts.push("abcd");
+        break;
+      case "frequency":
+        parts.push("100");
+        break;
+      case "rank":
+        parts.push("1");
+        break;
+      case "tab":
+        parts.push("\t");
+        break;
+      case "space":
+        parts.push(" ");
+        break;
+      case "literal":
+        parts.push(f.literal);
+        break;
     }
   }
-  return parts.join('')
+  return parts.join("");
 }
 </script>
 

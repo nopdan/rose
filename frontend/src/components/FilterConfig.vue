@@ -1,13 +1,18 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { reactive, watch } from "vue";
 import {
-  NCard, NFormItem, NInputNumber, NSwitch, NDynamicInput, NText
-} from 'naive-ui'
-import type { FilterConfig } from '../api'
+  NCard,
+  NFormItem,
+  NInputNumber,
+  NSwitch,
+  NDynamicInput,
+  NText,
+} from "naive-ui";
+import type { FilterConfig } from "../api";
 
 const emit = defineEmits<{
-  'update:config': [config: FilterConfig]
-}>()
+  "update:config": [config: FilterConfig];
+}>();
 
 const form = reactive<FilterConfig>({
   minLength: 0,
@@ -16,11 +21,15 @@ const form = reactive<FilterConfig>({
   filterEnglish: false,
   filterNumber: false,
   customRules: [],
-})
+});
 
-watch(form, () => {
-  emit('update:config', { ...form })
-}, { deep: true, immediate: true })
+watch(
+  form,
+  () => {
+    emit("update:config", { ...form });
+  },
+  { deep: true, immediate: true },
+);
 </script>
 
 <template>
