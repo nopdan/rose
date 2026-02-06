@@ -69,8 +69,6 @@ type BaseFormat struct {
 	Name string
 	// 格式类型
 	Type FormatType
-	// 是否为二进制格式
-	IsBinary bool
 	// 支持的文件扩展名
 	Extension string
 	// 格式描述

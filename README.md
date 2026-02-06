@@ -66,6 +66,7 @@ rose -h   # 帮助
 | `sogou_bak` | 搜狗拼音备份 | .bin | |
 | `baidu_bdict` | 百度分类词库 | .bdict | |
 | `baidu_bcd` | 百度手机分类词库 | .bcd | |
+| `baidu_bak` | 百度拼音备份 | .bin | |
 | `qq_qpyd` | QQ 拼音分类词库 | .qpyd | |
 | `mspy_udl` | 微软拼音自学习词汇 | .dat | ✓ |
 | `ziguang_uwl` | 紫光华宇拼音词库 | .uwl | |
@@ -123,6 +124,85 @@ model/        数据模型（Entry、Format、Importer/Exporter 接口）
 server/       HTTP API 服务
 frontend/     Vue 3 + Naive UI Web 界面
 ```
+
+## 贡献新格式
+
+添加一种新的词库格式只需三步：
+
+### 1. 创建格式包
+
+在 `format/` 下新建目录，例如 `format/my_format/`，创建主文件：
+
+```go
+package my_format
+
+import (
+    "io"
+    "github.com/nopdan/rose/model"
+)
+
+type MyFormat struct {
+    model.BaseFormat
+}
+
+func New() *MyFormat {
+    return &MyFormat{
+        BaseFormat: model.BaseFormat{
+            ID:        "my_format",       // 唯一标识，用于命令行和 API
+            Name:      "我的格式",         // 显示名称
+            Type:      model.FormatTypePinyin, // FormatTypePinyin / FormatTypeWubi / FormatTypeWords
+            Extension: ".txt",            // 文件扩展名（含点号）
+        },
+    }
+}
+```
+
+### 2. 实现 Importer / Exporter 接口
+
+按需实现导入和导出，至少实现其中一个：
+
+```go
+// 导入：从 Source 读取数据，返回 Entry 列表
+func (f *MyFormat) Import(src model.Source) ([]*model.Entry, error) {
+    // OpenTextReader 自动识别编码格式转为 utf8 reader
+    // textReader, _, closeFn, err := model.OpenTextReader(src)
+    // 获取 Reader
+	r, err := model.NewReaderFromSource(src)
+	if err != nil {
+		return nil, err
+	}
+    // 解析 data，构建 Entry 列表
+    // 每个 Entry 包含 Word（词组）、Code（编码）、Frequency（词频）等字段
+    var entries []*model.Entry
+    // ...解析逻辑
+    return entries, nil
+}
+
+// 导出：将 Entry 列表写入 Writer
+func (f *MyFormat) Export(entries []*model.Entry, w io.Writer) error {
+    // 将 entries 按目标格式写入 w
+    return nil
+}
+```
+
+### 3. 注册格式
+
+在 `format/init.go` 的 `init()` 中添加注册：
+
+```go
+import "github.com/nopdan/rose/format/my_format"
+
+// 在对应分组中添加
+RegisterFormat(my_format.New())
+```
+
+注册后，该格式自动在命令行（`rose -l`）和 Web 界面中可用。
+
+### 建议
+
+- 参考 `format/baidu_bdict/`（二进制导入）或 `format/rime/`（纯文本导入导出）作为模板
+- 如果是纯文本且格式简单（词条 + 分隔符 + 编码/拼音），可以直接用 `custom_text.NewCustom()` 创建，无需新建包
+- 在 `testdata/` 下放入测试用的样本文件，编写 `*_test.go` 验证导入导出正确性
 
 ## License
 

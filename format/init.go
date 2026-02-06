@@ -1,6 +1,7 @@
 package format
 
 import (
+	"github.com/nopdan/rose/format/baidu_bak"
 	"github.com/nopdan/rose/format/baidu_bdict"
 	"github.com/nopdan/rose/format/baidu_def"
 	"github.com/nopdan/rose/format/custom_text"
@@ -28,6 +29,7 @@ func init() {
 	RegisterFormat(sogou_bak.NewSogouBak())
 	RegisterFormat(baidu_bdict.New())
 	RegisterFormat(baidu_bdict.NewBcd())
+	RegisterFormat(baidu_bak.New())
 	RegisterFormat(qq_qpyd.New())
 	RegisterFormat(mspy_udl.New())
 	RegisterFormat(ziguang_uwl.New())

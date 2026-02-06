@@ -90,7 +90,6 @@ func (r *Registry) List() []*model.BaseFormat {
 			ID:          info.ID,
 			Name:        info.Name,
 			Type:        info.Type,
-			IsBinary:    info.IsBinary,
 			Extension:   info.Extension,
 			Description: info.Description,
 		})
@@ -111,7 +110,6 @@ func (r *Registry) ListByType(formatType model.FormatType) []*model.BaseFormat {
 					ID:          info.ID,
 					Name:        info.Name,
 					Type:        info.Type,
-					IsBinary:    info.IsBinary,
 					Extension:   info.Extension,
 					Description: info.Description,
 				})
