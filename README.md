@@ -5,6 +5,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/nopdan/rose)](https://github.com/nopdan/rose/stargazers)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nopdan/rose)](https://github.com/nopdan/rose/releases)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nopdan/rose/commit.yml)](https://github.com/nopdan/rose/actions/workflows/commit.yml)
+![Downloads](https://badgen.net/github/assets-dl/nopdan/rose)
 ![GitHub](https://img.shields.io/github/license/nopdan/rose)
 
 多种输入法词库格式互相转换，支持拼音、五笔、纯词组。
