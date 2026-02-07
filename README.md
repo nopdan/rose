@@ -6,6 +6,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nopdan/rose)](https://github.com/nopdan/rose/releases)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/nopdan/rose/commit.yml)](https://github.com/nopdan/rose/actions/workflows/commit.yml)
 ![Downloads](https://badgen.net/github/assets-dl/nopdan/rose)
+![GitHub repo size](https://img.shields.io/github/repo-size/nopdan/rose)
 ![GitHub](https://img.shields.io/github/license/nopdan/rose)
 
 多种输入法词库格式互相转换，支持拼音、五笔、纯词组。
@@ -60,6 +61,8 @@ rose -h   # 帮助
 
 ### 拼音
 
+含词组，拼音，词频（可选）
+
 | ID | 名称 | 扩展名 | 导出 |
 |---|---|---|:---:|
 | `sogou_scel` | 搜狗细胞词库 | .scel | ✓ |
@@ -80,6 +83,8 @@ rose -h   # 帮助
 
 ### 五笔
 
+含词组，编码
+
 | ID | 名称 | 扩展名 | 导出 |
 |---|---|---|:---:|
 | `baidu_def` | 百度手机自定义方案 | .def | ✓ |
@@ -92,6 +97,8 @@ rose -h   # 帮助
 | `baidu_shouji` | 百度手机 | .txt | ✓ |
 
 ### 自定义短语
+
+含词组，编码，候选位置
 
 | ID | 名称 | 扩展名 | 导出 |
 |---|---|---|:---:|
@@ -112,7 +119,7 @@ rose -h   # 帮助
 git clone https://github.com/nopdan/rose.git
 cd rose
 
-# 构建前端（可选，已内嵌）
+# 构建前端
 cd frontend && bun install && bun run build && cd ..
 
 # 编译
