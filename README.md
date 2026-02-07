@@ -75,11 +75,12 @@ rose -h   # 帮助
 | `mspy_udl` | 微软拼音自学习词汇 | .dat | ✓ |
 | `uwl` | 紫光华宇拼音词库 | .uwl | |
 | `kafan_pinyin_bak` | 卡饭拼音备份 | .dict | |
+| `gboard` | Gboard 个人字典 | .zip | ✓ |
 | `jiajia` | 拼音加加 | .txt | ✓ |
 | `sogou` | 搜狗拼音 | .txt | ✓ |
 | `baidu` | 百度拼音 | .txt | ✓ |
 | `qq` | QQ 拼音 | .txt | ✓ |
-| `rime_pinyin` | Rime拼音 | .dict.yaml | ✓ |
+| `rime_pinyin` | Rime 拼音 | .dict.yaml | ✓ |
 
 ### 五笔
 
@@ -90,11 +91,11 @@ rose -h   # 帮助
 | `def` | 百度手机自定义方案 | .def | ✓ |
 | `mswb_lex` | 微软五笔词典 | .lex | ✓ |
 | `jidian_mb` | 极点码表二进制 | .mb | |
-| `fcitx4_mb` | Fcitx4码表 | .mb | |
-| `kafan_wubi_bak` | 卡饭五笔备份.dict | .dict | |
+| `fcitx4_mb` | Fcitx4 码表 | .mb | |
+| `kafan_wubi_bak` | 卡饭五笔备份 | .dict | |
 | `jidian` | 极点码表 | .txt | ✓ |
 | `duoduo` | 多多生成器 | .txt | ✓ |
-| `rime_wubi` | Rime五笔 | .dict.yaml | ✓ |
+| `rime_wubi` | Rime 五笔 | .dict.yaml | ✓ |
 | `baidu_shouji` | 百度手机码表 | .txt | ✓ |
 | `bingling` | 冰凌 | .txt | ✓ |
 
