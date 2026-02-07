@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -14,7 +13,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"syscall"
 
 	"github.com/nopdan/rose/converter"
 	"github.com/nopdan/rose/encoder"
@@ -98,34 +96,20 @@ func Serve(port int) {
 	}
 }
 
-func listenWithFallback(port, maxAttempts int) (net.Listener, int, error) {
-	for i := 0; i <= maxAttempts; i++ {
-		curr := port + i
-		ln, err := net.Listen("tcp", fmt.Sprintf(":%d", curr))
-		if err == nil {
-			return ln, curr, nil
-		}
-		if !isAddrInUse(err) {
-			return nil, 0, err
-		}
+func listenWithFallback(port, _ int) (net.Listener, int, error) {
+	// 尝试指定端口
+	ln, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err == nil {
+		return ln, port, nil
 	}
-	return nil, 0, fmt.Errorf("no available port from %d to %d", port, port+maxAttempts)
-}
-
-func isAddrInUse(err error) bool {
-	if errors.Is(err, syscall.EADDRINUSE) {
-		return true
+	log.Printf("端口 %d 不可用: %v，尝试随机端口...", port, err)
+	// 回退到系统分配的可用端口
+	ln, err = net.Listen("tcp", ":0")
+	if err != nil {
+		return nil, 0, err
 	}
-	var opErr *net.OpError
-	if errors.As(err, &opErr) {
-		if errors.Is(opErr.Err, syscall.EADDRINUSE) {
-			return true
-		}
-		if sysErr, ok := opErr.Err.(*os.SyscallError); ok {
-			return errors.Is(sysErr.Err, syscall.EADDRINUSE)
-		}
-	}
-	return false
+	actualPort := ln.Addr().(*net.TCPAddr).Port
+	return ln, actualPort, nil
 }
 
 // handleFormats 获取所有支持的格式列表
