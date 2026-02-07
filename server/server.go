@@ -2,16 +2,19 @@ package server
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"syscall"
 
 	"github.com/nopdan/rose/converter"
 	"github.com/nopdan/rose/encoder"
@@ -83,10 +86,46 @@ func Serve(port int) {
 	http.HandleFunc("/api/upload", handleUpload)
 	http.HandleFunc("/api/convert", handleConvert)
 
-	sport := fmt.Sprint(port)
-	log.Println("Listening on http://localhost:" + sport)
-	openBrowser("http://localhost:" + sport)
-	http.ListenAndServe(":"+sport, nil)
+	ln, actualPort, err := listenWithFallback(port, 20)
+	if err != nil {
+		log.Fatalf("Failed to bind port: %v", err)
+	}
+	addr := fmt.Sprintf("http://localhost:%d", actualPort)
+	log.Println("Listening on " + addr)
+	openBrowser(addr)
+	if err := http.Serve(ln, nil); err != nil {
+		log.Fatalf("Server stopped: %v", err)
+	}
+}
+
+func listenWithFallback(port, maxAttempts int) (net.Listener, int, error) {
+	for i := 0; i <= maxAttempts; i++ {
+		curr := port + i
+		ln, err := net.Listen("tcp", fmt.Sprintf(":%d", curr))
+		if err == nil {
+			return ln, curr, nil
+		}
+		if !isAddrInUse(err) {
+			return nil, 0, err
+		}
+	}
+	return nil, 0, fmt.Errorf("no available port from %d to %d", port, port+maxAttempts)
+}
+
+func isAddrInUse(err error) bool {
+	if errors.Is(err, syscall.EADDRINUSE) {
+		return true
+	}
+	var opErr *net.OpError
+	if errors.As(err, &opErr) {
+		if errors.Is(opErr.Err, syscall.EADDRINUSE) {
+			return true
+		}
+		if sysErr, ok := opErr.Err.(*os.SyscallError); ok {
+			return errors.Is(sysErr.Err, syscall.EADDRINUSE)
+		}
+	}
+	return false
 }
 
 // handleFormats 获取所有支持的格式列表
