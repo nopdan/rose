@@ -1,4 +1,4 @@
-package pinyinjiajia
+package jiajia
 
 import (
 	"os"
@@ -8,7 +8,7 @@ import (
 	"github.com/nopdan/rose/model"
 )
 
-func TestPinyinJiaJia(t *testing.T) {
+func TestJiaJia(t *testing.T) {
 	f := New()
 	f.LogLevel = model.LogDebug
 	inputPath := filepath.Join("..", "..", "testdata", "jiajia.txt")

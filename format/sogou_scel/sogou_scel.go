@@ -19,8 +19,8 @@ type SogouScel struct {
 func New() *SogouScel {
 	return &SogouScel{
 		BaseFormat: model.BaseFormat{
-			ID:          "sogou_scel",
-			Name:        "搜狗细胞词库.scel",
+			ID:          "scel",
+			Name:        "搜狗细胞词库",
 			Type:        model.FormatTypePinyin,
 			Extension:   ".scel",
 			Description: "搜狗细胞词库二进制格式",
@@ -31,8 +31,8 @@ func New() *SogouScel {
 // NewQcel 创建QQ拼音细胞词库格式处理器
 func NewQcel() *SogouScel {
 	format := New()
-	format.ID = "qq_qcel"
-	format.Name = "QQ拼音v6以上.qcel"
+	format.ID = "qcel"
+	format.Name = "QQ拼音v6以上"
 	format.Extension = ".qcel"
 	return format
 }

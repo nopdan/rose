@@ -15,7 +15,7 @@ func New() *JidianMb {
 	return &JidianMb{
 		BaseFormat: model.BaseFormat{
 			ID:          "jidian_mb",
-			Name:        "极点码表",
+			Name:        "极点码表二进制",
 			Type:        model.FormatTypeWubi,
 			Extension:   ".mb",
 			Description: "极点五笔码表格式",

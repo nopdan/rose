@@ -20,7 +20,7 @@ type Qpyd struct {
 func New() *Qpyd {
 	return &Qpyd{
 		BaseFormat: model.BaseFormat{
-			ID:          "qq_qpyd",
+			ID:          "qpyd",
 			Name:        "QQ拼音分类词库",
 			Type:        model.FormatTypePinyin,
 			Extension:   ".qpyd",

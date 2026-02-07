@@ -1,4 +1,4 @@
-package pinyinjiajia
+package jiajia
 
 import (
 	"bufio"
@@ -16,7 +16,7 @@ func New() *JiaJia {
 	return &JiaJia{
 		BaseFormat: model.BaseFormat{
 			ID:          "jiajia",
-			Name:        "拼音加加格式",
+			Name:        "拼音加加",
 			Type:        model.FormatTypePinyin,
 			Extension:   ".txt",
 			Description: "拼音加加格式",

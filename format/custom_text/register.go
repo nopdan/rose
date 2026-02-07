@@ -23,21 +23,22 @@ func NewWords() *CustomText {
 		[]FieldConfig{
 			{Type: FieldTypeWord},
 		},
-		false,
-		"#",
-	)
+	).WithCommentPrefix("#")
 }
 
 // ------------- 拼音模板 -------------
 
 // NewSogouPinyin 搜狗拼音格式: 词组
 func NewSogouPinyin() *CustomText {
-	c := NewWords()
-	c.ID = "sogou_pinyin"
-	c.Name = "搜狗拼音"
-	c.Encoding = gb
-	c.CommentPrefix = ""
-	return c
+	return NewCustom(
+		"sogou",
+		"搜狗拼音",
+		model.FormatTypeWords,
+		gb,
+		[]FieldConfig{
+			{Type: FieldTypeWord},
+		},
+	)
 }
 
 // NewBaiduPinyin 百度拼音格式: 词组\tpin'yin'\t频率
@@ -54,8 +55,6 @@ func NewBaiduPinyin() *CustomText {
 			{Type: FieldTypeTab},
 			{Type: FieldTypeFrequency},
 		},
-		false,
-		"#",
 	)
 }
 
@@ -73,9 +72,25 @@ func NewQQPinyin() *CustomText {
 			{Type: FieldTypeSpace},
 			{Type: FieldTypeFrequency},
 		},
-		false,
-		"", // 不支持注释
 	)
+}
+
+// NewRimePinyin Rime拼音格式: 词组\tpin yin\t频率
+func NewRimePinyin() *CustomText {
+	return NewCustom(
+		"rime_pinyin",
+		"Rime拼音",
+		model.FormatTypePinyin,
+		utf8,
+		[]FieldConfig{
+			{Type: FieldTypeWord},
+			{Type: FieldTypeTab},
+			{Type: FieldTypePinyin, PinyinSeparator: " "},
+			{Type: FieldTypeTab},
+			{Type: FieldTypeFrequency},
+		},
+	).WithCommentPrefix("#").WithExtension(".dict.yaml").
+		WithStartMarker("...")
 }
 
 // ------------- 五笔模板 -------------
@@ -91,9 +106,22 @@ func NewDuoduoWubi() *CustomText {
 			{Type: FieldTypeTab},
 			{Type: FieldTypeCode},
 		},
-		true,
-		"$ddcmd",
-	)
+	).WithSortByCode(true).WithCommentPrefix("$ddcmd")
+}
+
+func NewRimeWubi() *CustomText {
+	return NewCustom(
+		"rime_wubi",
+		"Rime五笔",
+		model.FormatTypeWubi,
+		utf8,
+		[]FieldConfig{
+			{Type: FieldTypeWord},
+			{Type: FieldTypeTab},
+			{Type: FieldTypeCode},
+		},
+	).WithSortByCode(true).WithCommentPrefix("#").
+		WithExtension(".dict.yaml").WithStartMarker("...")
 }
 
 func NewBaiduShouji() *CustomText {
@@ -107,9 +135,21 @@ func NewBaiduShouji() *CustomText {
 			{Type: FieldTypeTab},
 			{Type: FieldTypeWord},
 		},
-		true,
-		"",
-	)
+	).WithSortByCode(true)
+}
+
+func NewBingling() *CustomText {
+	return NewCustom(
+		"bingling",
+		"冰凌",
+		model.FormatTypeWubi,
+		utf16,
+		[]FieldConfig{
+			{Type: FieldTypeCode},
+			{Type: FieldTypeTab},
+			{Type: FieldTypeWord},
+		},
+	).WithSortByCode(true).WithStartMarker("[CODETABLE]")
 }
 
 func NewUserPhrase() *CustomText {
@@ -125,7 +165,5 @@ func NewUserPhrase() *CustomText {
 			{Type: FieldTypeLiteral, Literal: ","},
 			{Type: FieldTypeRank},
 		},
-		false,
-		"",
 	)
 }

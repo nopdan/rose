@@ -17,10 +17,10 @@ func New() *Kafan {
 	return &Kafan{
 		BaseFormat: model.BaseFormat{
 			ID:          "kafan_wubi_bak",
-			Name:        "卡饭五笔备份.dict",
+			Name:        "卡饭五笔备份词库",
 			Type:        model.FormatTypeWubi,
 			Extension:   ".dict",
-			Description: "卡饭五笔备份格式",
+			Description: "卡饭五笔备份词库格式",
 		},
 	}
 }
@@ -35,7 +35,7 @@ func (f *Kafan) Import(src model.Source) ([]*model.Entry, error) {
 	head := string(r.ReadN(0x10))
 	// 版本不匹配
 	if !strings.HasPrefix(head, "ProtoDict1") {
-		return nil, fmt.Errorf("卡饭五笔备份.dict格式错误, 版本: %s", head)
+		return nil, fmt.Errorf("卡饭五笔备份词库格式错误, 版本: %s", head)
 	}
 
 	di := make([]*model.Entry, 0, 0xff)

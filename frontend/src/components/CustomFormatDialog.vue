@@ -50,6 +50,7 @@ const form = reactive({
   ] as CustomFieldConfig[],
   sortByCode: false,
   commentPrefix: "#",
+  startMarker: "",
 });
 
 const errorMsg = ref("");
@@ -112,6 +113,7 @@ function submit() {
     fields: form.fields.map((f) => ({ ...f })),
     sortByCode: form.sortByCode,
     commentPrefix: form.commentPrefix,
+    startMarker: form.startMarker,
   };
   emit("confirmed", config);
   emit("update:show", false);
@@ -170,6 +172,9 @@ function getPreviewLine(): string {
       </n-form-item>
       <n-form-item label="注释前缀">
         <n-input v-model:value="form.commentPrefix" placeholder="如: #" style="width: 100px" />
+      </n-form-item>
+      <n-form-item label="词库开始标志">
+        <n-input v-model:value="form.startMarker" placeholder="如: ###BEGIN###" style="width: 200px" />
       </n-form-item>
       <n-form-item label="按编码排序">
         <n-switch v-model:value="form.sortByCode" />

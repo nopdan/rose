@@ -59,6 +59,7 @@ type CustomFormatConfig struct {
 	Fields        []CustomFieldConfig `json:"fields"`
 	SortByCode    bool                `json:"sortByCode"`
 	CommentPrefix string              `json:"commentPrefix"`
+	StartMarker   string              `json:"startMarker"`
 }
 
 // InputSpec 输入配置
@@ -264,8 +265,7 @@ func buildCustomFormat(id string, cfg *CustomFormatConfig) (*custom_text.CustomT
 	}
 	return custom_text.NewCustom(
 		id, "自定义格式", formatType, enc, fields,
-		cfg.SortByCode, cfg.CommentPrefix,
-	), nil
+	).WithSortByCode(cfg.SortByCode).WithCommentPrefix(cfg.CommentPrefix).WithStartMarker(cfg.StartMarker), nil
 }
 
 // parseCustomFields 解析自定义格式字段配置

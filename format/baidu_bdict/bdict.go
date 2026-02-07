@@ -29,8 +29,8 @@ type BaiduBdict struct {
 func New() *BaiduBdict {
 	return &BaiduBdict{
 		BaseFormat: model.BaseFormat{
-			ID:          "baidu_bdict",
-			Name:        "百度分类词库.bdict",
+			ID:          "bdict",
+			Name:        "百度分类词库",
 			Type:        model.FormatTypePinyin,
 			Extension:   ".bdict",
 			Description: "百度分类词库二进制格式",
@@ -38,11 +38,11 @@ func New() *BaiduBdict {
 	}
 }
 
-// NewBcd 创建百度手机词库格式处理器
+// NewBcd 创建百度分类词库（手机）格式处理器
 func NewBcd() *BaiduBdict {
 	format := New()
-	format.ID = "baidu_bcd"
-	format.Name = "百度手机分类词库.bcd"
+	format.ID = "bcd"
+	format.Name = "百度分类词库（手机）"
 	format.Extension = ".bcd"
 	return format
 }

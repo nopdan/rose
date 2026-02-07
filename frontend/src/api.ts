@@ -49,6 +49,7 @@ export interface CustomFormatConfig {
   fields: CustomFieldConfig[]
   sortByCode: boolean
   commentPrefix: string
+  startMarker: string
 }
 
 export interface ConvertRequest {

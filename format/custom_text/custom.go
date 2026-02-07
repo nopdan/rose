@@ -57,6 +57,29 @@ type CustomText struct {
 
 	// 注释前缀（如 "#"），空字符串表示不支持注释
 	CommentPrefix string
+
+	// 词库开始标志（为空表示从第一行开始读取）
+	StartMarker string
+}
+
+func (c *CustomText) WithExtension(ext string) *CustomText {
+	c.Extension = ext
+	return c
+}
+
+func (c *CustomText) WithSortByCode(sortByCode bool) *CustomText {
+	c.SortByCode = sortByCode
+	return c
+}
+
+func (c *CustomText) WithCommentPrefix(commentPrefix string) *CustomText {
+	c.CommentPrefix = commentPrefix
+	return c
+}
+
+func (c *CustomText) WithStartMarker(startMarker string) *CustomText {
+	c.StartMarker = startMarker
+	return c
 }
 
 // NewCustom 创建通用纯文本格式
@@ -65,8 +88,6 @@ func NewCustom(
 	formatType model.FormatType,
 	encoding *util.Encoding,
 	fields []FieldConfig,
-	sortByCode bool,
-	commentPrefix string,
 ) *CustomText {
 	if encoding == nil {
 		encoding = util.NewEncoding("UTF-8")
@@ -80,10 +101,8 @@ func NewCustom(
 			Extension:   ".txt",
 			Description: "通用纯文本格式",
 		},
-		Encoding:      encoding,
-		Fields:        fields,
-		SortByCode:    sortByCode,
-		CommentPrefix: commentPrefix,
+		Encoding: encoding,
+		Fields:   fields,
 	}
 }
 
@@ -97,9 +116,17 @@ func (f *CustomText) Import(src model.Source) ([]*model.Entry, error) {
 
 	entries := make([]*model.Entry, 0)
 	scan := bufio.NewScanner(textReader)
+	startMarker := strings.TrimSpace(f.StartMarker)
+	started := startMarker == ""
 	for scan.Scan() {
 		line := strings.TrimSpace(scan.Text())
 		if line == "" {
+			continue
+		}
+		if !started {
+			if line == startMarker {
+				started = true
+			}
 			continue
 		}
 		// 跳过注释行

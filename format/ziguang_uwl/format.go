@@ -17,7 +17,7 @@ type ZiguangUwl struct {
 func New() *ZiguangUwl {
 	f := &ZiguangUwl{
 		BaseFormat: model.BaseFormat{
-			ID:          "ziguang_uwl",
+			ID:          "uwl",
 			Name:        "紫光华宇拼音词库",
 			Type:        model.FormatTypePinyin,
 			Extension:   ".uwl",

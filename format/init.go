@@ -6,6 +6,7 @@ import (
 	"github.com/nopdan/rose/format/baidu_def"
 	"github.com/nopdan/rose/format/custom_text"
 	"github.com/nopdan/rose/format/fcitx4_mb"
+	"github.com/nopdan/rose/format/jiajia"
 	"github.com/nopdan/rose/format/jidian"
 	"github.com/nopdan/rose/format/jidian_mb"
 	"github.com/nopdan/rose/format/kafan_pinyin_bak"
@@ -13,9 +14,7 @@ import (
 	"github.com/nopdan/rose/format/mspy_udl"
 	"github.com/nopdan/rose/format/msudp"
 	"github.com/nopdan/rose/format/mswb_lex"
-	"github.com/nopdan/rose/format/pinyinjiajia"
 	"github.com/nopdan/rose/format/qq_qpyd"
-	"github.com/nopdan/rose/format/rime"
 	"github.com/nopdan/rose/format/sogou_bak"
 	"github.com/nopdan/rose/format/sogou_scel"
 	"github.com/nopdan/rose/format/ziguang_uwl"
@@ -36,11 +35,11 @@ func init() {
 	RegisterFormat(kafan_pinyin_bak.New())
 
 	// 纯文本拼音
-	RegisterFormat(pinyinjiajia.New())
-	RegisterFormat(rime.New())
+	RegisterFormat(jiajia.New())
 	RegisterFormat(custom_text.NewSogouPinyin())
 	RegisterFormat(custom_text.NewBaiduPinyin())
 	RegisterFormat(custom_text.NewQQPinyin())
+	RegisterFormat(custom_text.NewRimePinyin())
 
 	// 二进制五笔
 	RegisterFormat(baidu_def.New())
@@ -53,7 +52,9 @@ func init() {
 	// 纯文本五笔
 	RegisterFormat(jidian.New())
 	RegisterFormat(custom_text.NewDuoduoWubi())
+	RegisterFormat(custom_text.NewRimeWubi())
 	RegisterFormat(custom_text.NewBaiduShouji())
+	RegisterFormat(custom_text.NewBingling())
 	RegisterFormat(custom_text.NewUserPhrase())
 
 	// 纯词组

@@ -57,7 +57,7 @@ rose -h   # 帮助
 
 ## 支持格式
 
-共 25 种格式，全部支持导入，17 种支持导出。
+共 28 种格式，全部支持导入，18 种支持导出。
 
 ### 拼音
 
@@ -65,21 +65,21 @@ rose -h   # 帮助
 
 | ID | 名称 | 扩展名 | 导出 |
 |---|---|---|:---:|
-| `sogou_scel` | 搜狗细胞词库 | .scel | ✓ |
-| `qq_qcel` | QQ 拼音 v6+.qcel | .qcel | ✓ |
+| `scel` | 搜狗细胞词库 | .scel | ✓ |
+| `qcel` | QQ拼音v6以上 | .qcel | ✓ |
 | `sogou_bak` | 搜狗拼音备份 | .bin | |
-| `baidu_bdict` | 百度分类词库 | .bdict | |
-| `baidu_bcd` | 百度手机分类词库 | .bcd | |
-| `baidu_bak` | 百度拼音备份 | .bin | |
-| `qq_qpyd` | QQ 拼音分类词库 | .qpyd | |
+| `bdict` | 百度分类词库 | .bdict | |
+| `bcd` | 百度分类词库（手机） | .bcd | |
+| `baidu_bak` | 百度输入法词库导出 | .bin | |
+| `qpyd` | QQ拼音分类词库 | .qpyd | |
 | `mspy_udl` | 微软拼音自学习词汇 | .dat | ✓ |
-| `ziguang_uwl` | 紫光华宇拼音词库 | .uwl | |
+| `uwl` | 紫光华宇拼音词库 | .uwl | |
 | `kafan_pinyin_bak` | 卡饭拼音备份 | .dict | |
 | `jiajia` | 拼音加加 | .txt | ✓ |
-| `rime` | Rime 输入法 | .dict.yaml | ✓ |
-| `sogou_pinyin` | 搜狗拼音 | .txt | ✓ |
+| `sogou` | 搜狗拼音 | .txt | ✓ |
 | `baidu` | 百度拼音 | .txt | ✓ |
 | `qq` | QQ 拼音 | .txt | ✓ |
+| `rime_pinyin` | Rime拼音 | .dict.yaml | ✓ |
 
 ### 五笔
 
@@ -87,14 +87,16 @@ rose -h   # 帮助
 
 | ID | 名称 | 扩展名 | 导出 |
 |---|---|---|:---:|
-| `baidu_def` | 百度手机自定义方案 | .def | ✓ |
+| `def` | 百度手机自定义方案 | .def | ✓ |
 | `mswb_lex` | 微软五笔词典 | .lex | ✓ |
-| `jidian_mb` | 极点码表.mb | .mb | |
-| `fcitx4_mb` | Fcitx4 码表 | .mb | |
-| `kafan_wubi_bak` | 卡饭五笔备份 | .dict | |
+| `jidian_mb` | 极点码表二进制 | .mb | |
+| `fcitx4_mb` | Fcitx4码表 | .mb | |
+| `kafan_wubi_bak` | 卡饭五笔备份.dict | .dict | |
 | `jidian` | 极点码表 | .txt | ✓ |
 | `duoduo` | 多多生成器 | .txt | ✓ |
-| `baidu_shouji` | 百度手机 | .txt | ✓ |
+| `rime_wubi` | Rime五笔 | .dict.yaml | ✓ |
+| `baidu_shouji` | 百度手机码表 | .txt | ✓ |
+| `bingling` | 冰凌 | .txt | ✓ |
 
 ### 自定义短语
 

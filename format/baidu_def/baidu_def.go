@@ -19,7 +19,7 @@ type BaiduDef struct {
 func New() *BaiduDef {
 	return &BaiduDef{
 		BaseFormat: model.BaseFormat{
-			ID:          "baidu_def",
+			ID:          "def",
 			Name:        "百度手机自定义方案",
 			Type:        model.FormatTypeWubi,
 			Extension:   ".def",

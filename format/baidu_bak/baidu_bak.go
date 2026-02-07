@@ -27,7 +27,7 @@ func init() {
 	}
 }
 
-// BaiduBak 百度拼音备份.bin格式
+// BaiduBak 百度输入法词库导出二进制格式
 type BaiduBak struct {
 	model.BaseFormat
 }
@@ -37,10 +37,10 @@ func New() *BaiduBak {
 	return &BaiduBak{
 		BaseFormat: model.BaseFormat{
 			ID:          "baidu_bak",
-			Name:        "百度拼音备份.bin",
+			Name:        "百度输入法词库导出",
 			Type:        model.FormatTypePinyin,
 			Extension:   ".bin",
-			Description: "百度拼音备份二进制格式",
+			Description: "百度输入法词库导出二进制格式",
 		},
 	}
 }
