@@ -79,7 +79,7 @@ func NewQQPinyin() *CustomText {
 func NewRimePinyin() *CustomText {
 	return NewCustom(
 		"rime_pinyin",
-		"Rime拼音",
+		"Rime 拼音",
 		model.FormatTypePinyin,
 		utf8,
 		[]FieldConfig{
@@ -112,7 +112,7 @@ func NewDuoduoWubi() *CustomText {
 func NewRimeWubi() *CustomText {
 	return NewCustom(
 		"rime_wubi",
-		"Rime五笔",
+		"Rime 五笔",
 		model.FormatTypeWubi,
 		utf8,
 		[]FieldConfig{

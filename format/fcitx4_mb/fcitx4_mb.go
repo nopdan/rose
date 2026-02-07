@@ -12,10 +12,10 @@ func New() *Fcitx4Mb {
 	return &Fcitx4Mb{
 		BaseFormat: model.BaseFormat{
 			ID:          "fcitx4_mb",
-			Name:        "Fcitx4码表",
+			Name:        "Fcitx4 码表",
 			Type:        model.FormatTypeWubi,
 			Extension:   ".mb",
-			Description: "Fcitx4输入法码表格式",
+			Description: "Fcitx4 输入法码表格式",
 		},
 	}
 }
