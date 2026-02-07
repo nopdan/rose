@@ -42,19 +42,26 @@ func (f *LengthFilter) Filter(entry *model.Entry) bool {
 // FrequencyFilter 词频过滤器
 type FrequencyFilter struct {
 	MinFrequency int
+	MaxFrequency int
 }
 
 // NewFrequencyFilter 创建词频过滤器
-func NewFrequencyFilter(minFrequency int) *FrequencyFilter {
-	return &FrequencyFilter{MinFrequency: minFrequency}
+func NewFrequencyFilter(minFrequency, maxFrequency int) *FrequencyFilter {
+	return &FrequencyFilter{MinFrequency: minFrequency, MaxFrequency: maxFrequency}
 }
 
 // Filter 实现Filter接口
 func (f *FrequencyFilter) Filter(entry *model.Entry) bool {
-	if f.MinFrequency <= 0 {
+	if f.MinFrequency <= 0 && f.MaxFrequency <= 0 {
 		return false
 	}
-	return entry.Frequency < f.MinFrequency
+	if f.MinFrequency > 0 && entry.Frequency < f.MinFrequency {
+		return true
+	}
+	if f.MaxFrequency > 0 && entry.Frequency > f.MaxFrequency {
+		return true
+	}
+	return false
 }
 
 // CharacterFilter 字符类型过滤器

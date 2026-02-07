@@ -18,6 +18,7 @@ const form = reactive<FilterConfig>({
   minLength: 0,
   maxLength: 0,
   minFrequency: 0,
+  maxFrequency: 0,
   filterEnglish: false,
   filterNumber: false,
   customRules: [],
@@ -27,6 +28,7 @@ function reset() {
   form.minLength = 0;
   form.maxLength = 0;
   form.minFrequency = 0;
+  form.maxFrequency = 0;
   form.filterEnglish = false;
   form.filterNumber = false;
   form.customRules = [];
@@ -54,6 +56,9 @@ watch(
       </n-form-item>
       <n-form-item label="最小词频" label-placement="left" label-width="80">
         <n-input-number v-model:value="form.minFrequency" :min="0" size="small" style="width: 100px" />
+      </n-form-item>
+      <n-form-item label="最大词频" label-placement="left" label-width="80">
+        <n-input-number v-model:value="form.maxFrequency" :min="0" size="small" style="width: 100px" />
       </n-form-item>
     </div>
 

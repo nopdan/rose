@@ -24,7 +24,7 @@ const inputFormat = ref('')
 const outputFormat = ref('')
 const encoderConfig = ref<EncoderConfig | null>(null)
 const filterConfig = ref<FilterConfig>({
-  minLength: 0, maxLength: 0, minFrequency: 0,
+  minLength: 0, maxLength: 0, minFrequency: 0, maxFrequency: 0,
   filterEnglish: false, filterNumber: false, customRules: [],
 })
 

@@ -58,7 +58,6 @@ const errorMsg = ref("");
 const kindOptions = [
   { label: "拼音", value: "pinyin" },
   { label: "五笔", value: "wubi" },
-  { label: "词组", value: "words" },
 ];
 
 const encodingOptions = [
@@ -163,7 +162,7 @@ function getPreviewLine(): string {
     style="width: 640px; max-width: 90vw"
     :mask-closable="false"
   >
-    <n-form label-placement="left" label-width="80">
+    <n-form label-placement="left" label-width="100">
       <n-form-item label="类型">
         <n-select v-model:value="form.kind" :options="kindOptions" />
       </n-form-item>

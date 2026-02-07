@@ -38,7 +38,7 @@ func TestFrequencyFilter(t *testing.T) {
 		{Word: "词4", Code: model.NewSimpleCode(""), Frequency: 0},
 	}
 
-	filtered := applyFilter(NewFrequencyFilter(20), entries)
+	filtered := applyFilter(NewFrequencyFilter(20, 0), entries)
 
 	if len(filtered) != 2 {
 		t.Errorf("Expected 2 entries, got %d", len(filtered))
@@ -49,6 +49,24 @@ func TestFrequencyFilter(t *testing.T) {
 		if entry.Frequency < 20 {
 			t.Errorf("Entry with frequency %d should be filtered out", entry.Frequency)
 		}
+	}
+
+	filtered = applyFilter(NewFrequencyFilter(0, 50), entries)
+	if len(filtered) != 3 {
+		t.Errorf("Expected 3 entries, got %d", len(filtered))
+	}
+	for _, entry := range filtered {
+		if entry.Frequency > 50 {
+			t.Errorf("Entry with frequency %d should be filtered out", entry.Frequency)
+		}
+	}
+
+	filtered = applyFilter(NewFrequencyFilter(20, 80), entries)
+	if len(filtered) != 1 {
+		t.Errorf("Expected 1 entry, got %d", len(filtered))
+	}
+	if len(filtered) == 1 && filtered[0].Frequency != 50 {
+		t.Errorf("Expected frequency 50, got %d", filtered[0].Frequency)
 	}
 }
 

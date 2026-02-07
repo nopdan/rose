@@ -18,7 +18,7 @@ func TestConverter(t *testing.T) {
 
 	// 测试添加过滤器
 	conv.AddFilter(filter.NewLengthFilter(1, 10))
-	conv.AddFilter(filter.NewFrequencyFilter(1))
+	conv.AddFilter(filter.NewFrequencyFilter(1, 0))
 
 	if len(conv.filters) != 2 {
 		t.Errorf("Expected 2 filters, got %d", len(conv.filters))

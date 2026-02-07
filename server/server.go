@@ -63,6 +63,7 @@ type FilterConfig struct {
 	MinLength     int      `json:"minLength"`
 	MaxLength     int      `json:"maxLength"`
 	MinFrequency  int      `json:"minFrequency"`
+	MaxFrequency  int      `json:"maxFrequency"`
 	FilterEnglish bool     `json:"filterEnglish"`
 	FilterNumber  bool     `json:"filterNumber"`
 	CustomRules   []string `json:"customRules"`
@@ -337,8 +338,8 @@ func applyFilters(conv *converter.Converter, cfg *FilterConfig) {
 	if cfg.MinLength > 0 || cfg.MaxLength > 0 {
 		conv.AddFilter(filter.NewLengthFilter(cfg.MinLength, cfg.MaxLength))
 	}
-	if cfg.MinFrequency > 0 {
-		conv.AddFilter(filter.NewFrequencyFilter(cfg.MinFrequency))
+	if cfg.MinFrequency > 0 || cfg.MaxFrequency > 0 {
+		conv.AddFilter(filter.NewFrequencyFilter(cfg.MinFrequency, cfg.MaxFrequency))
 	}
 	if cfg.FilterEnglish || cfg.FilterNumber {
 		conv.AddFilter(filter.NewCharacterFilter(cfg.FilterEnglish, cfg.FilterNumber))

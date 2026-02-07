@@ -30,6 +30,7 @@ export interface FilterConfig {
   minLength: number
   maxLength: number
   minFrequency: number
+  maxFrequency: number
   filterEnglish: boolean
   filterNumber: boolean
   customRules: string[]
