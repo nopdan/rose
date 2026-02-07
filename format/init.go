@@ -6,6 +6,7 @@ import (
 	"github.com/nopdan/rose/format/baidu_def"
 	"github.com/nopdan/rose/format/custom_text"
 	"github.com/nopdan/rose/format/fcitx4_mb"
+	"github.com/nopdan/rose/format/gboard"
 	"github.com/nopdan/rose/format/jiajia"
 	"github.com/nopdan/rose/format/jidian"
 	"github.com/nopdan/rose/format/jidian_mb"
@@ -33,6 +34,7 @@ func init() {
 	RegisterFormat(mspy_udl.New())
 	RegisterFormat(ziguang_uwl.New())
 	RegisterFormat(kafan_pinyin_bak.New())
+	RegisterFormat(gboard.New())
 
 	// 纯文本拼音
 	RegisterFormat(jiajia.New())
