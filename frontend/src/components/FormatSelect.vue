@@ -22,7 +22,7 @@ const options = computed(() => {
   const list = props.formats
     .filter((f) => (props.mode === "import" ? f.canImport : f.canExport))
     .map((f) => ({
-      label: `${f.name} (${f.id})`,
+      label: `${f.name} (${f.ext})`,
       value: f.id,
       kind: f.kind,
     }));
