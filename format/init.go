@@ -16,6 +16,7 @@ import (
 	"github.com/nopdan/rose/format/msudp"
 	"github.com/nopdan/rose/format/mswb_lex"
 	"github.com/nopdan/rose/format/qq_qpyd"
+	"github.com/nopdan/rose/format/rime_table"
 	"github.com/nopdan/rose/format/sogou_bak"
 	"github.com/nopdan/rose/format/sogou_scel"
 	"github.com/nopdan/rose/format/ziguang_uwl"
@@ -35,6 +36,7 @@ func init() {
 	RegisterFormat(ziguang_uwl.New())
 	RegisterFormat(kafan_pinyin_bak.New())
 	RegisterFormat(gboard.New())
+	RegisterFormat(rime_table.NewRimeTablePinyin())
 
 	// 纯文本拼音
 	RegisterFormat(jiajia.New())
@@ -50,6 +52,7 @@ func init() {
 	RegisterFormat(jidian_mb.New())
 	RegisterFormat(fcitx4_mb.New())
 	RegisterFormat(kafan_wubi_bak.New())
+	RegisterFormat(rime_table.NewRimeTableWubi())
 
 	// 纯文本五笔
 	RegisterFormat(jidian.New())

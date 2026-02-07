@@ -148,12 +148,13 @@ func (f *CustomText) Import(src model.Source) ([]*model.Entry, error) {
 
 			switch fieldCfg.Type {
 			case FieldTypeWord:
-				value, nextPos := f.extractField(line, pos)
+				value, nextPos := f.extractField(line, pos, true)
 				entry.Word = value
 				pos = nextPos
 
 			case FieldTypePinyin:
-				value, nextPos := f.extractField(line, pos)
+				stopOnSpace := fieldCfg.PinyinSeparator != " "
+				value, nextPos := f.extractField(line, pos, stopOnSpace)
 				value = strings.TrimSpace(value)
 				if value != "" {
 					value = f.stripAffix(value, fieldCfg.PinyinPrefix, fieldCfg.PinyinSuffix)
@@ -169,7 +170,7 @@ func (f *CustomText) Import(src model.Source) ([]*model.Entry, error) {
 				pos = nextPos
 
 			case FieldTypeCode:
-				value, nextPos := f.extractField(line, pos)
+				value, nextPos := f.extractField(line, pos, true)
 				value = strings.TrimSpace(value)
 				if value != "" {
 					entry = entry.WithSimpleCode(value)
@@ -178,7 +179,7 @@ func (f *CustomText) Import(src model.Source) ([]*model.Entry, error) {
 				pos = nextPos
 
 			case FieldTypeFrequency:
-				value, nextPos := f.extractField(line, pos)
+				value, nextPos := f.extractField(line, pos, true)
 				value = strings.TrimSpace(value)
 				if freq, err := strconv.Atoi(value); err == nil {
 					entry.Frequency = freq
@@ -186,7 +187,7 @@ func (f *CustomText) Import(src model.Source) ([]*model.Entry, error) {
 				pos = nextPos
 
 			case FieldTypeRank:
-				value, nextPos := f.extractField(line, pos)
+				value, nextPos := f.extractField(line, pos, true)
 				value = strings.TrimSpace(value)
 				if rank, err := strconv.Atoi(value); err == nil {
 					entry.Rank = rank
@@ -216,22 +217,21 @@ func (f *CustomText) Import(src model.Source) ([]*model.Entry, error) {
 		}
 		if hasPinyin {
 			entry.CodeType = model.CodeTypePinyin
+			f.Debugf("%s\t%v\t%d\n", entry.Word, entry.Code.Strings(), entry.Frequency)
 		} else if hasCode {
 			entry.CodeType = model.CodeTypeWubi
+			f.Debugf("%s\t%s\t%d\n", entry.Word, entry.Code.String(), entry.Frequency)
 		}
-
 		entries = append(entries, entry)
-		f.Debugf("%s\t%s\t%d\n", entry.Word, entry.Code, entry.Frequency)
 	}
 
 	return entries, nil
 }
 
 // extractField 从指定位置提取下一个字段（查找下一个分隔符）
-func (f *CustomText) extractField(line string, start int) (string, int) {
-	// 查找下一个 tab/space
+func (f *CustomText) extractField(line string, start int, stopOnSpace bool) (string, int) {
 	end := start
-	for end < len(line) && line[end] != '\t' && line[end] != ' ' {
+	for end < len(line) && line[end] != '\t' && (!stopOnSpace || line[end] != ' ') {
 		end++
 	}
 	return line[start:end], end

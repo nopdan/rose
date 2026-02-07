@@ -57,7 +57,7 @@ rose -h   # 帮助
 
 ## 支持格式
 
-共 28 种格式，全部支持导入，18 种支持导出。
+共 29 种格式，全部支持导入，18 种支持导出。
 
 ### 拼音
 
@@ -76,6 +76,7 @@ rose -h   # 帮助
 | `uwl` | 紫光华宇拼音词库 | .uwl | |
 | `kafan_pinyin_bak` | 卡饭拼音备份 | .dict | |
 | `gboard` | Gboard 个人字典 | .zip | ✓ |
+| `rime_table_pinyin` | Rime table 拼音 | .table.bin | |
 | `jiajia` | 拼音加加 | .txt | ✓ |
 | `sogou` | 搜狗拼音 | .txt | ✓ |
 | `baidu` | 百度拼音 | .txt | ✓ |
@@ -93,6 +94,7 @@ rose -h   # 帮助
 | `jidian_mb` | 极点码表二进制 | .mb | |
 | `fcitx4_mb` | Fcitx4 码表 | .mb | |
 | `kafan_wubi_bak` | 卡饭五笔备份 | .dict | |
+| `rime_table_wubi` | Rime table 五笔 | .table.bin | |
 | `jidian` | 极点码表 | .txt | ✓ |
 | `duoduo` | 多多生成器 | .txt | ✓ |
 | `rime_wubi` | Rime 五笔 | .dict.yaml | ✓ |

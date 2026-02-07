@@ -8,6 +8,7 @@ require (
 	github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f
 	github.com/mholt/archives v0.1.3
 	github.com/nopdan/pinyin-marker v0.6.3
+	github.com/tetratelabs/wazero v1.11.0
 	golang.org/x/exp v0.0.0-20260112195511-716be5621a96
 	golang.org/x/net v0.49.0
 	golang.org/x/text v0.33.0
@@ -31,4 +32,5 @@ require (
 	github.com/spf13/afero v1.14.0 // indirect
 	github.com/ulikunitz/xz v0.5.12 // indirect
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
+	golang.org/x/sys v0.40.0 // indirect
 )

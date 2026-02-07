@@ -61,3 +61,17 @@ func TestCustomText_DuoduoToQQ(t *testing.T) {
 	}
 	os.WriteFile("test_export.txt", buf.Bytes(), 0o644)
 }
+
+func TestRimePinyin(t *testing.T) {
+	testdataPath := "../../testdata/rime_sample.dict.yaml"
+	src := model.NewFileSource(testdataPath)
+	f := NewRimePinyin()
+	f.LogLevel = model.LogDebug
+	entries, err := f.Import(src)
+	if err != nil {
+		t.Fatalf("import failed: %v", err)
+	}
+	if len(entries) == 0 {
+		t.Fatal("no entries imported")
+	}
+}
