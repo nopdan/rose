@@ -25,7 +25,15 @@ function formatSize(bytes: number): string {
   return (bytes / (1024 * 1024)).toFixed(1) + " MB";
 }
 
-async function handleUpload({ file }: { file: UploadFileInfo }) {
+async function handleUpload({
+  file,
+  onFinish,
+  onError,
+}: {
+  file: UploadFileInfo;
+  onFinish: () => void;
+  onError: () => void;
+}) {
   if (!file.file) return;
   uploading.value = true;
   errorMsg.value = "";
@@ -33,8 +41,10 @@ async function handleUpload({ file }: { file: UploadFileInfo }) {
     const result = await uploadFile(file.file);
     fileInfo.value = result;
     emit("uploaded", result);
+    onFinish();
   } catch (e: any) {
     errorMsg.value = e.message || "上传失败";
+    onError();
   } finally {
     uploading.value = false;
   }
@@ -44,7 +54,7 @@ async function handleUpload({ file }: { file: UploadFileInfo }) {
 <template>
   <div>
     <n-upload
-      :custom-request="({ file }) => handleUpload({ file })"
+      :custom-request="handleUpload"
       :show-file-list="false"
       :multiple="false"
     >
